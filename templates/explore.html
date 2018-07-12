@@ -259,11 +259,12 @@
           },
           filterConfirm: function () {
             console.log(this.filters)
+            this.page = 1;
             this.getItems()
           },
           formatVerticalBar: function (data,target) {
             data.forEach((item, index) => {
-              target[item] = this.filters[item].split('|')
+              target[item] = target[item].split('|')
               let temp = target[item];
               temp.forEach((item, index) => {
                 temp[index] = item.trim()
