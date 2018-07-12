@@ -1,6 +1,11 @@
+#app{
+  overflow: hidden;
+}
 .mmkg-header {
   padding: 0 30px;
   color: white;
+  position: fixed;
+  width: 100%;
   a {
     color: white;
   }
@@ -53,6 +58,7 @@
 .content {
   overflow: hidden;
   padding:8px;
+  margin-top:60px;
   .imgs-box{
     overflow: hidden;
   }

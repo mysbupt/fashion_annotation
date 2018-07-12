@@ -201,7 +201,7 @@
         el: '#app',
         components: {},
         mounted: function () {
-          this.addItems();
+          this.getItems();
         },
         data: {
           config: {
@@ -233,7 +233,7 @@
           }
         },
         methods: {
-          addItems: function () {
+          getItems: function () {
             /**
              * 把hashTags bloggers 分割成数组  分隔符 |
              */
@@ -254,7 +254,7 @@
           },
           filterConfirm: function () {
             console.log(this.filters)
-            this.addItems()
+            this.getItems()
           },
           formatVerticalBar: function (data) {
             data.forEach((item, index) => {
@@ -271,7 +271,7 @@
              */
             console.log(page)
             this.config.page = page;
-            this.getItem();
+            this.getItems();
           },
           pageSizeChange: function (size) {
             /**
@@ -279,7 +279,7 @@
              */
             console.log(size)
             this.config.batch = size;
-            this.getItem();
+            this.getItems();
           },
           startTimeChange: function (data) {
             this.filters.time[0] = data;

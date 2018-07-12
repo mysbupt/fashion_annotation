@@ -1,6 +1,11 @@
+#app {
+  overflow: hidden; }
+
 .mmkg-header {
   padding: 0 30px;
-  color: white; }
+  color: white;
+  position: fixed;
+  width: 100%; }
   .mmkg-header a {
     color: white; }
   .mmkg-header i-menu-item {
@@ -37,7 +42,8 @@
 
 .content {
   overflow: hidden;
-  padding: 8px; }
+  padding: 8px;
+  margin-top: 60px; }
   .content .imgs-box {
     overflow: hidden; }
   .content .ivu-col {
