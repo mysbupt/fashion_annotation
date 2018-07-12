@@ -26,3 +26,4 @@
 
 # Config File
 *.yaml
+.sass-cache
