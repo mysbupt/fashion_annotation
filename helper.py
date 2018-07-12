@@ -3,7 +3,6 @@
 import io
 import time
 import datetime
-import yaml
 import MySQLdb
 import simplejson as json
 from StringIO import StringIO
@@ -23,10 +22,9 @@ def create_connection_cassandra(keyspace):
 
 
 def create_connection_mysql(db_name):
-    config = yaml.load(open('./config.yaml'))
-    HOSTNAME = config['Mysql']['HOSTNAME']
-    USERNAME = config['Mysql']['USERNAME']
-    PASSWD = config['Mysql']['PASSWD']
+    HOSTNAME = 'localhost'
+    USERNAME = 'root'
+    PASSWD = 'mayunshan880909'
     try:
         conn = MySQLdb.connect(host=HOSTNAME, user=USERNAME, passwd=PASSWD , db=db_name)
         return conn
