@@ -75,6 +75,11 @@
       height: 100%;
       position: absolute;
     }
+    .bounding-box{
+      display: inline-block;
+      position: absolute;
+      border: 2px solid red;
+    }
   }
   .ivu-page {
     margin: 18px 8px;

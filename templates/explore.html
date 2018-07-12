@@ -40,6 +40,8 @@
           <i-col :lg='config.layouts' v-for="(item, index) in items">
             <div class="img-container">
               <img :width="item.width" :height="item.height" :alt="item.index" :src="item.src">
+              <span class='bounding-box' v-for="position in item.bounding_box" v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
+              </span>
             </div>
           </i-col>
         </div>
@@ -205,7 +207,7 @@
         },
         data: {
           config: {
-            layouts: 4,
+            layouts: 6,
             batch: 50,
             page: 1
           },
