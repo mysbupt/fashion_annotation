@@ -237,8 +237,8 @@
             /**
              * 把hashTags bloggers 分割成数组  分隔符 |
              */
-            this.formatVerticalBar(['hashtags', 'bloggers']);
             let params = Object.assign({},this.filters,this.config)
+            this.formatVerticalBar(['hashtags', 'bloggers'],params);
             console.log(params)
             /**
              * mock/index.json  是本地mock数据  真正测试时需要修改为线上服务器路径
@@ -247,6 +247,7 @@
               let data = response.data.data;
               this.items = data;
               this.pages = response.data.pages;
+              this.modalConfig.show = false;
             })
           },
           filter: function () {
@@ -256,10 +257,10 @@
             console.log(this.filters)
             this.getItems()
           },
-          formatVerticalBar: function (data) {
+          formatVerticalBar: function (data,target) {
             data.forEach((item, index) => {
-              this.filters[item] = this.filters[item].split('|')
-              let temp = this.filters[item];
+              target[item] = this.filters[item].split('|')
+              let temp = target[item];
               temp.forEach((item, index) => {
                 temp[index] = item.trim()
               })
