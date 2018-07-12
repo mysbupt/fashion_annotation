@@ -237,13 +237,17 @@
             /**
              * 把hashTags bloggers 分割成数组  分隔符 |
              */
-            let params = Object.assign({},this.filters,this.config)
+            let params = Object.assign({},this.filters)
             this.formatVerticalBar(['hashtags', 'bloggers'],params);
-            console.log(params)
+            let data = {
+              filters: params,
+              page: this.config
+            }
+            console.log(data)
             /**
              * mock/index.json  是本地mock数据  真正测试时需要修改为线上服务器路径
             */
-            axios.get('/mock/index.json',params).then((response)=> {
+            axios.get('/mock/index.json',data).then((response)=> {
               let data = response.data.data;
               this.items = data;
               this.pages = response.data.pages;

@@ -16,7 +16,8 @@
     "location_name": "Villa Polonez",
     "face_det": "None",
     "comments": 3,
-    "location_lat": "None"
+    "location_lat": "None",
+    "bounding_box":[{"left":"20%","right":"20%","bottom":"20%","top":"20%"},{"left":"40%","right":"40%","bottom":"40%","top":"40%"}]
   }, {
     "publish_time": "2018-06-24 10:15:02",
     "hash_tag": "gardenwedding",
