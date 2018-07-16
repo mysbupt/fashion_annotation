@@ -45,32 +45,32 @@ def check_req(req):
         query['publish_time'] = "publish_time BETWEEN '%s' AND '%s'" %(filters['time'][0], filters['time'][1])
 
     if 'location' in filters.keys():
-        if 'latitude' in filters['location'].keys() and filters['location']['latitude'][0] != '' and filters['location']['latitude'][1] != '':
+        if 'latitude' in filters['location'].keys() and filters['location']['latitude'][0] != '' and filters['location']['latitude'][0] is not None and filters['location']['latitude'][1] != '' and filters['location']['latitude'][1] is not None:
             query['location_latitude'] = "location_latitude BETWEEN '%s' AND '%s'" %(filters['location']['latitude'][0], filters['location']['latitude'][1])
 
-        if 'longitude' in filters['location'].keys() and filters['location']['longitude'][0] != '' and filters['location']['longitude'][1] != '':
+        if 'longitude' in filters['location'].keys() and filters['location']['longitude'][0] != '' and filters['location']['longitude'][0] is not None and filters['location']['longitude'][1] != '' and filters['location']['longitude'][1] is not None:
             query['location_longitude'] = "location_longitude BETWEEN '%s' AND '%s'" %(filters['location']['longitude'][0], filters['location']['longitude'][1])
 
-        if 'name' in filters['location'].keys() and filters['location']['name'] != '':
+        if 'name' in filters['location'].keys() and filters['location']['name'] != '' and filters['location']['name'] is not None:
             query['location_name'] = "location_name LIKE %s" %(filters['location']['name'])
 
-    if 'persons' in filters.keys() and filters['persons'][0] != '' and filters['persons'][1] != '':
+    if 'persons' in filters.keys() and filters['persons'][0] != '' and filters['persons'][0] is not None and filters['persons'][1] != '' and filters['persons'][1] is not None:
         query['person_cnt'] = "person_cnt BETWEEN '%s' AND '%s'" %(filters['persons'][0], filters['persons'][1])
 
-    if 'faces' in filters.keys() and filters['faces'][0] != '' and filters['faces'][1] != '':
+    if 'faces' in filters.keys() and filters['faces'][0] != '' and filters['faces'][0] is not None and filters['faces'][1] != '' and filters['faces'][1] is not None:
         query['faces_cnt'] = "faces_cnt BETWEEN '%s' AND '%s'" %(filters['faces'][0], filters['faces'][1])
 
-    if 'likes' in filters.keys() and filters['likes'][0] != '' and filters['likes'][1] != '':
+    if 'likes' in filters.keys() and filters['likes'][0] != '' and filters['likes'][0] is not None and filters['likes'][1] != '' and filters['likes'][1] is not None:
         query['likes'] = "likes BETWEEN '%s' AND '%s'" %(filters['likes'][0], filters['likes'][1])
 
-    if 'comments' in filters.keys() and filters['comments'][0] != '' and filters['comments'][1] != '':
+    if 'comments' in filters.keys() and filters['comments'][0] != '' and filters['comments'][0] is not None and filters['comments'][1] != '' and filters['comments'][1] is not None:
         query['comments'] = "comments BETWEEN '%s' AND '%s'" %(filters['comments'][0], filters['comments'][1])
 
-    if 'bloggers' in filters.keys() and filters['bloggers'] != ['']:
+    if 'bloggers' in filters.keys() and filters['bloggers'] != [''] and filters['bloggers'] is not None:
         tmp_str = ','.join(["'" + i + "'" for i in filters['bloggers']])
         query['blogger'] = "blogger IN (%s)" %(filters['bloggers'])
 
-    if 'hash_tags' in filters.keys() and filters['hash_tags'] != ['']:
+    if 'hash_tags' in filters.keys() and filters['hash_tags'] != [''] and filters['hash_tags'] is not None:
         tmp_str = ','.join(["'" + i + "'" for i in filters['hash_tags']])
         query['tag'] = "tag IN (%s)" %(filters['hash_tags'])
 

@@ -19,37 +19,38 @@
           <a class="navbar-brand" href="/index">MMKG Annotation</a>
         </i-menu-item>
         <i-menu-item name="2">
-          <a class="nav-link" href="/explore">Explore
-            <span class="sr-only">(current)</span>
-          </a>
+          <i-button type="primary" class='filter' @click="filter">Filter</i-button>
         </i-menu-item>
         <i-menu-item name="3">
-          <i-button type="primary" class='filter' @click="filter">条件筛选</i-button>
-        </i-menu-item>
-        <i-menu-item name="4">
-          <i-button type="primary" class='filter'>设置</i-button>
+          <i-button type="primary" class='filter'>Setting(unavailable)</i-button>
         </i-menu-item>
         <i-menu-item name="4" class='login'>
           <!-- <span class="navbar-text navbar-right">{{username}} </span> -->
-          <span class="navbar-text navbar-right">{{username}}</span>
+          <span class="navbar-text navbar-right">xuji</span>
           <a class="nav-link navbar-right" href="/logout">Logout</a>
         </i-menu-item>
       </i-menu>
       <div class='content'>
         <div class='imgs-box'>
           <i-col :lg='config.layouts' v-for="(item, index) in items">
-            <div class="img-container">
-              <img :width="item.width" :height="item.height" :alt="item.index" :src="item.src">
+              <Poptip trigger="hover" placement="right"  class="img-container">
+                  <img :width="item.width" :height="item.height" :alt="item.index" :src="item.src">
+                  <span class='bounding-box' v-for="position in item.bounding_box" v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
+                  </span>
+                  <div class="api" slot="content">
+                  </div>
+              </Poptip>
+            <div >
             </div>
           </i-col>
         </div>
-        <Page :total="pages.count" show-elevator show-sizer show-total @on-change='pageChange' @on-page-size-change='pageSizeChange'></Page>
+        <Page :page-size='config.batch' :current="config.page" :total="pages.count" show-elevator show-total @on-change='pageChange' @on-page-size-change='pageSizeChange'></Page>
       </div>
       <Modal v-model="modalConfig.show" :mask-closable="modalConfig.maskClosable" :loading="modalConfig.loading" title="Filter Modal"
         class='filter-modal' @on-ok="filterConfirm">
         <Row>
           <i-col span="12" class='left'>
-            <span>开始时间</span>
+            <span>Start Time</span>
           </i-col>
           <i-col span="12" class='right'>
             <date-picker type="datetime" placeholder="Select time" @on-change='startTimeChange'></date-picker>
@@ -57,7 +58,7 @@
         </Row>
         <Row>
           <i-col span="12" class='left'>
-            <span>结束时间</span>
+            <span>End Time</span>
           </i-col>
           <i-col span="12" class='right'>
             <date-picker type="datetime" placeholder="Select time" @on-change='endTimeChange'></date-picker>
@@ -65,14 +66,14 @@
         </Row>
         <Row>
           <i-col span="12" class='left'>
-            <span>经度</span>
+            <span>Longitude</span>
           </i-col>
           <i-col span="12" class='right'>
             <i-col span="10">
               <input-number v-model='filters.location.longitude[0]' :min="-180" :max="180" class='small'></input-number>
             </i-col>
             <i-col span="2" class='text'>
-              至
+              to
             </i-col>
             <i-col span="10">
               <input-number v-model='filters.location.longitude[1]' :min="-180" :max="180" class='small'></input-number>
@@ -81,14 +82,14 @@
         </Row>
         <Row>
           <i-col span="12" class='left'>
-            <span>纬度</span>
+            <span>Latitude</span>
           </i-col>
           <i-col span="12" class='right'>
             <i-col span="10">
               <input-number v-model='filters.location.latitude[0]' :min="-90" :max="90" class='small'></input-number>
             </i-col>
             <i-col span="2" class='text'>
-              至
+              to
             </i-col>
             <i-col span="10">
               <input-number v-model='filters.location.latitude[1]' :min="-90" :max="90" class='small'></input-number>
@@ -97,10 +98,10 @@
         </Row>
         <Row>
           <i-col span="12" class='left'>
-            <span>国家</span>
+            <span>Country</span>
           </i-col>
           <i-col span="12" class='right'>
-            <i-input placeholder="选择国家" v-model='filters.location.name'></i-input>
+            <i-input placeholder="specify country" v-model='filters.location.name'></i-input>
           </i-col>
         </Row>
         <Row>
@@ -108,19 +109,19 @@
             <span>Hashtags</span>
           </i-col>
           <i-col span="12" class='right'>
-            <i-input placeholder="多个tag之间使用 | 分割" v-model='filters.hashtags'></i-input>
+            <i-input placeholder="multi-tags splited by '|'" v-model='filters.hashtags'></i-input>
           </i-col>
         </Row>
         <Row>
           <i-col span="12" class='left'>
-            <span>人数范围</span>
+            <span>Num of Persons</span>
           </i-col>
           <i-col span="12" class='right'>
             <i-col span="10">
               <input-number v-model='filters.persons[0]' :min="0" class='small' :precision='0'></input-number>
             </i-col>
             <i-col span="2" class='text'>
-              至
+              to
             </i-col>
             <i-col span="10">
               <input-number v-model='filters.persons[1]' :min="0" class='small' :precision='0'></input-number>
@@ -129,14 +130,14 @@
         </Row>
         <Row>
           <i-col span="12" class='left'>
-            <span>人脸数量</span>
+            <span>Num of Faces</span>
           </i-col>
           <i-col span="12" class='right'>
             <i-col span="10">
               <input-number v-model='filters.faces[0]' :min="0" class='small' :precision='0'></input-number>
             </i-col>
             <i-col span="2" class='text'>
-              至
+              to
             </i-col>
             <i-col span="10">
               <input-number v-model='filters.faces[1]' :min="0" class='small' :precision='0'></input-number>
@@ -145,14 +146,14 @@
         </Row>
         <Row>
           <i-col span="12" class='left'>
-            <span>点赞数</span>
+            <span>Num of Likes</span>
           </i-col>
           <i-col span="12" class='right'>
             <i-col span="10">
               <input-number v-model='filters.likes[0]' :min="0" class='small' :precision='0'></input-number>
             </i-col>
             <i-col span="2" class='text'>
-              至
+              to
             </i-col>
             <i-col span="10">
               <input-number v-model='filters.likes[1]' :min="0" class='small' :precision='0'></input-number>
@@ -161,14 +162,14 @@
         </Row>
         <Row>
           <i-col span="12" class='left'>
-            <span>评论数</span>
+            <span>Num of Comments</span>
           </i-col>
           <i-col span="12" class='right'>
             <i-col span="10">
               <input-number v-model='filters.comments[0]' :min="0" class='small' :precision='0'></input-number>
             </i-col>
             <i-col span="2" class='text'>
-              至
+              to
             </i-col>
             <i-col span="10">
               <input-number v-model='filters.comments[1]' :min="filters.comments[0] || 0" class='small' :precision='0'></input-number>
@@ -177,7 +178,7 @@
         </Row>
         <Row>
           <i-col span="12" class='left'>
-            <span>批量返回条数</span>
+            <span>Request Batch</span>
           </i-col>
           <i-col span="12" class='right'>
             <input-number v-model='config.batch' :min="1" :precision='0'></input-number>
@@ -185,10 +186,10 @@
         </Row>
         <Row>
           <i-col span="12" class='left'>
-            <span>上传者</span>
+            <span>Posters</span>
           </i-col>
           <i-col span="12" class='right'>
-            <i-input placeholder="多个blogger之间使用 | 分割" v-model='filters.bloggers'></i-input>
+            <i-input placeholder="multi-posters splited by '|'" v-model='filters.bloggers'></i-input>
           </i-col>
         </Row>
       </Modal>
@@ -205,7 +206,7 @@
         },
         data: {
           config: {
-            layouts: 4,
+            layouts: 6,
             batch: 50,
             page: 1
           },
@@ -260,7 +261,7 @@
           },
           filterConfirm: function () {
             console.log(this.filters)
-            this.page = 1;
+            this.config.page = 1;
             this.getItems()
           },
           formatVerticalBar: function (data,target) {

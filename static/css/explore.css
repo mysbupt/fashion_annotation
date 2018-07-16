@@ -53,10 +53,19 @@
     height: 0px;
     padding-bottom: 100%;
     position: relative; }
+    .content .img-container.ivu-poptip .ivu-poptip-rel {
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      position: absolute; }
     .content .img-container img {
       width: 100%;
       height: 100%;
       position: absolute; }
+    .content .img-container .bounding-box {
+      display: inline-block;
+      position: absolute;
+      border: 2px solid red; }
   .content .ivu-page {
     margin: 18px 8px;
     text-align: right; }
