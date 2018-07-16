@@ -13,6 +13,9 @@ from cassandra.cluster import SimpleStatement
 from cassandra.query import ValueSequence
 
 
+total_cnt_cache = {}
+
+
 def create_connection_cassandra(keyspace):
     hostname = '127.0.0.1'
     nodes = [hostname]
@@ -33,35 +36,139 @@ def create_connection_mysql(db_name):
         exit()
 
 
-def get_a_batch_of_data(conn_mysql, filters):
-    batch = int(filters['batch'])
-    last_index = filters['last_index']
+def check_req(req):
+    print req
+    filters = req['filters']
 
-    if batch > 100:
-        batch = 100
-    elif batch <= 0:
-        batch = 50
+    query = {}
+    if 'time' in filters.keys() and filters['time'][0] != '' and filters['time'][0] is not None and filters['time'][1] != '' and filters['time'][1] is not None:
+        query['publish_time'] = "publish_time BETWEEN '%s' AND '%s'" %(filters['time'][0], filters['time'][1])
 
-    time_lb = filters['time'][0]
-    time_up = filters['time'][1]
+    if 'location' in filters.keys():
+        if 'latitude' in filters['location'].keys() and filters['location']['latitude'][0] != '' and filters['location']['latitude'][1] != '':
+            query['location_latitude'] = "location_latitude BETWEEN '%s' AND '%s'" %(filters['location']['latitude'][0], filters['location']['latitude'][1])
 
-    loc_name = filters['location']['name']
-    loc_lat_range = filters['location']['latitude']
-    loc_lon_range = filters['location']['longitude']
+        if 'longitude' in filters['location'].keys() and filters['location']['longitude'][0] != '' and filters['location']['longitude'][1] != '':
+            query['location_longitude'] = "location_longitude BETWEEN '%s' AND '%s'" %(filters['location']['longitude'][0], filters['location']['longitude'][1])
 
-    persons_range = filters['persons']
-    faces_range = filters['faces']
-    likes_range = filters['likes']
-    comments_range = filters['comments']
+        if 'name' in filters['location'].keys() and filters['location']['name'] != '':
+            query['location_name'] = "location_name LIKE %s" %(filters['location']['name'])
 
-    bloggers_list = filters['bloggers']
-    hashtags_list = filters['hashtags']
+    if 'persons' in filters.keys() and filters['persons'][0] != '' and filters['persons'][1] != '':
+        query['person_cnt'] = "person_cnt BETWEEN '%s' AND '%s'" %(filters['persons'][0], filters['persons'][1])
 
+    if 'faces' in filters.keys() and filters['faces'][0] != '' and filters['faces'][1] != '':
+        query['faces_cnt'] = "faces_cnt BETWEEN '%s' AND '%s'" %(filters['faces'][0], filters['faces'][1])
+
+    if 'likes' in filters.keys() and filters['likes'][0] != '' and filters['likes'][1] != '':
+        query['likes'] = "likes BETWEEN '%s' AND '%s'" %(filters['likes'][0], filters['likes'][1])
+
+    if 'comments' in filters.keys() and filters['comments'][0] != '' and filters['comments'][1] != '':
+        query['comments'] = "comments BETWEEN '%s' AND '%s'" %(filters['comments'][0], filters['comments'][1])
+
+    if 'bloggers' in filters.keys() and filters['bloggers'] != ['']:
+        tmp_str = ','.join(["'" + i + "'" for i in filters['bloggers']])
+        query['blogger'] = "blogger IN (%s)" %(filters['bloggers'])
+
+    if 'hash_tags' in filters.keys() and filters['hash_tags'] != ['']:
+        tmp_str = ','.join(["'" + i + "'" for i in filters['hash_tags']])
+        query['tag'] = "tag IN (%s)" %(filters['hash_tags'])
+
+    page_num = int(req['page']['page'])
+    if page_num < 1:
+        page_num = 1
+    batch = int(req['page']['batch'])
+    if batch > 1000:
+        batch = 1000
+    limit = "LIMIT %s, %s" %((page_num - 1) * batch, batch) 
+
+    page_info = {"page": page_num, "batch": batch}
+
+    return query, limit, page_info
+
+
+def get_total_cnt(conn_mysql, q_total_cnt):
+    global total_cnt_cache
+    print total_cnt_cache
+    if q_total_cnt in total_cnt_cache:
+        return total_cnt_cache[q_total_cnt] 
+    else:
+        mysql_c = conn_mysql.cursor()
+        try:
+            mysql_c.execute(q_total_cnt)
+        except:
+            print q_total_cnt
+            exit()
+        res = mysql_c.fetchall()
+        total_cnt = res[0][0]
+        total_cnt_cache[q_total_cnt] = total_cnt
+        return total_cnt
+
+
+def get_a_batch_of_data(conn_mysql, query, limit, page_info):
     mysql_c = conn_mysql.cursor()
-    mysql_c.execute("SELECT id FROM images LIMIT %s, %s", (last_index, batch , ))
+
+    if len(query) != 0:
+        filter_cnd = "WHERE " + " AND ".join(["(" + i + ")" for i in query.values()])
+    else:
+        filter_cnd = ""
+
+    q_total_cnt = "SELECT count(*) FROM images " + filter_cnd
+    total_cnt = get_total_cnt(conn_mysql, q_total_cnt)
+    page = {'count': total_cnt, "totalPage": total_cnt / page_info['batch'], "limit": page_info['batch'], "page": page_info['page']}
+
+    q_ret = "SELECT * FROM images " + filter_cnd + " " + limit
+
+    print q_ret
+
+    try:
+        mysql_c.execute(q_ret)
+    except:
+        print q_ret
+        exit()
     res = mysql_c.fetchall()
-    images = [{'src': '/images/' + i[0] + '.jpg'} for i in res]
-    return images
+    res_data = []
+    for i in res:
+        data = {
+            "id": i[0],
+            "hash_tag": i[1],
+            "src": '/images/' + i[0] + '.jpg',
+            "href": i[3],
+            "text": "",
+            "blogger": i[7],
+            "likes": i[8],
+            "src_site": i[9],
+            "object_detection": "",
+            "face_detection": "",
+            "location_name": "",
+            "location_url": i[13],
+            "comments": [14],
+            "publish_time": "",
+            "location_lat": i[16],
+            "location_lon": i[17]
+        }
+        if i[11] != "null":
+            data['face_detction'] = i[11]
+        if i[10] != "null":
+            data['object_detction'] = i[10]
+        if i[13] != "null":
+            data['location_url'] = i[13]
+        try:
+            data['text'] = i[4].decode('latin-1')
+        except:
+            pass
+        try:
+            data['location_name'] = i[12].decode('latin-1')
+        except:
+            pass
+        try:
+            data['publish_time'] = i[15].strftime("%Y-%m-%d %H:%M:%S")
+        except:
+            pass
+
+        res_data.append(data)
+
+    return {'pages': page, 'data': res_data}
 
 
 def get_an_image(conn_cassandra, image_id):

@@ -26,3 +26,7 @@
 
 # Config File
 *.yaml
+*.json
+
+# Log file
+*.log

@@ -15,7 +15,6 @@ app = Flask(__name__)
 conn_mysql = create_connection_mysql('fashion')
 conn_cassandra = create_connection_cassandra('instagram_scene')
 
-
 @app.route('/')
 @app.route('/explore', methods=['GET'])
 def explore():
@@ -29,20 +28,13 @@ def explore():
 @app.route('/get_items', methods=['POST'])
 def get_items():
     req = request.get_json()
-    print req
-    filters = { 
-        'time': [ '2017-01-01 00:00:00', '2018-07-04 00:00:00'], 
-        'location': { 'name': "American", 'longitude': [ 0.0, 180.0], 'latitude': [ 0.0, 60.0 ] },
-        'hashtags': [ 'winterwedding', 'summerwedding' ],
-        'persons': [ 0, 10 ],
-        'faces': [ 0, 10 ],
-        'likes': [ 0, 10 ],
-        'comments': [ 0, 10 ],
-        'bloggers': [ 'svadbavdominicane' ],
-        'last_index': req['last_index'],
-        'batch': req['batch']
-    }
-    batch_of_data = get_a_batch_of_data(conn_mysql, filters)
+    query, limit, page_info = check_req(req)
+    print query
+    print limit
+    print page_info
+    batch_of_data = get_a_batch_of_data(conn_mysql, query, limit, page_info)
+    output = open('./tmp.txt', 'w')
+    output.write(json.dumps(batch_of_data))
     return jsonify(batch_of_data)
 
 
@@ -118,4 +110,4 @@ if __name__ == "__main__":
     app.secret_key = 'super secret key'
     app.config['SESSION_TYPE'] = 'filesystem'
 
-    app.run(host='0.0.0.0', port=9090)
+    app.run(host='0.0.0.0', port=2222)

@@ -31,7 +31,7 @@
         </i-menu-item>
         <i-menu-item name="4" class='login'>
           <!-- <span class="navbar-text navbar-right">{{username}} </span> -->
-          <span class="navbar-text navbar-right">xujx</span>
+          <span class="navbar-text navbar-right">{{username}}</span>
           <a class="nav-link navbar-right" href="/logout">Logout</a>
         </i-menu-item>
       </i-menu>
@@ -247,7 +247,8 @@
             /**
              * mock/index.json  是本地mock数据  真正测试时需要修改为线上服务器路径
             */
-            axios.get('/mock/index.json',data).then((response)=> {
+            //axios.get('/mock/index.json',data).then((response)=> {
+            axios.post('/get_items',data).then((response)=> {
               let data = response.data.data;
               this.items = data;
               this.pages = response.data.pages;
