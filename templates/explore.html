@@ -19,14 +19,9 @@
           <a class="navbar-brand" href="/index">MMKG Annotation</a>
         </i-menu-item>
         <i-menu-item name="2">
-          <a class="nav-link" href="/explore">Explore
-            <span class="sr-only">(current)</span>
-          </a>
-        </i-menu-item>
-        <i-menu-item name="3">
           <i-button type="primary" class='filter' @click="filter">条件筛选</i-button>
         </i-menu-item>
-        <i-menu-item name="4">
+        <i-menu-item name="3">
           <i-button type="primary" class='filter'>设置</i-button>
         </i-menu-item>
         <i-menu-item name="4" class='login'>
@@ -38,14 +33,19 @@
       <div class='content'>
         <div class='imgs-box'>
           <i-col :lg='config.layouts' v-for="(item, index) in items">
-            <div class="img-container">
-              <img :width="item.width" :height="item.height" :alt="item.index" :src="item.src">
-              <span class='bounding-box' v-for="position in item.bounding_box" v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
-              </span>
+              <Poptip trigger="hover" placement="right"  class="img-container">
+                  <img :width="item.width" :height="item.height" :alt="item.index" :src="item.src">
+                  <span class='bounding-box' v-for="position in item.bounding_box" v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
+                  </span>
+                  <div class="api" slot="content">
+                    123123123
+                  </div>
+              </Poptip>
+            <div >
             </div>
           </i-col>
         </div>
-        <Page :total="pages.count" show-elevator show-sizer show-total @on-change='pageChange' @on-page-size-change='pageSizeChange'></Page>
+        <Page :page-size='config.batch' :current="config.page" :total="pages.count" show-elevator show-total @on-change='pageChange' @on-page-size-change='pageSizeChange'></Page>
       </div>
       <Modal v-model="modalConfig.show" :mask-closable="modalConfig.maskClosable" :loading="modalConfig.loading" title="Filter Modal"
         class='filter-modal' @on-ok="filterConfirm">
@@ -261,7 +261,7 @@
           },
           filterConfirm: function () {
             console.log(this.filters)
-            this.page = 1;
+            this.config.page = 1;
             this.getItems()
           },
           formatVerticalBar: function (data,target) {
