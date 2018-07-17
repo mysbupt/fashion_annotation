@@ -22,11 +22,10 @@
           <i-button type="primary" class='filter' @click="filter">Filter</i-button>
         </i-menu-item>
         <i-menu-item name="3">
-          <i-button type="primary" class='filter'>Setting(unavailable)</i-button>
+          <i-button type="primary" class='setting filter' @click='setting'>Setting</i-button>
         </i-menu-item>
         <i-menu-item name="4" class='login'>
-          <!-- <span class="navbar-text navbar-right">{{username}} </span> -->
-          <span class="navbar-text navbar-right">xuji</span>
+          <span class="navbar-text navbar-right">xujx</span>
           <a class="nav-link navbar-right" href="/logout">Logout</a>
         </i-menu-item>
       </i-menu>
@@ -35,7 +34,10 @@
           <i-col :lg='config.layouts' v-for="(item, index) in items">
             <Poptip trigger="hover" placement="right" class="img-container" v-if='config.mode == "Browse"'>
               <img :width="item.width" :height="item.height" :alt="item.index" :src="item.src">
-              <span class='bounding-box' v-if="config.show_face_bouding" v-for="position in item.bounding_box" v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
+              <span class='bounding-box face-bounding-box' v-if="config.show_face_bouding" v-for="position in item.face_detction.boxes"
+                v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
+              </span>
+              <span class='bounding-box body-bounding-box' v-if="config.show_body_bouding" v-for="position in item.object_detction" v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
               </span>
               <div class="api" slot="content">
               </div>
@@ -55,7 +57,7 @@
         <Page :page-size='config.batch' :current="config.page" :total="pages.count" show-elevator show-total @on-change='pageChange'
           @on-page-size-change='pageSizeChange'></Page>
       </footer>
-      <Modal v-model="modalConfig.show" :mask-closable="modalConfig.maskClosable" :loading="modalConfig.loading" title="Filter Modal"
+      <Modal v-model="filterModalConfig.show" :mask-closable="filterModalConfig.maskClosable" :loading="filterModalConfig.loading" title="Filter Modal"
         class='filter-modal' @on-ok="filterConfirm">
         <Row>
           <i-col span="12" class='left'>
@@ -187,14 +189,6 @@
         </Row>
         <Row>
           <i-col span="12" class='left'>
-            <span>Request Batch</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <input-number v-model='config.batch' :min="1" :precision='0'></input-number>
-          </i-col>
-        </Row>
-        <Row>
-          <i-col span="12" class='left'>
             <span>Posters</span>
           </i-col>
           <i-col span="12" class='right'>
@@ -232,6 +226,44 @@
           </i-col>
         </Row>
       </Modal>
+      <Modal v-model="settingModalConfig.show" :mask-closable="settingModalConfig.maskClosable" title="Seeting Modal"
+      class='filter-modal' @on-ok="settingConfirm"  @on-cancel="settingCancel">
+        <Row>
+          <i-col span="12" class='left'>
+            <span>Request Batch</span>
+          </i-col>
+          <i-col span="12" class='right'>
+            <input-number v-model='config.batch' :min="1" :precision='0'></input-number>
+          </i-col>
+        </Row>
+        <Row>
+          <i-col span="12" class='left'>
+            <span>Show the Face BoudingBox</span>
+          </i-col>
+          <i-col span="12" class='right'>
+            <i-switch v-model="config.show_face_bouding"></i-switch>
+          </i-col>
+        </Row>
+        <Row>
+          <i-col span="12" class='left'>
+            <span>Show the Body BoudingBox</span>
+          </i-col>
+          <i-col span="12" class='right'>
+            <i-switch v-model="config.show_body_bouding"></i-switch>
+          </i-col>
+        </Row>
+        <Row>
+            <i-col span="12" class='left'>
+              <span>Work Mode</span>
+            </i-col>
+            <i-col span="12" class='right'>
+              <radio-group v-model="config.mode">
+                <Radio label="Browse">Browse</Radio>
+                <Radio label="Mark">Mark</Radio>
+              </radio-group>
+            </i-col>
+          </Row>
+    </Modal>
     </div>
     <script src="../static/js/vue.min.js"></script>
     <script src="../static/js/axios.min.js"></script>
@@ -254,7 +286,13 @@
           },
           items: [],
           pages: {},
-          modalConfig: {
+          filterModalConfig: {
+            title: 'Filter Modal',
+            show: false,
+            maskClosable: false,
+            loading: true,
+          },
+          settingModalConfig: {
             title: 'Filter Modal',
             show: false,
             maskClosable: false,
@@ -300,7 +338,7 @@
               this.formatData(this.items)
               console.log(this.items)
               this.pages = response.data.pages;
-              this.modalConfig.show = false;
+              this.filterModalConfig.show = false;
             })
           },
           formatData: function (data) {
@@ -344,11 +382,19 @@
             })
           },
           filter: function () {
-            this.modalConfig.show = true;
+            this.filterModalConfig.show = true;
+          },
+          setting:function(){
+            this.settingModalConfig.show = true;
           },
           filterConfirm: function () {
             this.config.page = 1;
             this.getItems()
+          },
+          settingConfirm:function(){
+          },
+          settingCancel:function(){
+            return;
           },
           formatVerticalBar: function (data, target) {
             data.forEach((item, index) => {
@@ -379,13 +425,6 @@
           },
           endTimeChange: function (data) {
             this.filters.time[1] = data;
-          }
-        },
-        filters: {
-          jsonParse: function (value) {
-            if (!value) return {}
-            value = JSON.parse(value)
-            return value
           }
         }
       })
