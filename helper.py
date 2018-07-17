@@ -52,27 +52,27 @@ def check_req(req):
             query['location_longitude'] = "location_longitude BETWEEN '%s' AND '%s'" %(filters['location']['longitude'][0], filters['location']['longitude'][1])
 
         if 'name' in filters['location'].keys() and filters['location']['name'] != '' and filters['location']['name'] is not None:
-            query['location_name'] = "location_name LIKE %s" %(filters['location']['name'])
+            query['parse_cc'] = "parse_cc = '%s'" %(filters['location']['name'])
 
     if 'persons' in filters.keys() and filters['persons'][0] != '' and filters['persons'][0] is not None and filters['persons'][1] != '' and filters['persons'][1] is not None:
-        query['person_cnt'] = "person_cnt BETWEEN '%s' AND '%s'" %(filters['persons'][0], filters['persons'][1])
+        query['person_cnt'] = "num_of_person BETWEEN %s AND %s" %(filters['persons'][0], filters['persons'][1])
 
     if 'faces' in filters.keys() and filters['faces'][0] != '' and filters['faces'][0] is not None and filters['faces'][1] != '' and filters['faces'][1] is not None:
-        query['faces_cnt'] = "faces_cnt BETWEEN '%s' AND '%s'" %(filters['faces'][0], filters['faces'][1])
+        query['faces_cnt'] = "num_of_face BETWEEN %s AND %s" %(filters['faces'][0], filters['faces'][1])
 
     if 'likes' in filters.keys() and filters['likes'][0] != '' and filters['likes'][0] is not None and filters['likes'][1] != '' and filters['likes'][1] is not None:
-        query['likes'] = "likes BETWEEN '%s' AND '%s'" %(filters['likes'][0], filters['likes'][1])
+        query['likes'] = "likes BETWEEN %s AND %s" %(filters['likes'][0], filters['likes'][1])
 
     if 'comments' in filters.keys() and filters['comments'][0] != '' and filters['comments'][0] is not None and filters['comments'][1] != '' and filters['comments'][1] is not None:
-        query['comments'] = "comments BETWEEN '%s' AND '%s'" %(filters['comments'][0], filters['comments'][1])
+        query['comments'] = "comments BETWEEN %s AND %s" %(filters['comments'][0], filters['comments'][1])
 
     if 'bloggers' in filters.keys() and filters['bloggers'] != [''] and filters['bloggers'] is not None:
         tmp_str = ','.join(["'" + i + "'" for i in filters['bloggers']])
         query['blogger'] = "blogger IN (%s)" %(filters['bloggers'])
 
-    if 'hash_tags' in filters.keys() and filters['hash_tags'] != [''] and filters['hash_tags'] is not None:
-        tmp_str = ','.join(["'" + i + "'" for i in filters['hash_tags']])
-        query['tag'] = "tag IN (%s)" %(filters['hash_tags'])
+    if 'hashtags' in filters.keys() and filters['hashtags'] != [''] and filters['hashtags'] is not None:
+        tmp_str = ','.join(["'" + i + "'" for i in filters['hashtags']])
+        query['tag'] = "tag IN (%s)" %(tmp_str)
 
     page_num = int(req['page']['page'])
     if page_num < 1:
@@ -83,6 +83,7 @@ def check_req(req):
     limit = "LIMIT %s, %s" %((page_num - 1) * batch, batch) 
 
     page_info = {"page": page_num, "batch": batch}
+    print "query is:", query
 
     return query, limit, page_info
 
