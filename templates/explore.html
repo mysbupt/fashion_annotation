@@ -31,7 +31,7 @@
       </i-menu>
       <div class='content'>
         <div class='imgs-box'>
-          <i-col :lg='config.layouts' v-for="(item, index) in items">
+          <i-col :lg='24/config.layouts' v-for="(item, index) in items">
             <Poptip trigger="hover" placement="right" class="img-container" v-if='config.mode == "Browse"'>
               <img :width="item.width" :height="item.height" :alt="item.index" :src="item.src">
               <span class='bounding-box face-bounding-box' v-if="config.show_face_bouding" v-for="position in item.face_detction.boxes"
