@@ -293,8 +293,8 @@
             /**
              * mock/index.json  是本地mock数据  真正测试时需要修改为线上服务器路径
              */
-            //axios.get('/mock/index.json', data).then((response) => {
-            axios.post('/get_items',data).then((response)=> {
+            axios.get('/mock/index.json', data).then((response) => {
+              //axios.post('/get_items',data).then((response)=> {
               let data = response.data.data;
               this.items = data;
               this.formatData(this.items)
