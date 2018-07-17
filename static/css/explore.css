@@ -1,23 +1,68 @@
 #app {
   overflow: hidden; }
-
-.mmkg-header {
-  padding: 0 30px;
-  color: white;
-  position: fixed;
-  width: 100%; }
-  .mmkg-header a {
-    color: white; }
-  .mmkg-header i-menu-item {
-    margin: 0 20px; }
-    .mmkg-header i-menu-item .filter {
-      background: transparent;
-      border: none; }
-  .mmkg-header .logo {
-    font-size: 28px;
-    margin-right: 70px; }
-  .mmkg-header .login {
-    float: right; }
+  #app .mmkg-header {
+    padding: 0 30px;
+    color: white;
+    position: fixed;
+    width: 100%; }
+    #app .mmkg-header a {
+      color: white; }
+    #app .mmkg-header i-menu-item {
+      margin: 0 20px; }
+      #app .mmkg-header i-menu-item .filter {
+        background: transparent;
+        border: none; }
+    #app .mmkg-header .logo {
+      font-size: 28px;
+      margin-right: 70px; }
+    #app .mmkg-header .login {
+      float: right; }
+  #app .content {
+    overflow: hidden;
+    padding: 8px;
+    margin: 60px 0; }
+    #app .content .imgs-box {
+      overflow: hidden; }
+    #app .content .ivu-col {
+      padding: 6px; }
+    #app .content .img-container {
+      width: 100%;
+      height: 0px;
+      padding-bottom: 100%;
+      position: relative; }
+      #app .content .img-container.ivu-poptip .ivu-poptip-rel {
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+        position: absolute; }
+      #app .content .img-container img {
+        width: 100%;
+        height: 100%;
+        position: absolute; }
+      #app .content .img-container .bounding-box {
+        display: inline-block;
+        position: absolute;
+        border: 2px solid red; }
+      #app .content .img-container .face-bounding-box {
+        border-color: red; }
+      #app .content .img-container .body-bounding-box {
+        border-color: greenyellow; }
+  #app footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    background: white;
+    height: 60px;
+    line-height: 60px;
+    width: 100%;
+    text-align: center; }
+    #app footer .ivu-page .ivu-page-prev .ivu-icon,
+    #app footer .ivu-page .ivu-page-next .ivu-icon,
+    #app footer .ivu-page .ivu-page-item-jump-next:hover .ivu-icon,
+    #app footer .ivu-page .ivu-page-item-jump-prev:hover .ivu-icon {
+      height: 100%;
+      display: inline-block;
+      line-height: 30px; }
 
 .filter-modal .ivu-row {
   display: flex;
@@ -39,39 +84,5 @@
 .filter-modal .ivu-modal-body {
   height: 400px;
   overflow: scroll; }
-
-.content {
-  overflow: hidden;
-  padding: 8px;
-  margin-top: 60px; }
-  .content .imgs-box {
-    overflow: hidden; }
-  .content .ivu-col {
-    padding: 6px; }
-  .content .img-container {
-    width: 100%;
-    height: 0px;
-    padding-bottom: 100%;
-    position: relative; }
-    .content .img-container.ivu-poptip .ivu-poptip-rel {
-      overflow: hidden;
-      width: 100%;
-      height: 100%;
-      position: absolute; }
-    .content .img-container img {
-      width: 100%;
-      height: 100%;
-      position: absolute; }
-    .content .img-container .bounding-box {
-      display: inline-block;
-      position: absolute;
-      border: 2px solid red; }
-  .content .ivu-page {
-    margin: 18px 8px;
-    text-align: right; }
-    .content .ivu-page .ivu-page-prev .ivu-icon, .content .ivu-page .ivu-page-next .ivu-icon, .content .ivu-page .ivu-page-item-jump-next:hover .ivu-icon, .content .ivu-page .ivu-page-item-jump-prev:hover .ivu-icon {
-      height: 100%;
-      display: inline-block;
-      line-height: 30px; }
 
 /*# sourceMappingURL=explore.css.map */

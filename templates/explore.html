@@ -33,19 +33,28 @@
       <div class='content'>
         <div class='imgs-box'>
           <i-col :lg='config.layouts' v-for="(item, index) in items">
-              <Poptip trigger="hover" placement="right"  class="img-container">
-                  <img :width="item.width" :height="item.height" :alt="item.index" :src="item.src">
-                  <span class='bounding-box' v-for="position in item.bounding_box" v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
-                  </span>
-                  <div class="api" slot="content">
-                  </div>
-              </Poptip>
-            <div >
+            <Poptip trigger="hover" placement="right" class="img-container" v-if='config.mode == "Browse"'>
+              <img :width="item.width" :height="item.height" :alt="item.index" :src="item.src">
+              <span class='bounding-box' v-if="config.show_face_bouding" v-for="position in item.bounding_box" v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
+              </span>
+              <div class="api" slot="content">
+              </div>
+            </Poptip>
+            <div class="img-container" v-if='config.mode == "Mark"'>
+              <img :width="item.width" :height="item.height" :alt="item.index" :src="item.src">
+              <span class='bounding-box face-bounding-box' v-if="config.show_face_bouding" v-for="position in item.face_detction.boxes"
+                v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
+              </span>
+              <span class='bounding-box body-bounding-box' v-if="config.show_body_bouding" v-for="position in item.object_detction" v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
+              </span>
             </div>
           </i-col>
         </div>
-        <Page :page-size='config.batch' :current="config.page" :total="pages.count" show-elevator show-total @on-change='pageChange' @on-page-size-change='pageSizeChange'></Page>
       </div>
+      <footer>
+        <Page :page-size='config.batch' :current="config.page" :total="pages.count" show-elevator show-total @on-change='pageChange'
+          @on-page-size-change='pageSizeChange'></Page>
+      </footer>
       <Modal v-model="modalConfig.show" :mask-closable="modalConfig.maskClosable" :loading="modalConfig.loading" title="Filter Modal"
         class='filter-modal' @on-ok="filterConfirm">
         <Row>
@@ -192,6 +201,36 @@
             <i-input placeholder="multi-posters splited by '|'" v-model='filters.bloggers'></i-input>
           </i-col>
         </Row>
+        <Row>
+          <i-col span="12" class='left'>
+            <span>Per Face About Body</span>
+          </i-col>
+          <i-col span="12" class='right'>
+            <i-col span="24">
+              <input-number v-model='filters.face_body_per' :min="0" :max='1' :precision='2'></input-number>
+            </i-col>
+          </i-col>
+        </Row>
+        <Row>
+          <i-col span="12" class='left'>
+            <span>Per of Face</span>
+          </i-col>
+          <i-col span="12" class='right'>
+            <i-col span="24">
+              <input-number v-model='filters.face_per' :min="0" :max='1' :precision='2'></input-number>
+            </i-col>
+          </i-col>
+        </Row>
+        <Row>
+          <i-col span="12" class='left'>
+            <span>Per of Body</span>
+          </i-col>
+          <i-col span="12" class='right'>
+            <i-col span="24">
+              <input-number v-model='filters.body_per' :min="0" :max='1' :precision='2'></input-number>
+            </i-col>
+          </i-col>
+        </Row>
       </Modal>
     </div>
     <script src="../static/js/vue.min.js"></script>
@@ -208,7 +247,10 @@
           config: {
             layouts: 6,
             batch: 50,
-            page: 1
+            page: 1,
+            show_face_bouding: true,
+            show_body_bouding: true,
+            mode: "Mark"
           },
           items: [],
           pages: {},
@@ -231,6 +273,9 @@
             likes: ['', ''],
             comments: ['', ''],
             bloggers: '',
+            face_body_per: "",
+            face_per: "",
+            body_per: "",
           }
         },
         methods: {
@@ -238,8 +283,8 @@
             /**
              * 把hashTags bloggers 分割成数组  分隔符 |
              */
-            let params = Object.assign({},this.filters)
-            this.formatVerticalBar(['hashtags', 'bloggers'],params);
+            let params = Object.assign({}, this.filters)
+            this.formatVerticalBar(['hashtags', 'bloggers'], params);
             let data = {
               filters: params,
               page: this.config
@@ -247,24 +292,65 @@
             console.log(data)
             /**
              * mock/index.json  是本地mock数据  真正测试时需要修改为线上服务器路径
-            */
-            //axios.get('/mock/index.json',data).then((response)=> {
-            axios.post('/get_items',data).then((response)=> {
+             */
+            axios.get('/mock/index.json', data).then((response) => {
+              // axios.post('/get_items',data).then((response)=> {
               let data = response.data.data;
               this.items = data;
+              this.formatData(this.items)
+              console.log(this.items)
               this.pages = response.data.pages;
               this.modalConfig.show = false;
+            })
+          },
+          formatData: function (data) {
+            data.forEach((item, index) => {
+              let width = item.img.width
+              let height = item.img.height
+              if (item.face_detction) {
+                item.face_detction = JSON.parse(item.face_detction)
+                item.face_detction.boxes.forEach((box, index) => {
+                  box = {
+                    left: box[0] / width * 100,
+                    top: box[1] / height * 100,
+                    width: box[2] / width * 100,
+                    height: box[3] / height * 100,
+                  }
+                  item.face_detction.boxes[index] = box;
+                })
+              } else {
+                item.face_detction = {
+                  boxes: []
+                }
+              }
+              item.object_detction && (item.object_detction = JSON.parse(item.object_detction))
+              let body_det = item.object_detction;
+              let temp = [];
+              if (body_det.T_F) {
+                body_det.result.forEach((item) => {
+                  if (item[0] == 'person') {
+                    let box = item[2]
+                    let obj = {
+                      left: box[0] / width * 100,
+                      top: box[1] / height * 100,
+                      width: box[2] / width * 100,
+                      height: box[3] / height * 100,
+                    }
+                    temp.push(obj)
+                  }
+                })
+              }
+              data[index].object_detction = temp;
             })
           },
           filter: function () {
             this.modalConfig.show = true;
           },
           filterConfirm: function () {
-            console.log(this.filters)
             this.config.page = 1;
             this.getItems()
           },
-          formatVerticalBar: function (data,target) {
+          formatVerticalBar: function (data, target) {
             data.forEach((item, index) => {
               target[item] = target[item].split('|')
               let temp = target[item];
@@ -277,7 +363,6 @@
             /**
              *page 当前选中页数
              */
-            console.log(page)
             this.config.page = page;
             this.getItems();
           },
@@ -285,18 +370,22 @@
             /**
              *size 每页显示条数
              */
-            console.log(size)
             this.config.batch = size;
             this.config.page = 1;
             this.getItems();
           },
           startTimeChange: function (data) {
             this.filters.time[0] = data;
-            console.log(this.filters.time[0])
           },
           endTimeChange: function (data) {
             this.filters.time[1] = data;
-            console.log(this.filters.time[1])
+          }
+        },
+        filters: {
+          jsonParse: function (value) {
+            if (!value) return {}
+            value = JSON.parse(value)
+            return value
           }
         }
       })
