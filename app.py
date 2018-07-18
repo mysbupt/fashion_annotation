@@ -15,6 +15,9 @@ app = Flask(__name__)
 conn_mysql = create_connection_mysql('fashion')
 conn_cassandra = create_connection_cassandra('instagram_scene')
 
+country_list = get_country_list_bydb(conn_mysql)
+hashtag_list = get_hashtag_list_bydb(conn_mysql)
+
 @app.route('/')
 @app.route('/explore', methods=['GET'])
 def explore():
@@ -33,9 +36,21 @@ def get_items():
     print limit
     print page_info
     batch_of_data = get_a_batch_of_data(conn_mysql, query, limit, page_info)
-    output = open('./tmp.txt', 'w')
-    output.write(json.dumps(batch_of_data))
+    #output = open('./tmp.txt', 'w')
+    #output.write(json.dumps(batch_of_data))
     return jsonify(batch_of_data)
+
+
+@app.route('/get_country_list', methods=['GET'])
+def get_country_list():
+    global country_list
+    return jsonify(country_list)
+
+
+@app.route('/get_hashtag_list', methods=['GET'])
+def get_hashtag_list():
+    global hashtag_list
+    return jsonify(hashtag_list)
 
 
 @app.route('/images/<image_id>.jpg', methods=['GET'])
