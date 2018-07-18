@@ -22,20 +22,24 @@
           <i-button type="primary" class='filter' @click="filter">Filter</i-button>
         </i-menu-item>
         <i-menu-item name="3">
-          <i-button type="primary" class='filter'>Setting(unavailable)</i-button>
+          <i-button type="primary" class='setting filter' @click='setting'>Setting</i-button>
         </i-menu-item>
         <i-menu-item name="4" class='login'>
           <!-- <span class="navbar-text navbar-right">{{username}} </span> -->
           <span class="navbar-text navbar-right">{{username}}</span>
+          <!--<span class="navbar-text navbar-right">xujx</span> -->
           <a class="nav-link navbar-right" href="/logout">Logout</a>
         </i-menu-item>
       </i-menu>
       <div class='content'>
         <div class='imgs-box'>
-          <i-col :lg='config.layouts' v-for="(item, index) in items">
+          <i-col :lg='24/config.layouts' v-for="(item, index) in items">
             <Poptip trigger="hover" placement="right" class="img-container" v-if='config.mode == "Browse"'>
               <img :width="item.width" :height="item.height" :alt="item.index" :src="item.src">
-              <span class='bounding-box' v-if="config.show_face_bouding" v-for="position in item.bounding_box" v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
+              <span class='bounding-box face-bounding-box' v-if="config.show_face_bouding" v-for="position in item.face_detction.boxes"
+                v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
+              </span>
+              <span class='bounding-box body-bounding-box' v-if="config.show_body_bouding" v-for="position in item.object_detction" v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
               </span>
               <div class="api" slot="content">
               </div>
@@ -55,8 +59,8 @@
         <Page :page-size='config.batch' :current="config.page" :total="pages.count" show-elevator show-total @on-change='pageChange'
           @on-page-size-change='pageSizeChange'></Page>
       </footer>
-      <Modal v-model="modalConfig.show" :mask-closable="modalConfig.maskClosable" :loading="modalConfig.loading" title="Filter Modal"
-        class='filter-modal' @on-ok="filterConfirm">
+      <Modal v-model="filterModalConfig.show" :mask-closable="filterModalConfig.maskClosable" :loading="filterModalConfig.loading"
+        title="Filter Modal" class='filter-modal' @on-ok="filterConfirm">
         <Row>
           <i-col span="12" class='left'>
             <span>Start Time</span>
@@ -187,14 +191,6 @@
         </Row>
         <Row>
           <i-col span="12" class='left'>
-            <span>Request Batch</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <input-number v-model='config.batch' :min="1" :precision='0'></input-number>
-          </i-col>
-        </Row>
-        <Row>
-          <i-col span="12" class='left'>
             <span>Posters</span>
           </i-col>
           <i-col span="12" class='right'>
@@ -232,6 +228,52 @@
           </i-col>
         </Row>
       </Modal>
+      <Modal v-model="settingModalConfig.show" :mask-closable="settingModalConfig.maskClosable" title="Seeting Modal" class='filter-modal'
+        @on-ok="settingConfirm" @on-cancel="settingCancel">
+        <Row>
+          <i-col span="12" class='left'>
+            <span>Request Batch</span>
+          </i-col>
+          <i-col span="12" class='right'>
+            <input-number v-model='config.batch' :min="1" :precision='0'></input-number>
+          </i-col>
+        </Row>
+        <Row>
+          <i-col span="12" class='left'>
+            <span>Number of Images Per Line</span>
+          </i-col>
+          <i-col span="12" class='right'>
+            <input-number v-model='config.layouts' :min="2" :max='8' :precision='0' :step='2'></input-number>
+          </i-col>
+        </Row>
+        <Row>
+          <i-col span="12" class='left'>
+            <span>Show the Face BoudingBox</span>
+          </i-col>
+          <i-col span="12" class='right'>
+            <i-switch v-model="config.show_face_bouding"></i-switch>
+          </i-col>
+        </Row>
+        <Row>
+          <i-col span="12" class='left'>
+            <span>Show the Body BoudingBox</span>
+          </i-col>
+          <i-col span="12" class='right'>
+            <i-switch v-model="config.show_body_bouding"></i-switch>
+          </i-col>
+        </Row>
+        <Row>
+          <i-col span="12" class='left'>
+            <span>Work Mode</span>
+          </i-col>
+          <i-col span="12" class='right'>
+            <radio-group v-model="config.mode">
+              <Radio label="Browse">Browse</Radio>
+              <Radio label="Mark">Mark</Radio>
+            </radio-group>
+          </i-col>
+        </Row>
+      </Modal>
     </div>
     <script src="../static/js/vue.min.js"></script>
     <script src="../static/js/axios.min.js"></script>
@@ -245,7 +287,7 @@
         },
         data: {
           config: {
-            layouts: 6,
+            layouts: 12,
             batch: 50,
             page: 1,
             show_face_bouding: true,
@@ -254,7 +296,13 @@
           },
           items: [],
           pages: {},
-          modalConfig: {
+          filterModalConfig: {
+            title: 'Filter Modal',
+            show: false,
+            maskClosable: false,
+            loading: true,
+          },
+          settingModalConfig: {
             title: 'Filter Modal',
             show: false,
             maskClosable: false,
@@ -293,28 +341,28 @@
             /**
              * mock/index.json  是本地mock数据  真正测试时需要修改为线上服务器路径
              */
-            axios.get('/mock/index.json', data).then((response) => {
-              //axios.post('/get_items',data).then((response)=> {
+            //axios.get('/mock/index.json', data).then((response) => {
+            axios.post('/get_items',data).then((response)=> {
               let data = response.data.data;
               this.items = data;
               this.formatData(this.items)
               console.log(this.items)
               this.pages = response.data.pages;
-              this.modalConfig.show = false;
+              this.filterModalConfig.show = false;
             })
           },
           formatData: function (data) {
             data.forEach((item, index) => {
-              let width = item.img.width
-              let height = item.img.height
+              let width = item.width || '640'
+              let height = item.height || '640'
               if (item.face_detction) {
                 item.face_detction = JSON.parse(item.face_detction)
                 item.face_detction.boxes.forEach((box, index) => {
                   box = {
-                    left: box[0] / width * 100,
-                    top: box[1] / height * 100,
-                    width: box[2] / width * 100,
-                    height: box[3] / height * 100,
+                    left: box[0] / width * 100 + '%',
+                    top: box[1] / height * 100 + '%',
+                    width: (box[2] - box[0]) / width * 100 + '%',
+                    height: (box[3] - box[1]) / height * 100 + '%',
                   }
                   item.face_detction.boxes[index] = box;
                 })
@@ -323,32 +371,43 @@
                   boxes: []
                 }
               }
-              item.object_detction && (item.object_detction = JSON.parse(item.object_detction))
-              let body_det = item.object_detction;
-              let temp = [];
-              if (body_det.T_F) {
-                body_det.result.forEach((item) => {
-                  if (item[0] == 'person') {
-                    let box = item[2]
-                    let obj = {
-                      left: box[0] / width * 100,
-                      top: box[1] / height * 100,
-                      width: box[2] / width * 100,
-                      height: box[3] / height * 100,
+              if (item.object_detction) {
+                item.object_detction = JSON.parse(item.object_detction)
+                let body_det = item.object_detction;
+                let temp = [];
+                if (body_det.T_F) {
+                  body_det.result.forEach((item) => {
+                    if (item[0] == 'person') {
+                      let box = item[2]
+                      let obj = {
+                        left: box[0] / width * 100 + '%',
+                        top: box[1] / height * 100 + '%',
+                        width: (box[2]) / width * 100 + '%',
+                        height: (box[3]) / height * 100 + '%',
+                      }
+                      temp.push(obj)
                     }
-                    temp.push(obj)
-                  }
-                })
+                  })
+                }
+                data[index].object_detction = temp;
+              } else {
+                item.object_detction = [];
               }
-              data[index].object_detction = temp;
             })
           },
           filter: function () {
-            this.modalConfig.show = true;
+            this.filterModalConfig.show = true;
+          },
+          setting: function () {
+            this.settingModalConfig.show = true;
           },
           filterConfirm: function () {
             this.config.page = 1;
             this.getItems()
+          },
+          settingConfirm: function () {},
+          settingCancel: function () {
+            return;
           },
           formatVerticalBar: function (data, target) {
             data.forEach((item, index) => {
@@ -379,13 +438,6 @@
           },
           endTimeChange: function (data) {
             this.filters.time[1] = data;
-          }
-        },
-        filters: {
-          jsonParse: function (value) {
-            if (!value) return {}
-            value = JSON.parse(value)
-            return value
           }
         }
       })
