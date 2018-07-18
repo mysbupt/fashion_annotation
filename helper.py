@@ -2,6 +2,7 @@
 
 import io
 import time
+import csv
 import datetime
 import MySQLdb
 import simplejson as json
@@ -104,6 +105,44 @@ def get_total_cnt(conn_mysql, q_total_cnt):
         total_cnt = res[0][0]
         total_cnt_cache[q_total_cnt] = total_cnt
         return total_cnt
+
+
+def get_country_list_bydb(conn_mysql):
+    country_code_name_mapping = {}
+    cnt = 0
+    with open('./data/country_name_code_mapping.csv') as csvfile:
+        ccreader = csv.reader(csvfile, delimiter=",")
+        for row in ccreader:
+            if cnt == 0:
+                cnt += 1
+                continue
+            country_code_name_mapping[row[1]] = row[0]
+
+    cc_stat = {}
+    mysql_c = conn_mysql.cursor()
+    mysql_c.execute("SELECT parse_cc, COUNT(*) AS cnt FROM images GROUP BY parse_cc ORDER BY cnt")
+    res = mysql_c.fetchall()
+    for i in res:
+        cc_stat[i[0]] = i[1]
+
+    result = {}
+    for country_code, country_name in country_code_name_mapping.items():
+        result[country_code] = {"name": country_name, "num_of_ret": 0}
+        if country_code in cc_stat.keys():
+            result[country_code]["num_of_ret"] = cc_stat[country_code]
+
+    return result
+
+
+def get_hashtag_list_bydb(conn_mysql):
+    hashtag_stat = {}
+    mysql_c = conn_mysql.cursor()
+    mysql_c.execute("SELECT tag, COUNT(*) AS cnt FROM images GROUP BY tag ORDER BY cnt DESC")
+    res = mysql_c.fetchall()
+    for i in res:
+        hashtag_stat[i[0]] = i[1]
+
+    return hashtag_stat 
 
 
 def get_a_batch_of_data(conn_mysql, query, limit, page_info):
