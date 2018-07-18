@@ -357,13 +357,20 @@
               if (item.face_detction) {
                 item.face_detction = JSON.parse(item.face_detction)
                 item.face_detction.boxes.forEach((box, index) => {
-                  box = {
+                  /**
+                  * box表示身体bouding-box
+                  * box[0] 左上角x坐标
+                  * box[1] 左上角y坐标
+                  * box[2] width
+                  * box[3] height
+                  */
+                  let temp = {
                     left: box[0] / width * 100 + '%',
                     top: box[1] / height * 100 + '%',
                     width: (box[2] - box[0]) / width * 100 + '%',
                     height: (box[3] - box[1]) / height * 100 + '%',
                   }
-                  item.face_detction.boxes[index] = box;
+                  item.face_detction.boxes[index] = temp;
                 })
               } else {
                 item.face_detction = {
@@ -378,6 +385,13 @@
                   body_det.result.forEach((item) => {
                     if (item[0] == 'person') {
                       let box = item[2]
+                      /**
+                      * box表示身体bouding-box
+                      * box[0] 中心点x坐标
+                      * box[1] 中心点y坐标
+                      * box[2] width
+                      * box[3] height
+                      */
                       let obj = {
                         left: (box[0] - box[2]/2) / width * 100 + '%',
                         top: (box[1] - box[3]/2) / height * 100 + '%',
