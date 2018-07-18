@@ -71,7 +71,7 @@ def check_req(req):
         tmp_str = ','.join(["'" + i + "'" for i in filters['bloggers']])
         query['blogger'] = "blogger IN (%s)" %(filters['bloggers'])
 
-    if 'hashtags' in filters.keys() and filters['hashtags'] != [''] and filters['hashtags'] is not None:
+    if 'hashtags' in filters.keys() and filters['hashtags'] != [''] and filters['hashtags'] != "" and filters['hashtags'] is not None:
         tmp_str = ','.join(["'" + i + "'" for i in filters['hashtags']])
         query['tag'] = "tag IN (%s)" %(tmp_str)
 
@@ -131,7 +131,7 @@ def get_country_list_bydb(conn_mysql):
         if country_code in cc_stat.keys():
             result[country_code]["num_of_ret"] = cc_stat[country_code]
 
-    return result
+    return {"data": result}
 
 
 def get_hashtag_list_bydb(conn_mysql):
@@ -142,7 +142,7 @@ def get_hashtag_list_bydb(conn_mysql):
     for i in res:
         hashtag_stat[i[0]] = i[1]
 
-    return hashtag_stat 
+    return {"data": hashtag_stat}
 
 
 def get_a_batch_of_data(conn_mysql, query, limit, page_info):

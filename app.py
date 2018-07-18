@@ -6,7 +6,7 @@ import time
 import datetime
 import hashlib
 import simplejson as json
-from flask import Flask, send_file, jsonify, flash, redirect, render_template, request, session, abort, url_for
+from flask import Flask, send_from_directory, send_file, jsonify, flash, redirect, render_template, request, session, abort, url_for
 from StringIO import StringIO
 from helper import *
 
@@ -21,11 +21,12 @@ hashtag_list = get_hashtag_list_bydb(conn_mysql)
 @app.route('/')
 @app.route('/explore', methods=['GET'])
 def explore():
-    if 'username' in session:
-        username = session['username']
-        return render_template('explore.html', username=username)
-    else:
-        return redirect(url_for('login'))
+    return send_from_directory("./templates", "explore.html")
+#    if 'username' in session:
+#        username = session['username']
+#        return render_template('explore.html', username=username)
+#    else:
+#        return redirect(url_for('login'))
 
 
 @app.route('/get_items', methods=['POST'])
