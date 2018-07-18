@@ -1,0 +1,1000 @@
+{
+  "data": {
+    "AD": {
+      "name": "Andorra",
+      "num_of_ret": 25
+    },
+    "AE": {
+      "name": "United Arab Emirates",
+      "num_of_ret": 3789
+    },
+    "AF": {
+      "name": "Afghanistan",
+      "num_of_ret": 19
+    },
+    "AG": {
+      "name": "Antigua and Barbuda",
+      "num_of_ret": 88
+    },
+    "AI": {
+      "name": "Anguilla",
+      "num_of_ret": 17
+    },
+    "AL": {
+      "name": "Albania",
+      "num_of_ret": 237
+    },
+    "AM": {
+      "name": "Armenia",
+      "num_of_ret": 284
+    },
+    "AO": {
+      "name": "Angola",
+      "num_of_ret": 10
+    },
+    "AQ": {
+      "name": "Antarctica",
+      "num_of_ret": 0
+    },
+    "AR": {
+      "name": "Argentina",
+      "num_of_ret": 1930
+    },
+    "AS": {
+      "name": "American Samoa",
+      "num_of_ret": 1
+    },
+    "AT": {
+      "name": "Austria",
+      "num_of_ret": 4362
+    },
+    "AU": {
+      "name": "Australia",
+      "num_of_ret": 26343
+    },
+    "AW": {
+      "name": "Aruba",
+      "num_of_ret": 263
+    },
+    "AX": {
+      "name": "\u00c5land Islands",
+      "num_of_ret": 3
+    },
+    "AZ": {
+      "name": "Azerbaijan",
+      "num_of_ret": 326
+    },
+    "BA": {
+      "name": "Bosnia and Herzegovina",
+      "num_of_ret": 340
+    },
+    "BB": {
+      "name": "Barbados",
+      "num_of_ret": 213
+    },
+    "BD": {
+      "name": "Bangladesh",
+      "num_of_ret": 266
+    },
+    "BE": {
+      "name": "Belgium",
+      "num_of_ret": 2711
+    },
+    "BF": {
+      "name": "Burkina Faso",
+      "num_of_ret": 5
+    },
+    "BG": {
+      "name": "Bulgaria",
+      "num_of_ret": 853
+    },
+    "BH": {
+      "name": "Bahrain",
+      "num_of_ret": 123
+    },
+    "BI": {
+      "name": "Burundi",
+      "num_of_ret": 4
+    },
+    "BJ": {
+      "name": "Benin",
+      "num_of_ret": 16
+    },
+    "BL": {
+      "name": "Saint Barth\u00e9lemy",
+      "num_of_ret": 22
+    },
+    "BM": {
+      "name": "Bermuda",
+      "num_of_ret": 113
+    },
+    "BN": {
+      "name": "Brunei Darussalam",
+      "num_of_ret": 80
+    },
+    "BO": {
+      "name": "Bolivia, Plurinational State of",
+      "num_of_ret": 194
+    },
+    "BQ": {
+      "name": "Bonaire, Sint Eustatius and Saba",
+      "num_of_ret": 18
+    },
+    "BR": {
+      "name": "Brazil",
+      "num_of_ret": 9658
+    },
+    "BS": {
+      "name": "Bahamas",
+      "num_of_ret": 790
+    },
+    "BT": {
+      "name": "Bhutan",
+      "num_of_ret": 36
+    },
+    "BV": {
+      "name": "Bouvet Island",
+      "num_of_ret": 0
+    },
+    "BW": {
+      "name": "Botswana",
+      "num_of_ret": 29
+    },
+    "BY": {
+      "name": "Belarus",
+      "num_of_ret": 953
+    },
+    "BZ": {
+      "name": "Belize",
+      "num_of_ret": 96
+    },
+    "CA": {
+      "name": "Canada",
+      "num_of_ret": 25484
+    },
+    "CC": {
+      "name": "Cocos (Keeling) Islands",
+      "num_of_ret": 2
+    },
+    "CD": {
+      "name": "Congo, the Democratic Republic of the",
+      "num_of_ret": 52
+    },
+    "CF": {
+      "name": "Central African Republic",
+      "num_of_ret": 7
+    },
+    "CG": {
+      "name": "Congo",
+      "num_of_ret": 4
+    },
+    "CH": {
+      "name": "Switzerland",
+      "num_of_ret": 3428
+    },
+    "CI": {
+      "name": "C\u00f4te d'Ivoire",
+      "num_of_ret": 27
+    },
+    "CK": {
+      "name": "Cook Islands",
+      "num_of_ret": 41
+    },
+    "CL": {
+      "name": "Chile",
+      "num_of_ret": 1071
+    },
+    "CM": {
+      "name": "Cameroon",
+      "num_of_ret": 67
+    },
+    "CN": {
+      "name": "China",
+      "num_of_ret": 2286
+    },
+    "CO": {
+      "name": "Colombia",
+      "num_of_ret": 1527
+    },
+    "CR": {
+      "name": "Costa Rica",
+      "num_of_ret": 868
+    },
+    "CU": {
+      "name": "Cuba",
+      "num_of_ret": 599
+    },
+    "CV": {
+      "name": "Cape Verde",
+      "num_of_ret": 66
+    },
+    "CW": {
+      "name": "Cura\u00e7ao",
+      "num_of_ret": 107
+    },
+    "CX": {
+      "name": "Christmas Island",
+      "num_of_ret": 0
+    },
+    "CY": {
+      "name": "Cyprus",
+      "num_of_ret": 826
+    },
+    "CZ": {
+      "name": "Czech Republic",
+      "num_of_ret": 3864
+    },
+    "DE": {
+      "name": "Germany",
+      "num_of_ret": 19616
+    },
+    "DJ": {
+      "name": "Djibouti",
+      "num_of_ret": 1
+    },
+    "DK": {
+      "name": "Denmark",
+      "num_of_ret": 1681
+    },
+    "DM": {
+      "name": "Dominica",
+      "num_of_ret": 4
+    },
+    "DO": {
+      "name": "Dominican Republic",
+      "num_of_ret": 5389
+    },
+    "DZ": {
+      "name": "Algeria",
+      "num_of_ret": 77
+    },
+    "EC": {
+      "name": "Ecuador",
+      "num_of_ret": 615
+    },
+    "EE": {
+      "name": "Estonia",
+      "num_of_ret": 499
+    },
+    "EG": {
+      "name": "Egypt",
+      "num_of_ret": 1241
+    },
+    "EH": {
+      "name": "Western Sahara",
+      "num_of_ret": 3
+    },
+    "ER": {
+      "name": "Eritrea",
+      "num_of_ret": 6
+    },
+    "ES": {
+      "name": "Spain",
+      "num_of_ret": 12680
+    },
+    "ET": {
+      "name": "Ethiopia",
+      "num_of_ret": 39
+    },
+    "FI": {
+      "name": "Finland",
+      "num_of_ret": 1398
+    },
+    "FJ": {
+      "name": "Fiji",
+      "num_of_ret": 171
+    },
+    "FK": {
+      "name": "Falkland Islands (Malvinas)",
+      "num_of_ret": 3
+    },
+    "FM": {
+      "name": "Micronesia, Federated States of",
+      "num_of_ret": 1
+    },
+    "FO": {
+      "name": "Faroe Islands",
+      "num_of_ret": 30
+    },
+    "FR": {
+      "name": "France",
+      "num_of_ret": 17828
+    },
+    "GA": {
+      "name": "Gabon",
+      "num_of_ret": 5
+    },
+    "GB": {
+      "name": "United Kingdom",
+      "num_of_ret": 50279
+    },
+    "GD": {
+      "name": "Grenada",
+      "num_of_ret": 35
+    },
+    "GE": {
+      "name": "Georgia",
+      "num_of_ret": 560
+    },
+    "GF": {
+      "name": "French Guiana",
+      "num_of_ret": 8
+    },
+    "GG": {
+      "name": "Guernsey",
+      "num_of_ret": 25
+    },
+    "GH": {
+      "name": "Ghana",
+      "num_of_ret": 361
+    },
+    "GI": {
+      "name": "Gibraltar",
+      "num_of_ret": 40
+    },
+    "GL": {
+      "name": "Greenland",
+      "num_of_ret": 4
+    },
+    "GM": {
+      "name": "Gambia",
+      "num_of_ret": 13
+    },
+    "GN": {
+      "name": "Guinea",
+      "num_of_ret": 4
+    },
+    "GP": {
+      "name": "Guadeloupe",
+      "num_of_ret": 48
+    },
+    "GQ": {
+      "name": "Equatorial Guinea",
+      "num_of_ret": 6
+    },
+    "GR": {
+      "name": "Greece",
+      "num_of_ret": 5416
+    },
+    "GS": {
+      "name": "South Georgia and the South Sandwich Islands",
+      "num_of_ret": 5
+    },
+    "GT": {
+      "name": "Guatemala",
+      "num_of_ret": 182
+    },
+    "GU": {
+      "name": "Guam",
+      "num_of_ret": 336
+    },
+    "GW": {
+      "name": "Guinea-Bissau",
+      "num_of_ret": 0
+    },
+    "GY": {
+      "name": "Guyana",
+      "num_of_ret": 20
+    },
+    "HK": {
+      "name": "Hong Kong",
+      "num_of_ret": 2355
+    },
+    "HM": {
+      "name": "Heard Island and McDonald Islands",
+      "num_of_ret": 0
+    },
+    "HN": {
+      "name": "Honduras",
+      "num_of_ret": 121
+    },
+    "HR": {
+      "name": "Croatia",
+      "num_of_ret": 2147
+    },
+    "HT": {
+      "name": "Haiti",
+      "num_of_ret": 57
+    },
+    "HU": {
+      "name": "Hungary",
+      "num_of_ret": 2530
+    },
+    "ID": {
+      "name": "Indonesia",
+      "num_of_ret": 12307
+    },
+    "IE": {
+      "name": "Ireland",
+      "num_of_ret": 3146
+    },
+    "IL": {
+      "name": "Israel",
+      "num_of_ret": 1424
+    },
+    "IM": {
+      "name": "Isle of Man",
+      "num_of_ret": 22
+    },
+    "IN": {
+      "name": "India",
+      "num_of_ret": 14459
+    },
+    "IO": {
+      "name": "British Indian Ocean Territory",
+      "num_of_ret": 0
+    },
+    "IQ": {
+      "name": "Iraq",
+      "num_of_ret": 35
+    },
+    "IR": {
+      "name": "Iran, Islamic Republic of",
+      "num_of_ret": 400
+    },
+    "IS": {
+      "name": "Iceland",
+      "num_of_ret": 655
+    },
+    "IT": {
+      "name": "Italy",
+      "num_of_ret": 23149
+    },
+    "JE": {
+      "name": "Jersey",
+      "num_of_ret": 79
+    },
+    "JM": {
+      "name": "Jamaica",
+      "num_of_ret": 1057
+    },
+    "JO": {
+      "name": "Jordan",
+      "num_of_ret": 140
+    },
+    "JP": {
+      "name": "Japan",
+      "num_of_ret": 12068
+    },
+    "KE": {
+      "name": "Kenya",
+      "num_of_ret": 300
+    },
+    "KG": {
+      "name": "Kyrgyzstan",
+      "num_of_ret": 80
+    },
+    "KH": {
+      "name": "Cambodia",
+      "num_of_ret": 439
+    },
+    "KI": {
+      "name": "Kiribati",
+      "num_of_ret": 0
+    },
+    "KM": {
+      "name": "Comoros",
+      "num_of_ret": 2
+    },
+    "KN": {
+      "name": "Saint Kitts and Nevis",
+      "num_of_ret": 23
+    },
+    "KP": {
+      "name": "Korea, Democratic People's Republic of",
+      "num_of_ret": 12
+    },
+    "KR": {
+      "name": "Korea, Republic of",
+      "num_of_ret": 4241
+    },
+    "KW": {
+      "name": "Kuwait",
+      "num_of_ret": 74
+    },
+    "KY": {
+      "name": "Cayman Islands",
+      "num_of_ret": 247
+    },
+    "KZ": {
+      "name": "Kazakhstan",
+      "num_of_ret": 1070
+    },
+    "LA": {
+      "name": "Lao People's Democratic Republic",
+      "num_of_ret": 83
+    },
+    "LB": {
+      "name": "Lebanon",
+      "num_of_ret": 630
+    },
+    "LC": {
+      "name": "Saint Lucia",
+      "num_of_ret": 132
+    },
+    "LI": {
+      "name": "Liechtenstein",
+      "num_of_ret": 25
+    },
+    "LK": {
+      "name": "Sri Lanka",
+      "num_of_ret": 735
+    },
+    "LR": {
+      "name": "Liberia",
+      "num_of_ret": 8
+    },
+    "LS": {
+      "name": "Lesotho",
+      "num_of_ret": 13
+    },
+    "LT": {
+      "name": "Lithuania",
+      "num_of_ret": 824
+    },
+    "LU": {
+      "name": "Luxembourg",
+      "num_of_ret": 190
+    },
+    "LV": {
+      "name": "Latvia",
+      "num_of_ret": 510
+    },
+    "LY": {
+      "name": "Libya",
+      "num_of_ret": 16
+    },
+    "MA": {
+      "name": "Morocco",
+      "num_of_ret": 1145
+    },
+    "MC": {
+      "name": "Monaco",
+      "num_of_ret": 404
+    },
+    "MD": {
+      "name": "Moldova, Republic of",
+      "num_of_ret": 189
+    },
+    "ME": {
+      "name": "Montenegro",
+      "num_of_ret": 487
+    },
+    "MF": {
+      "name": "Saint Martin (French part)",
+      "num_of_ret": 17
+    },
+    "MG": {
+      "name": "Madagascar",
+      "num_of_ret": 72
+    },
+    "MH": {
+      "name": "Marshall Islands",
+      "num_of_ret": 1
+    },
+    "MK": {
+      "name": "Macedonia, the Former Yugoslav Republic of",
+      "num_of_ret": 147
+    },
+    "ML": {
+      "name": "Mali",
+      "num_of_ret": 6
+    },
+    "MM": {
+      "name": "Myanmar",
+      "num_of_ret": 302
+    },
+    "MN": {
+      "name": "Mongolia",
+      "num_of_ret": 48
+    },
+    "MO": {
+      "name": "Macao",
+      "num_of_ret": 291
+    },
+    "MP": {
+      "name": "Northern Mariana Islands",
+      "num_of_ret": 45
+    },
+    "MQ": {
+      "name": "Martinique",
+      "num_of_ret": 58
+    },
+    "MR": {
+      "name": "Mauritania",
+      "num_of_ret": 4
+    },
+    "MS": {
+      "name": "Montserrat",
+      "num_of_ret": 3
+    },
+    "MT": {
+      "name": "Malta",
+      "num_of_ret": 518
+    },
+    "MU": {
+      "name": "Mauritius",
+      "num_of_ret": 499
+    },
+    "MV": {
+      "name": "Maldives",
+      "num_of_ret": 590
+    },
+    "MW": {
+      "name": "Malawi",
+      "num_of_ret": 15
+    },
+    "MX": {
+      "name": "Mexico",
+      "num_of_ret": 11333
+    },
+    "MY": {
+      "name": "Malaysia",
+      "num_of_ret": 14709
+    },
+    "MZ": {
+      "name": "Mozambique",
+      "num_of_ret": 34
+    },
+    "NA": {
+      "name": "Namibia",
+      "num_of_ret": 37
+    },
+    "NC": {
+      "name": "New Caledonia",
+      "num_of_ret": 54
+    },
+    "NE": {
+      "name": "Niger",
+      "num_of_ret": 0
+    },
+    "NF": {
+      "name": "Norfolk Island",
+      "num_of_ret": 0
+    },
+    "NG": {
+      "name": "Nigeria",
+      "num_of_ret": 2306
+    },
+    "NI": {
+      "name": "Nicaragua",
+      "num_of_ret": 56
+    },
+    "NL": {
+      "name": "Netherlands",
+      "num_of_ret": 6434
+    },
+    "NO": {
+      "name": "Norway",
+      "num_of_ret": 1854
+    },
+    "NP": {
+      "name": "Nepal",
+      "num_of_ret": 310
+    },
+    "NR": {
+      "name": "Nauru",
+      "num_of_ret": 2
+    },
+    "NU": {
+      "name": "Niue",
+      "num_of_ret": 0
+    },
+    "NZ": {
+      "name": "New Zealand",
+      "num_of_ret": 3115
+    },
+    "OM": {
+      "name": "Oman",
+      "num_of_ret": 156
+    },
+    "PA": {
+      "name": "Panama",
+      "num_of_ret": 491
+    },
+    "PE": {
+      "name": "Peru",
+      "num_of_ret": 1230
+    },
+    "PF": {
+      "name": "French Polynesia",
+      "num_of_ret": 170
+    },
+    "PG": {
+      "name": "Papua New Guinea",
+      "num_of_ret": 22
+    },
+    "PH": {
+      "name": "Philippines",
+      "num_of_ret": 11698
+    },
+    "PK": {
+      "name": "Pakistan",
+      "num_of_ret": 715
+    },
+    "PL": {
+      "name": "Poland",
+      "num_of_ret": 7119
+    },
+    "PM": {
+      "name": "Saint Pierre and Miquelon",
+      "num_of_ret": 0
+    },
+    "PN": {
+      "name": "Pitcairn",
+      "num_of_ret": 0
+    },
+    "PR": {
+      "name": "Puerto Rico",
+      "num_of_ret": 743
+    },
+    "PS": {
+      "name": "Palestine, State of",
+      "num_of_ret": 136
+    },
+    "PT": {
+      "name": "Portugal",
+      "num_of_ret": 3424
+    },
+    "PW": {
+      "name": "Palau",
+      "num_of_ret": 14
+    },
+    "PY": {
+      "name": "Paraguay",
+      "num_of_ret": 63
+    },
+    "QA": {
+      "name": "Qatar",
+      "num_of_ret": 285
+    },
+    "RE": {
+      "name": "R\u00e9union",
+      "num_of_ret": 62
+    },
+    "RO": {
+      "name": "Romania",
+      "num_of_ret": 1899
+    },
+    "RS": {
+      "name": "Serbia",
+      "num_of_ret": 1404
+    },
+    "RU": {
+      "name": "Russian Federation",
+      "num_of_ret": 14866
+    },
+    "RW": {
+      "name": "Rwanda",
+      "num_of_ret": 14
+    },
+    "SA": {
+      "name": "Saudi Arabia",
+      "num_of_ret": 237
+    },
+    "SB": {
+      "name": "Solomon Islands",
+      "num_of_ret": 1
+    },
+    "SC": {
+      "name": "Seychelles",
+      "num_of_ret": 231
+    },
+    "SD": {
+      "name": "Sudan",
+      "num_of_ret": 5
+    },
+    "SE": {
+      "name": "Sweden",
+      "num_of_ret": 2173
+    },
+    "SG": {
+      "name": "Singapore",
+      "num_of_ret": 5270
+    },
+    "SH": {
+      "name": "Saint Helena, Ascension and Tristan da Cunha",
+      "num_of_ret": 6
+    },
+    "SI": {
+      "name": "Slovenia",
+      "num_of_ret": 772
+    },
+    "SJ": {
+      "name": "Svalbard and Jan Mayen",
+      "num_of_ret": 9
+    },
+    "SK": {
+      "name": "Slovakia",
+      "num_of_ret": 1061
+    },
+    "SL": {
+      "name": "Sierra Leone",
+      "num_of_ret": 4
+    },
+    "SM": {
+      "name": "San Marino",
+      "num_of_ret": 39
+    },
+    "SN": {
+      "name": "Senegal",
+      "num_of_ret": 61
+    },
+    "SO": {
+      "name": "Somalia",
+      "num_of_ret": 2
+    },
+    "SR": {
+      "name": "Suriname",
+      "num_of_ret": 15
+    },
+    "SS": {
+      "name": "South Sudan",
+      "num_of_ret": 3
+    },
+    "ST": {
+      "name": "Sao Tome and Principe",
+      "num_of_ret": 8
+    },
+    "SV": {
+      "name": "El Salvador",
+      "num_of_ret": 138
+    },
+    "SX": {
+      "name": "Sint Maarten (Dutch part)",
+      "num_of_ret": 26
+    },
+    "SY": {
+      "name": "Syrian Arab Republic",
+      "num_of_ret": 36
+    },
+    "SZ": {
+      "name": "Swaziland",
+      "num_of_ret": 4
+    },
+    "TC": {
+      "name": "Turks and Caicos Islands",
+      "num_of_ret": 35
+    },
+    "TD": {
+      "name": "Chad",
+      "num_of_ret": 2
+    },
+    "TF": {
+      "name": "French Southern Territories",
+      "num_of_ret": 3
+    },
+    "TG": {
+      "name": "Togo",
+      "num_of_ret": 5
+    },
+    "TH": {
+      "name": "Thailand",
+      "num_of_ret": 7155
+    },
+    "TJ": {
+      "name": "Tajikistan",
+      "num_of_ret": 12
+    },
+    "TK": {
+      "name": "Tokelau",
+      "num_of_ret": 0
+    },
+    "TL": {
+      "name": "Timor-Leste",
+      "num_of_ret": 5
+    },
+    "TM": {
+      "name": "Turkmenistan",
+      "num_of_ret": 35
+    },
+    "TN": {
+      "name": "Tunisia",
+      "num_of_ret": 342
+    },
+    "TO": {
+      "name": "Tonga",
+      "num_of_ret": 2
+    },
+    "TR": {
+      "name": "Turkey",
+      "num_of_ret": 5302
+    },
+    "TT": {
+      "name": "Trinidad and Tobago",
+      "num_of_ret": 276
+    },
+    "TV": {
+      "name": "Tuvalu",
+      "num_of_ret": 0
+    },
+    "TW": {
+      "name": "Taiwan, Province of China",
+      "num_of_ret": 3086
+    },
+    "TZ": {
+      "name": "Tanzania, United Republic of",
+      "num_of_ret": 224
+    },
+    "UA": {
+      "name": "Ukraine",
+      "num_of_ret": 6112
+    },
+    "UG": {
+      "name": "Uganda",
+      "num_of_ret": 60
+    },
+    "UM": {
+      "name": "United States Minor Outlying Islands",
+      "num_of_ret": 0
+    },
+    "US": {
+      "name": "United States",
+      "num_of_ret": 234716
+    },
+    "UY": {
+      "name": "Uruguay",
+      "num_of_ret": 199
+    },
+    "UZ": {
+      "name": "Uzbekistan",
+      "num_of_ret": 159
+    },
+    "VA": {
+      "name": "Holy See (Vatican City State)",
+      "num_of_ret": 1050
+    },
+    "VC": {
+      "name": "Saint Vincent and the Grenadines",
+      "num_of_ret": 8
+    },
+    "VE": {
+      "name": "Venezuela, Bolivarian Republic of",
+      "num_of_ret": 373
+    },
+    "VG": {
+      "name": "Virgin Islands, British",
+      "num_of_ret": 26
+    },
+    "VI": {
+      "name": "Virgin Islands, U.S.",
+      "num_of_ret": 277
+    },
+    "VN": {
+      "name": "Viet Nam",
+      "num_of_ret": 1715
+    },
+    "VU": {
+      "name": "Vanuatu",
+      "num_of_ret": 38
+    },
+    "WF": {
+      "name": "Wallis and Futuna",
+      "num_of_ret": 1
+    },
+    "WS": {
+      "name": "Samoa",
+      "num_of_ret": 20
+    },
+    "YE": {
+      "name": "Yemen",
+      "num_of_ret": 2
+    },
+    "YT": {
+      "name": "Mayotte",
+      "num_of_ret": 5
+    },
+    "ZA": {
+      "name": "South Africa",
+      "num_of_ret": 3470
+    },
+    "ZM": {
+      "name": "Zambia",
+      "num_of_ret": 27
+    },
+    "ZW": {
+      "name": "Zimbabwe",
+      "num_of_ret": 53
+    }
+  }
+}
