@@ -286,7 +286,7 @@
         },
         data: {
           config: {
-            layouts: 12,
+            layouts: 4,
             batch: 50,
             page: 1,
             show_face_bouding: true,
@@ -379,8 +379,8 @@
                     if (item[0] == 'person') {
                       let box = item[2]
                       let obj = {
-                        left: (box[0] * 2 - box[2]) / width * 100 + '%',
-                        top: (box[1] * 2 - box[3]) / height * 100 + '%',
+                        left: (box[0] - box[2]/2) / width * 100 + '%',
+                        top: (box[1] - box[3]/2) / height * 100 + '%',
                         width: Math.abs(box[2])/ width * 100 + '%',
                         height: Math.abs(box[3])/ height * 100 + '%',
                       }

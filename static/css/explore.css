@@ -29,7 +29,8 @@
       width: 100%;
       height: 0px;
       padding-bottom: 100%;
-      position: relative; }
+      position: relative;
+      overflow: hidden; }
       #app .content .img-container.ivu-poptip .ivu-poptip-rel {
         overflow: hidden;
         width: 100%;
