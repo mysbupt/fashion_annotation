@@ -113,7 +113,16 @@
             <span>Country</span>
           </i-col>
           <i-col span="12" class='right'>
-            <i-input placeholder="specify country" v-model='filters.location.name'></i-input>
+            <auto-complete
+                @on-search="handleSearch"
+                @on-select='selcetCountry'
+                placeholder="Select value"
+                style="width:200px">
+                <i-option v-for="item in searchCountry" :value="item.value" :key="item.name">
+                    <span>{{item.name}}</span>
+                    <span class='num-tip'>{{item.num}}</span>
+                </i-option>
+            </auto-complete>
           </i-col>
         </Row>
         <Row>
@@ -121,7 +130,12 @@
             <span>Hashtags</span>
           </i-col>
           <i-col span="12" class='right'>
-            <i-input placeholder="multi-tags splited by '|'" v-model='filters.hashtags'></i-input>
+            <i-select v-model="filters.hashtags" style="width:200px" multiple>
+              <i-option v-for="item in hashTagList" :value="item.key" :key="item.key">
+                  <span>{{item.key}}</span>
+                  <span class='num-tip'>{{item.value}}</span>
+                </i-option>
+            </i-select>
           </i-col>
         </Row>
         <Row>
@@ -283,11 +297,16 @@
         components: {},
         mounted: function () {
           this.getItems();
+          this.getHashTagList();
+          this.getCountryList();
         },
         data: {
+          hashTagList:[],
+          searchCountry:[],
+          countryList:[],
           config: {
             layouts: 4,
-            batch: 50,
+            batch: 120,
             page: 1,
             show_face_bouding: true,
             show_body_bouding: true,
@@ -331,12 +350,11 @@
              * 把hashTags bloggers 分割成数组  分隔符 |
              */
             let params = Object.assign({}, this.filters)
-            this.formatVerticalBar(['hashtags', 'bloggers'], params);
+            this.formatVerticalBar(['bloggers'], params);
             let data = {
               filters: params,
               page: this.config
             }
-            console.log(data)
             /**
              * mock/index.json  是本地mock数据  真正测试时需要修改为线上服务器路径
              */
@@ -345,9 +363,29 @@
               let data = response.data.data;
               this.items = data;
               this.formatData(this.items)
-              console.log(this.items)
               this.pages = response.data.pages;
               this.filterModalConfig.show = false;
+            })
+          },
+          getHashTagList:function(){
+            axios.get('/mock/get_hashtag_list.json').then((response) => {
+              // axios.post('/get_hashtag_list',data).then((response)=> {
+              let data = response.data.data;
+              let keys = Object.keys(data);
+              keys.forEach((item)=>{
+                let json = {
+                  key: item,
+                  value: data[item]
+                }
+                this.hashTagList.push(json)
+              })
+            })
+          },
+          getCountryList:function(){
+            axios.get('/mock/get_country_list.json').then((response) => {
+              // axios.post('/get_country_list',data).then((response)=> {
+              let data = response.data.data;
+              this.countryList = data;
             })
           },
           formatData: function (data) {
@@ -451,6 +489,25 @@
           },
           endTimeChange: function (data) {
             this.filters.time[1] = data;
+          },
+          handleSearch:function(value){
+            this.searchCountry = [];
+            let data = this.countryList
+            value = value.toLowerCase();
+            for(var i in data){
+              let name = data[i].name.toLowerCase()
+              if(name.indexOf(value) > -1){
+                let json = {
+                  name:data[i].name,
+                  value:i,
+                  num:data[i].num_of_ret
+                }
+                this.searchCountry.push(json)
+              }
+            }
+          },
+          selcetCountry:function(val){
+            this.filters.location.name= val;
           }
         }
       })

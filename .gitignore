@@ -26,11 +26,9 @@
 
 # Config File
 *.yaml
-<<<<<<< HEAD
 *.json
 
 # Log file
 *.log
-=======
 .sass-cache
->>>>>>> 44c032c7b8211258fd3c2b88d25858f39ad3d4df
+*.txt

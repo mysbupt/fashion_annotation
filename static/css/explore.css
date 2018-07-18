@@ -78,6 +78,14 @@
     .filter-modal .ivu-row .right .text {
       position: relative;
       left: -5px; }
+  .filter-modal .ivu-row .num-tip {
+    float: right;
+    color: #ccc; }
+  .filter-modal .ivu-row .ivu-select-item-selected .num-tip {
+    margin-right: 15px; }
+  .filter-modal .ivu-row .ivu-select-dropdown-list {
+    max-height: 150px;
+    overflow: auto; }
   .filter-modal .ivu-row input {
     width: 200px; }
   .filter-modal .ivu-row input.small {
