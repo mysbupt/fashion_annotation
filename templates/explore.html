@@ -25,9 +25,8 @@
           <i-button type="primary" class='setting filter' @click='setting'>Setting</i-button>
         </i-menu-item>
         <i-menu-item name="4" class='login'>
-          <!-- <span class="navbar-text navbar-right">{{username}} </span> -->
-          <span class="navbar-text navbar-right">{{username}}</span>
-          <!--<span class="navbar-text navbar-right">xujx</span> -->
+          <!-- <span class="navbar-text navbar-right">{{username}}</span> -->
+          <span class="navbar-text navbar-right">xujx</span>
           <a class="nav-link navbar-right" href="/logout">Logout</a>
         </i-menu-item>
       </i-menu>
@@ -341,8 +340,8 @@
             /**
              * mock/index.json  是本地mock数据  真正测试时需要修改为线上服务器路径
              */
-            //axios.get('/mock/index.json', data).then((response) => {
-            axios.post('/get_items',data).then((response)=> {
+            axios.get('/mock/index.json', data).then((response) => {
+              // axios.post('/get_items',data).then((response)=> {
               let data = response.data.data;
               this.items = data;
               this.formatData(this.items)
@@ -380,10 +379,10 @@
                     if (item[0] == 'person') {
                       let box = item[2]
                       let obj = {
-                        left: box[0] / width * 100 + '%',
-                        top: box[1] / height * 100 + '%',
-                        width: (box[2]) / width * 100 + '%',
-                        height: (box[3]) / height * 100 + '%',
+                        left: (box[0] * 2 - box[2]) / width * 100 + '%',
+                        top: (box[1] * 2 - box[3]) / height * 100 + '%',
+                        width: Math.abs(box[2])/ width * 100 + '%',
+                        height: Math.abs(box[3])/ height * 100 + '%',
                       }
                       temp.push(obj)
                     }
