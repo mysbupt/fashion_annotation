@@ -211,7 +211,9 @@ def get_a_batch_of_data(conn_mysql, query, limit, page_info):
             "comments": [14],
             "publish_time": "",
             "location_lat": i[16],
-            "location_lon": i[17]
+            "location_lon": i[17],
+            "width": i[40],
+            "height": i[41]
         }
         if i[11] != "null":
             data['face_detction'] = i[11]
