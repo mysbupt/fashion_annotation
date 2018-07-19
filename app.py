@@ -17,16 +17,17 @@ conn_cassandra = create_connection_cassandra('instagram_scene')
 
 country_list = get_country_list_bydb(conn_mysql)
 hashtag_list = get_hashtag_list_bydb(conn_mysql)
+task_list = get_task_list_byfile()
 
 @app.route('/')
 @app.route('/explore', methods=['GET'])
 def explore():
-    return send_from_directory("./templates", "explore.html")
-#    if 'username' in session:
-#        username = session['username']
-#        return render_template('explore.html', username=username)
-#    else:
-#        return redirect(url_for('login'))
+    if 'username' in session:
+        username = session['username']
+        #return render_template('explore.html', username=username)
+        return send_from_directory("./templates", "explore.html")
+    else:
+        return redirect(url_for('login'))
 
 
 @app.route('/get_items', methods=['POST'])
@@ -42,6 +43,12 @@ def get_items():
     return jsonify(batch_of_data)
 
 
+@app.route('/get_task_list', methods=['GET'])
+def get_task_list():
+    global task_list 
+    return jsonify(task_list)
+
+
 @app.route('/get_country_list', methods=['GET'])
 def get_country_list():
     global country_list
@@ -52,6 +59,18 @@ def get_country_list():
 def get_hashtag_list():
     global hashtag_list
     return jsonify(hashtag_list)
+
+
+@app.route('/label', methods=['POST'])
+def label_specific_task():
+    if 'username' in session:
+        username = session['username']
+        req = request.get_json()
+        print "label request:", req
+        res = {"msg": "success"}
+        return jsonify(res)
+    else:
+        return redirect(url_for('login'))
 
 
 @app.route('/images/<image_id>.jpg', methods=['GET'])

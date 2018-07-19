@@ -126,6 +126,11 @@ def get_total_cnt(conn_mysql, q_total_cnt):
         return total_cnt
 
 
+def get_task_list_byfile():
+    task_list = json.load(open("./data/task_list.json"))
+    return task_list
+
+
 def get_country_list_bydb(conn_mysql):
     country_code_name_mapping = {}
     cnt = 0
