@@ -75,6 +75,25 @@ def check_req(req):
         tmp_str = ','.join(["'" + i + "'" for i in filters['hashtags']])
         query['tag'] = "tag IN (%s)" %(tmp_str)
 
+    if 'is_face_in_body' in filters.keys() and filters['is_face_in_body'] == True: 
+        query['is_face_in_body'] = "is_face_in_body is true"
+
+        per_indexs = {
+            'face_per': 'face_percent',       
+            'body_per': 'body_percent',       
+            'face_body_per': 'face_body_percent',  
+            'face_h_per': 'face_h_percent',     
+            'body_h_per': 'body_h_percent',     
+            'face_body_h_per': 'face_body_h_percent',
+            'face_w_per': 'face_w_percent',     
+            'body_w_per': 'body_w_percent',     
+            'face_body_w_per': 'face_body_w_percent'
+        }
+    
+        for index_q, index_db in per_indexs.items():
+            if index_q in filters.keys() and filters[index_q][0] != '' and filters[index_q][0] is not None and filters[index_q][1] != '' and filters[index_q][1] is not None:
+                query[index_db] = "%s BETWEEN %s AND %s" %(index_db, filters[index_q][0], filters[index_q][1])
+
     page_num = int(req['page']['page'])
     if page_num < 1:
         page_num = 1
@@ -159,7 +178,7 @@ def get_a_batch_of_data(conn_mysql, query, limit, page_info):
 
     q_ret = "SELECT * FROM images " + filter_cnd + " " + limit
 
-    print q_ret
+    print "final query is:", q_ret
 
     try:
         mysql_c.execute(q_ret)
@@ -179,7 +198,9 @@ def get_a_batch_of_data(conn_mysql, query, limit, page_info):
             "likes": i[8],
             "src_site": i[9],
             "object_detction": "",
+            "object_detction_new": "",
             "face_detction": "",
+            "face_detction_new": "",
             "location_name": "",
             "location_url": i[13],
             "comments": [14],
@@ -191,6 +212,10 @@ def get_a_batch_of_data(conn_mysql, query, limit, page_info):
             data['face_detction'] = i[11]
         if i[10] != "null":
             data['object_detction'] = i[10]
+        if i[35] != "null":
+            data['face_detction_new'] = i[11]
+        if i[34] != "null":
+            data['object_detction_new'] = i[10]
         if i[13] != "null":
             data['location_url'] = i[13]
         try:
