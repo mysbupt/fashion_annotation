@@ -56,9 +56,8 @@
         bottom: 0;
         width: 100%;
         background: white;
-        opacity: 0.9;
-        display: none;
-        display: block; }
+        opacity: 0.8;
+        display: none; }
         #app .content .img-container .lables.ivu-row .ivu-col {
           padding: 0; }
           #app .content .img-container .lables.ivu-row .ivu-col button {
