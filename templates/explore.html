@@ -33,31 +33,29 @@
       <div class='content'>
         <div class='imgs-box'>
           <i-col :lg='24/config.layouts' v-for="(item, index) in items">
-            <div @mouseenter="id = item.id">
-              <Poptip trigger="hover" placement="right" class="img-container" v-if='config.mode == "Browse"'>
-                <img :width="item.width" :height="item.height" :alt="item.index" :src="item.src">
-                <span class='bounding-box face-bounding-box' v-if="config.show_face_bouding" v-for="position in item.face_detction.boxes"
-                  v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
-                </span>
-                <span class='bounding-box body-bounding-box' v-if="config.show_body_bouding" v-for="position in item.object_detction" v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
-                </span>
-                <div class="api" slot="content">
-                  123132
-                </div>
-              </Poptip>
-              <div class="img-container" v-if='config.mode == "Mark"'>
-                <img :width="item.width" :height="item.height" :alt="item.index" :src="item.src">
-                <span class='bounding-box face-bounding-box' v-if="config.show_face_bouding" v-for="position in item.face_detction.boxes"
-                  v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
-                </span>
-                <span class='bounding-box body-bounding-box' v-if="config.show_body_bouding" v-for="position in item.object_detction" v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
-                </span>
-                <Row class='lables' v-if='id == item.id'>
-                  <i-col :lg='24/config.task.option.length' v-for="(option, index) in config.task.option">
-                    <span @click='mark(option,item.id)'>{{option}}</span>
-                  </i-col>
-                </Row>
+            <Poptip trigger="hover" placement="right" class="img-container" v-if='config.mode == "Browse"'>
+              <img :width="item.width" :height="item.height" :alt="item.index" :src="item.src">
+              <span class='bounding-box face-bounding-box' v-if="config.show_face_bouding" v-for="position in item.face_detction.boxes"
+                v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
+              </span>
+              <span class='bounding-box body-bounding-box' v-if="config.show_body_bouding" v-for="position in item.object_detction" v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
+              </span>
+              <div class="api" slot="content">
+                123132
               </div>
+            </Poptip>
+            <div class="img-container mark-mode" v-if='config.mode == "Mark"'>
+              <img :width="item.width" :height="item.height" :alt="item.index" :src="item.src">
+              <span class='bounding-box face-bounding-box' v-if="config.show_face_bouding" v-for="position in item.face_detction.boxes"
+                v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
+              </span>
+              <span class='bounding-box body-bounding-box' v-if="config.show_body_bouding" v-for="position in item.object_detction" v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
+              </span>
+              <Row class='lables'>
+                <i-col :lg='24/config.task.option.length' v-for="(option, index) in config.task.option">
+                  <i-button type="ghost" @click='mark(option,item.id)'>{{option}}</i-button>
+                </i-col>
+              </Row>
             </div>
           </i-col>
         </div>
@@ -464,7 +462,6 @@
           this.getTaskList();
         },
         data: {
-          id: "",
           hashTagList: [],
           searchCountry: [],
           countryList: [],

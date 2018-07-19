@@ -57,33 +57,49 @@
         position: absolute;
         border: 2px solid red;
       }
-      .face-bounding-box{
+      .face-bounding-box {
         border-color: red;
       }
-      .body-bounding-box{
+      .body-bounding-box {
         border-color: greenyellow;
       }
-      .lables.ivu-row{
+      &.mark-mode:hover {
+        .lables.ivu-row {
+          display: block;
+        }
+      }
+      .lables.ivu-row {
         position: absolute;
         left: 0;
         bottom: 0;
         width: 100%;
         background: white;
-        opacity: 0.8;
-        .ivu-col{
-          padding:0;
-          span{
-            text-align: center;
+        opacity: 0.9;
+        display: none;
+        display: block;
+        .ivu-col {
+          padding: 0;
+          button {
+            border-radius: 0;
+            width: 100%;
+            border: none;
             display: block;
+            padding: 0;
             height: 30px;
-            line-height: 30px;
-            cursor: default;
+            color: rgb(45, 140, 240);
+            &:hover {
+              background: rgb(45, 140, 240);
+              color: white
+            }
+            &:focus{
+              box-shadow: none;
+            }
           }
         }
       }
     }
   }
-  footer{
+  footer {
     position: fixed;
     bottom: 0;
     left: 0;
@@ -124,16 +140,16 @@
         left: -5px;
       }
     }
-    .num-tip{
-      float:right;
-      color:#ccc
+    .num-tip {
+      float: right;
+      color: #ccc
     }
-    .ivu-select-item-selected{
-      .num-tip{
-        margin-right:15px;
+    .ivu-select-item-selected {
+      .num-tip {
+        margin-right: 15px;
       }
     }
-    .ivu-select-dropdown-list{
+    .ivu-select-dropdown-list {
       max-height: 150px;
       overflow: auto;
     }
