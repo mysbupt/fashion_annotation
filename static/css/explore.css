@@ -48,20 +48,32 @@
         border-color: red; }
       #app .content .img-container .body-bounding-box {
         border-color: greenyellow; }
+      #app .content .img-container.mark-mode:hover .lables.ivu-row {
+        display: block; }
       #app .content .img-container .lables.ivu-row {
         position: absolute;
         left: 0;
         bottom: 0;
         width: 100%;
         background: white;
-        opacity: 0.8; }
+        opacity: 0.9;
+        display: none;
+        display: block; }
         #app .content .img-container .lables.ivu-row .ivu-col {
           padding: 0; }
-          #app .content .img-container .lables.ivu-row .ivu-col span {
-            text-align: center;
+          #app .content .img-container .lables.ivu-row .ivu-col button {
+            border-radius: 0;
+            width: 100%;
+            border: none;
             display: block;
+            padding: 0;
             height: 30px;
-            line-height: 30px; }
+            color: #2d8cf0; }
+            #app .content .img-container .lables.ivu-row .ivu-col button:hover {
+              background: #2d8cf0;
+              color: white; }
+            #app .content .img-container .lables.ivu-row .ivu-col button:focus {
+              box-shadow: none; }
   #app footer {
     position: fixed;
     bottom: 0;
