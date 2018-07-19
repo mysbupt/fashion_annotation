@@ -61,7 +61,8 @@
             text-align: center;
             display: block;
             height: 30px;
-            line-height: 30px; }
+            line-height: 30px;
+            cursor: default; }
   #app footer {
     position: fixed;
     bottom: 0;
