@@ -5,7 +5,7 @@
       "option": ["Yes", "No", "Not Sure"]
     },
     {
-      "task": "image_filter",
+      "task": "body_filter",
       "option": ["Yes", "No", "Not Sure"]
     }
   ]

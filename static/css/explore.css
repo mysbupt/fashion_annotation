@@ -48,6 +48,20 @@
         border-color: red; }
       #app .content .img-container .body-bounding-box {
         border-color: greenyellow; }
+      #app .content .img-container .lables.ivu-row {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background: white;
+        opacity: 0.8; }
+        #app .content .img-container .lables.ivu-row .ivu-col {
+          padding: 0; }
+          #app .content .img-container .lables.ivu-row .ivu-col span {
+            text-align: center;
+            display: block;
+            height: 30px;
+            line-height: 30px; }
   #app footer {
     position: fixed;
     bottom: 0;

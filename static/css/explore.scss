@@ -63,6 +63,23 @@
       .body-bounding-box{
         border-color: greenyellow;
       }
+      .lables.ivu-row{
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background: white;
+        opacity: 0.8;
+        .ivu-col{
+          padding:0;
+          span{
+            text-align: center;
+            display: block;
+            height: 30px;
+            line-height: 30px;
+          }
+        }
+      }
     }
   }
   footer{

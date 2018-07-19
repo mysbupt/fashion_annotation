@@ -33,23 +33,31 @@
       <div class='content'>
         <div class='imgs-box'>
           <i-col :lg='24/config.layouts' v-for="(item, index) in items">
-            <Poptip trigger="hover" placement="right" class="img-container" v-if='config.mode == "Browse"'>
-              <img :width="item.width" :height="item.height" :alt="item.index" :src="item.src">
-              <span class='bounding-box face-bounding-box' v-if="config.show_face_bouding" v-for="position in item.face_detction.boxes"
-                v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
-              </span>
-              <span class='bounding-box body-bounding-box' v-if="config.show_body_bouding" v-for="position in item.object_detction" v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
-              </span>
-              <div class="api" slot="content">
+            <div @mouseenter="id = item.id">
+              <Poptip trigger="hover" placement="right" class="img-container" v-if='config.mode == "Browse"'>
+                <img :width="item.width" :height="item.height" :alt="item.index" :src="item.src">
+                <span class='bounding-box face-bounding-box' v-if="config.show_face_bouding" v-for="position in item.face_detction.boxes"
+                  v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
+                </span>
+                <span class='bounding-box body-bounding-box' v-if="config.show_body_bouding" v-for="position in item.object_detction" v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
+                </span>
+                <div class="api" slot="content">
+                  123132
+                </div>
+              </Poptip>
+              <div class="img-container" v-if='config.mode == "Mark"'>
+                <img :width="item.width" :height="item.height" :alt="item.index" :src="item.src">
+                <span class='bounding-box face-bounding-box' v-if="config.show_face_bouding" v-for="position in item.face_detction.boxes"
+                  v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
+                </span>
+                <span class='bounding-box body-bounding-box' v-if="config.show_body_bouding" v-for="position in item.object_detction" v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
+                </span>
+                <Row class='lables' v-if='id == item.id'>
+                  <i-col :lg='24/config.task.option.length' v-for="(option, index) in config.task.option">
+                    <span @click='mark(option,item.id)'>{{option}}</span>
+                  </i-col>
+                </Row>
               </div>
-            </Poptip>
-            <div class="img-container" v-if='config.mode == "Mark"'>
-              <img :width="item.width" :height="item.height" :alt="item.index" :src="item.src">
-              <span class='bounding-box face-bounding-box' v-if="config.show_face_bouding" v-for="position in item.face_detction.boxes"
-                v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
-              </span>
-              <span class='bounding-box body-bounding-box' v-if="config.show_body_bouding" v-for="position in item.object_detction" v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
-              </span>
             </div>
           </i-col>
         </div>
@@ -404,6 +412,18 @@
             </radio-group>
           </i-col>
         </Row>
+        <Row v-if='config.mode==="Mark"'>
+          <i-col span="12" class='left'>
+            <span>Selcet Task</span>
+          </i-col>
+          <i-col span="12" class='right'>
+            <i-select v-model="config.task" style="width:200px">
+              <i-option v-for="item in taskList" :value="item" :key="item.task">
+                <span>{{item.task}}</span>
+              </i-option>
+            </i-select>
+          </i-col>
+        </Row>
       </Modal>
     </div>
     <script src="../static/js/vue.min.js"></script>
@@ -417,18 +437,22 @@
           this.getItems();
           this.getHashTagList();
           this.getCountryList();
+          this.getTaskList();
         },
         data: {
+          id: "",
           hashTagList: [],
           searchCountry: [],
           countryList: [],
+          taskList: [],
           config: {
             layouts: 6,
             batch: 120,
             page: 1,
             show_face_bouding: true,
             show_body_bouding: true,
-            mode: "Mark"
+            mode: "Mark",
+            task: ""
           },
           items: [],
           pages: {},
@@ -484,8 +508,8 @@
             /**
              * mock/index.json  是本地mock数据  真正测试时需要修改为线上服务器路径
              */
-            //axios.get('/mock/index.json', data).then((response) => {
-              axios.post('/get_items',data).then((response)=> {
+            axios.get('/mock/index.json', data).then((response) => {
+              // axios.post('/get_items',data).then((response)=> {
               let data = response.data.data;
               this.items = data;
               this.formatData(this.items)
@@ -493,7 +517,7 @@
               this.filterModalConfig.show = false;
             })
           },
-          getHashTagList:function(){
+          getHashTagList: function () {
             axios.get('/mock/get_hashtag_list.json').then((response) => {
               // axios.get('/get_hashtag_list').then((response)=> {
               let data = response.data.data;
@@ -507,11 +531,19 @@
               })
             })
           },
-          getCountryList:function(){
+          getCountryList: function () {
             axios.get('/mock/get_country_list.json').then((response) => {
               // axios.get('/get_country_list').then((response)=> {
               let data = response.data.data;
               this.countryList = data;
+            })
+          },
+          getTaskList: function () {
+            axios.get('/mock/get_task_list.json').then((response) => {
+              // axios.get('/get_task_list').then((response)=> {
+              let data = response.data.list;
+              this.taskList = data;
+              this.config.task = data[0]
             })
           },
           formatData: function (data) {
@@ -582,7 +614,9 @@
             this.config.page = 1;
             this.getItems()
           },
-          settingConfirm: function () {},
+          settingConfirm: function () {
+            console.log(this.config)
+          },
           settingCancel: function () {
             return;
           },
@@ -634,6 +668,18 @@
           },
           selcetCountry: function (val) {
             this.filters.location.name = val;
+          },
+          mark: function (label, id) {
+            let param = {
+              task: this.config.task.task,
+              id:id,
+              lable:label,
+              annotator:"xujx",
+              label_time: new Date().getTime()
+            }
+            axios.post('/label',param).then((res) => {
+              console.log(res)
+            })
           }
         }
       })
