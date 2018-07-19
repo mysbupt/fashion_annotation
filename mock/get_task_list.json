@@ -1,0 +1,13 @@
+{
+  "list":[
+    {
+      "task": "image_filter",
+      "option": ["Yes", "No", "Not Sure"]
+    },
+    {
+      "task": "image_filter",
+      "option": ["Yes", "No", "Not Sure"]
+    }
+  ]
+}
+

@@ -113,15 +113,11 @@
             <span>Country</span>
           </i-col>
           <i-col span="12" class='right'>
-            <auto-complete
-                @on-search="handleSearch"
-                @on-select='selcetCountry'
-                placeholder="Select value"
-                style="width:200px">
-                <i-option v-for="item in searchCountry" :value="item.value" :key="item.name">
-                    <span>{{item.name}}</span>
-                    <span class='num-tip'>{{item.num}}</span>
-                </i-option>
+            <auto-complete @on-search="handleSearch" @on-select='selcetCountry' placeholder="Select value" style="width:200px">
+              <i-option v-for="item in searchCountry" :value="item.value" :key="item.name">
+                <span>{{item.name}}</span>
+                <span class='num-tip'>{{item.num}}</span>
+              </i-option>
             </auto-complete>
           </i-col>
         </Row>
@@ -132,9 +128,9 @@
           <i-col span="12" class='right'>
             <i-select v-model="filters.hashtags" style="width:200px" multiple>
               <i-option v-for="item in hashTagList" :value="item.key" :key="item.key">
-                  <span>{{item.key}}</span>
-                  <span class='num-tip'>{{item.value}}</span>
-                </i-option>
+                <span>{{item.key}}</span>
+                <span class='num-tip'>{{item.value}}</span>
+              </i-option>
             </i-select>
           </i-col>
         </Row>
@@ -212,31 +208,153 @@
         </Row>
         <Row>
           <i-col span="12" class='left'>
-            <span>Per Face About Body</span>
+            <span>is_face_in_body</span>
           </i-col>
           <i-col span="12" class='right'>
-            <i-col span="24">
-              <input-number v-model='filters.face_body_per' :min="0" :max='1' :precision='2'></input-number>
+            <i-switch v-model="filters.is_face_in_body"></i-switch>
+          </i-col>
+        </Row>
+        <Row v-if='filters.is_face_in_body'>
+          <i-col span="12" class='left'>
+            <span>face_body_per</span>
+          </i-col>
+          <i-col span="12" class='right'>
+            <i-col span="10">
+              <input-number v-model='filters.face_body_per[0]' :min="0" :max='1' :precision='2'></input-number>
+            </i-col>
+            <i-col span="2" class='text'>
+              to
+            </i-col>
+            <i-col span="10">
+              <input-number v-model='filters.face_body_per[1]' :min="0" :max='1' :precision='2'></input-number>
             </i-col>
           </i-col>
         </Row>
-        <Row>
+        <Row v-if='filters.is_face_in_body'>
           <i-col span="12" class='left'>
-            <span>Per of Face</span>
+            <span>face_per</span>
           </i-col>
           <i-col span="12" class='right'>
-            <i-col span="24">
-              <input-number v-model='filters.face_per' :min="0" :max='1' :precision='2'></input-number>
+            <i-col span="10">
+              <input-number v-model='filters.face_per[0]' :min="0" :max='1' :precision='2'></input-number>
+            </i-col>
+            <i-col span="2" class='text'>
+              to
+            </i-col>
+            <i-col span="10">
+              <input-number v-model='filters.face_per[1]' :min="0" :max='1' :precision='2'></input-number>
             </i-col>
           </i-col>
         </Row>
-        <Row>
+        <Row v-if='filters.is_face_in_body'>
           <i-col span="12" class='left'>
-            <span>Per of Body</span>
+            <span>body_per</span>
           </i-col>
           <i-col span="12" class='right'>
-            <i-col span="24">
-              <input-number v-model='filters.body_per' :min="0" :max='1' :precision='2'></input-number>
+            <i-col span="10">
+              <input-number v-model='filters.body_per[0]' :min="0" :max='1' :precision='2'></input-number>
+            </i-col>
+            <i-col span="2" class='text'>
+              to
+            </i-col>
+            <i-col span="10">
+              <input-number v-model='filters.body_per[1]' :min="0" :max='1' :precision='2'></input-number>
+            </i-col>
+          </i-col>
+        </Row>
+        <Row v-if='filters.is_face_in_body'>
+          <i-col span="12" class='left'>
+            <span>face_body_w_per</span>
+          </i-col>
+          <i-col span="12" class='right'>
+            <i-col span="10">
+              <input-number v-model='filters.face_body_w_per[0]' :min="0" :max='1' :precision='2'></input-number>
+            </i-col>
+            <i-col span="2" class='text'>
+              to
+            </i-col>
+            <i-col span="10">
+              <input-number v-model='filters.face_body_w_per[1]' :min="0" :max='1' :precision='2'></input-number>
+            </i-col>
+          </i-col>
+        </Row>
+        <Row v-if='filters.is_face_in_body'>
+          <i-col span="12" class='left'>
+            <span>face_body_h_per</span>
+          </i-col>
+          <i-col span="12" class='right'>
+            <i-col span="10">
+              <input-number v-model='filters.face_body_h_per[0]' :min="0" :max='1' :precision='2'></input-number>
+            </i-col>
+            <i-col span="2" class='text'>
+              to
+            </i-col>
+            <i-col span="10">
+              <input-number v-model='filters.face_body_h_per[1]' :min="0" :max='1' :precision='2'></input-number>
+            </i-col>
+          </i-col>
+        </Row>
+        <Row v-if='filters.is_face_in_body'>
+          <i-col span="12" class='left'>
+            <span>face_w_per</span>
+          </i-col>
+          <i-col span="12" class='right'>
+            <i-col span="10">
+              <input-number v-model='filters.face_w_per[0]' :min="0" :max='1' :precision='2'></input-number>
+            </i-col>
+            <i-col span="2" class='text'>
+              to
+            </i-col>
+            <i-col span="10">
+              <input-number v-model='filters.face_w_per[1]' :min="0" :max='1' :precision='2'></input-number>
+            </i-col>
+          </i-col>
+        </Row>
+        <Row v-if='filters.is_face_in_body'>
+          <i-col span="12" class='left'>
+            <span>face_h_per</span>
+          </i-col>
+          <i-col span="12" class='right'>
+            <i-col span="10">
+              <input-number v-model='filters.face_h_per[0]' :min="0" :max='1' :precision='2'></input-number>
+            </i-col>
+            <i-col span="2" class='text'>
+              to
+            </i-col>
+            <i-col span="10">
+              <input-number v-model='filters.face_h_per[1]' :min="0" :max='1' :precision='2'></input-number>
+            </i-col>
+          </i-col>
+        </Row>
+        <Row v-if='filters.is_face_in_body'>
+          <i-col span="12" class='left'>
+            <span>body_w_per</span>
+          </i-col>
+          <i-col span="12" class='right'>
+            <i-col span="10">
+              <input-number v-model='filters.body_w_per[0]' :min="0" :max='1' :precision='2'></input-number>
+            </i-col>
+            <i-col span="2" class='text'>
+              to
+            </i-col>
+            <i-col span="10">
+              <input-number v-model='filters.body_w_per[1]' :min="0" :max='1' :precision='2'></input-number>
+            </i-col>
+          </i-col>
+        </Row>
+        <Row v-if='filters.is_face_in_body'>
+          <i-col span="12" class='left'>
+            <span>body_h_per</span>
+          </i-col>
+          <i-col span="12" class='right'>
+            <i-col span="10">
+              <input-number v-model='filters.body_h_per[0]' :min="0" :max='1' :precision='2'></input-number>
+            </i-col>
+            <i-col span="2" class='text'>
+              to
+            </i-col>
+            <i-col span="10">
+              <input-number v-model='filters.body_h_per[1]' :min="0" :max='1' :precision='2'></input-number>
             </i-col>
           </i-col>
         </Row>
@@ -301,9 +419,9 @@
           this.getCountryList();
         },
         data: {
-          hashTagList:[],
-          searchCountry:[],
-          countryList:[],
+          hashTagList: [],
+          searchCountry: [],
+          countryList: [],
           config: {
             layouts: 6,
             batch: 120,
@@ -339,9 +457,16 @@
             likes: ['', ''],
             comments: ['', ''],
             bloggers: '',
-            face_body_per: "",
-            face_per: "",
-            body_per: "",
+            is_face_in_body: false,
+            face_body_per: ["", ""],
+            face_per: ["", ""],
+            body_per: ["", ""],
+            face_body_w_per: ["", ""],
+            face_body_h_per: ["", ""],
+            face_w_per: ["", ""],
+            face_h_per: ["", ""],
+            body_w_per: ["", ""],
+            body_h_per: ["", ""],
           }
         },
         methods: {
@@ -368,12 +493,12 @@
               this.filterModalConfig.show = false;
             })
           },
-          getHashTagList:function(){
+          getHashTagList: function () {
             axios.get('/mock/get_hashtag_list.json').then((response) => {
               // axios.post('/get_hashtag_list',data).then((response)=> {
               let data = response.data.data;
               let keys = Object.keys(data);
-              keys.forEach((item)=>{
+              keys.forEach((item) => {
                 let json = {
                   key: item,
                   value: data[item]
@@ -382,7 +507,7 @@
               })
             })
           },
-          getCountryList:function(){
+          getCountryList: function () {
             axios.get('/mock/get_country_list.json').then((response) => {
               // axios.post('/get_country_list',data).then((response)=> {
               let data = response.data.data;
@@ -397,12 +522,12 @@
                 item.face_detction = JSON.parse(item.face_detction)
                 item.face_detction.boxes.forEach((box, index) => {
                   /**
-                  * box表示身体bouding-box
-                  * box[0] 左上角x坐标
-                  * box[1] 左上角y坐标
-                  * box[2] width
-                  * box[3] height
-                  */
+                   * box表示身体bouding-box
+                   * box[0] 左上角x坐标
+                   * box[1] 左上角y坐标
+                   * box[2] width
+                   * box[3] height
+                   */
                   let temp = {
                     left: box[0] / width * 100 + '%',
                     top: box[1] / height * 100 + '%',
@@ -425,17 +550,17 @@
                     if (item[0] == 'person') {
                       let box = item[2]
                       /**
-                      * box表示身体bouding-box
-                      * box[0] 中心点x坐标
-                      * box[1] 中心点y坐标
-                      * box[2] width
-                      * box[3] height
-                      */
+                       * box表示身体bouding-box
+                       * box[0] 中心点x坐标
+                       * box[1] 中心点y坐标
+                       * box[2] width
+                       * box[3] height
+                       */
                       let obj = {
-                        left: (box[0] - box[2]/2) / width * 100 + '%',
-                        top: (box[1] - box[3]/2) / height * 100 + '%',
-                        width: Math.abs(box[2])/ width * 100 + '%',
-                        height: Math.abs(box[3])/ height * 100 + '%',
+                        left: (box[0] - box[2] / 2) / width * 100 + '%',
+                        top: (box[1] - box[3] / 2) / height * 100 + '%',
+                        width: Math.abs(box[2]) / width * 100 + '%',
+                        height: Math.abs(box[3]) / height * 100 + '%',
                       }
                       temp.push(obj)
                     }
@@ -491,24 +616,24 @@
           endTimeChange: function (data) {
             this.filters.time[1] = data;
           },
-          handleSearch:function(value){
+          handleSearch: function (value) {
             this.searchCountry = [];
             let data = this.countryList
             value = value.toLowerCase();
-            for(var i in data){
+            for (var i in data) {
               let name = data[i].name.toLowerCase()
-              if(name.indexOf(value) > -1){
+              if (name.indexOf(value) > -1) {
                 let json = {
-                  name:data[i].name,
-                  value:i,
-                  num:data[i].num_of_ret
+                  name: data[i].name,
+                  value: i,
+                  num: data[i].num_of_ret
                 }
                 this.searchCountry.push(json)
               }
             }
           },
-          selcetCountry:function(val){
-            this.filters.location.name= val;
+          selcetCountry: function (val) {
+            this.filters.location.name = val;
           }
         }
       })
