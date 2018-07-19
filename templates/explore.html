@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="i-icon" href="../static/favi-icon.ico">
-    <title>MMKG Annotation System</title>
+    <link rel="icon" href="/static/favicon.ico">
+    <title>MMKG in Fashion</title>
     <link href="../static/css/signin.css" rel="stylesheet">
     <link href="../static/css/style.css" rel="stylesheet">
     <link href="../static/css/ivew.css" rel="stylesheet">
@@ -16,7 +16,7 @@
     <div id="app">
       <i-menu mode="horizontal" :theme="'dark'" active-name="1" class='mmkg-header'>
         <i-menu-item name="1" class='logo'>
-          <a class="navbar-brand" href="/index">MMKG Annotation</a>
+          <a class="navbar-brand" href="/explore">MMKG in Fashion</a>
         </i-menu-item>
         <i-menu-item name="2">
           <i-button type="primary" class='filter' @click="filter">Filter</i-button>
@@ -26,7 +26,7 @@
         </i-menu-item>
         <i-menu-item name="4" class='login'>
           <!-- <span class="navbar-text navbar-right">{{username}}</span> -->
-          <span class="navbar-text navbar-right">xujx</span>
+          <span class="navbar-text navbar-right">admin</span>
           <a class="nav-link navbar-right" href="/logout">Logout</a>
         </i-menu-item>
       </i-menu>
@@ -484,8 +484,8 @@
             /**
              * mock/index.json  是本地mock数据  真正测试时需要修改为线上服务器路径
              */
-            axios.get('/mock/index.json', data).then((response) => {
-              //  axios.post('/get_items',data).then((response)=> {
+            //axios.get('/mock/index.json', data).then((response) => {
+              axios.post('/get_items',data).then((response)=> {
               let data = response.data.data;
               this.items = data;
               this.formatData(this.items)
@@ -493,9 +493,9 @@
               this.filterModalConfig.show = false;
             })
           },
-          getHashTagList: function () {
+          getHashTagList:function(){
             axios.get('/mock/get_hashtag_list.json').then((response) => {
-              // axios.post('/get_hashtag_list',data).then((response)=> {
+              // axios.get('/get_hashtag_list').then((response)=> {
               let data = response.data.data;
               let keys = Object.keys(data);
               keys.forEach((item) => {
@@ -507,9 +507,9 @@
               })
             })
           },
-          getCountryList: function () {
+          getCountryList:function(){
             axios.get('/mock/get_country_list.json').then((response) => {
-              // axios.post('/get_country_list',data).then((response)=> {
+              // axios.get('/get_country_list').then((response)=> {
               let data = response.data.data;
               this.countryList = data;
             })
