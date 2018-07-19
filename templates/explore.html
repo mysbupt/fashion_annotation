@@ -216,6 +216,30 @@
         </Row>
         <Row>
           <i-col span="12" class='left'>
+            <span>dark_degree</span>
+          </i-col>
+          <i-col span="12" class='right'>
+            <input-number v-model='filters.dark_degree' :min="0" :max="1" class='small' :precision='0'></input-number>
+          </i-col>
+        </Row>
+        <Row>
+          <i-col span="12" class='left'>
+            <span>has_url</span>
+          </i-col>
+          <i-col span="12" class='right'>
+            <i-switch v-model="filters.has_url"></i-switch>
+          </i-col>
+        </Row>
+        <Row>
+          <i-col span="12" class='left'>
+            <span>has_watermark</span>
+          </i-col>
+          <i-col span="12" class='right'>
+            <i-switch v-model="filters.has_watermark"></i-switch>
+          </i-col>
+        </Row>
+        <Row>
+          <i-col span="12" class='left'>
             <span>is_face_in_body</span>
           </i-col>
           <i-col span="12" class='right'>
@@ -491,6 +515,9 @@
             face_h_per: ["", ""],
             body_w_per: ["", ""],
             body_h_per: ["", ""],
+            has_url: false,
+            has_watermark: false,
+            dark_degree: ""
           }
         },
         methods: {
@@ -672,12 +699,12 @@
           mark: function (label, id) {
             let param = {
               task: this.config.task.task,
-              id:id,
-              lable:label,
-              annotator:"xujx",
+              id: id,
+              lable: label,
+              annotator: "xujx",
               label_time: new Date().getTime()
             }
-            axios.post('/label',param).then((res) => {
+            axios.post('/label', param).then((res) => {
               console.log(res)
             })
           }
