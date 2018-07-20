@@ -75,8 +75,7 @@
         width: 100%;
         background: white;
         opacity: 0.8;
-        display: none;
-        // display: block;
+        display: none; // display: block;
         .ivu-col {
           padding: 0;
           button {
@@ -91,7 +90,7 @@
               background: rgb(45, 140, 240);
               color: white
             }
-            &:focus{
+            &:focus {
               box-shadow: none;
             }
           }
@@ -124,6 +123,11 @@
 }
 
 .filter-modal {
+  .ivu-modal-body {
+    &::-webkit-scrollbar {
+      display: none
+    }
+  }
   .ivu-row {
     display: flex;
     align-items: center;

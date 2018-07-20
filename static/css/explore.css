@@ -90,6 +90,8 @@
       display: inline-block;
       line-height: 30px; }
 
+.filter-modal .ivu-modal-body::-webkit-scrollbar {
+  display: none; }
 .filter-modal .ivu-row {
   display: flex;
   align-items: center;
