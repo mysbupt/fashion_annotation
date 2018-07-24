@@ -215,13 +215,13 @@ def get_a_batch_of_data(conn_mysql, query, limit, page_info):
             "width": i[40],
             "height": i[41]
         }
-        if i[11] != "null":
+        if i[11] is not None and i[11] != "null":
             data['face_detction'] = i[11]
-        if i[10] != "null":
+        if i[10] is not None and i[10] != "null":
             data['object_detction'] = i[10]
-        if i[35] != "null":
+        if i[35] is not None and i[35] != "null":
             data['face_detction_new'] = i[11]
-        if i[34] != "null":
+        if i[34] is not None and i[34] != "null":
             data['object_detction_new'] = i[10]
         if i[13] != "null":
             data['location_url'] = i[13]
