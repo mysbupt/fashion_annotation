@@ -33,33 +33,20 @@
       <div class='content'>
         <div class='imgs-box'>
           <i-col :lg='24/config.layouts' v-for="(item, index) in items">
-            <Poptip trigger="hover" placement="right" class="img-container" v-if='config.mode == "Browse"'>
+            <div class="img-container mark-mode" @click='changeMagnify(0,index)'>
               <img :width="item.width" :height="item.height" :alt="item.index" :src="item.src">
-              <span class='bounding-box face-bounding-box'
-                v-for="(position, index) in (config.show_aligned_result ? item.face_detction_new.boxes : item.face_detction.boxes)"
+              <span class='bounding-box face-bounding-box' v-for="(position, index) in (config.show_aligned_result ? item.face_detction_new.boxes : item.face_detction.boxes)"
                 v-if="config.show_face_bouding && (!config.show_aligned_result || (config.show_aligned_result && index > (config.which[0] - 2) && index < config.which[1]))"
                 v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
               </span>
-              <span class='bounding-box body-bounding-box'
-                v-if="config.show_body_bouding && (!config.show_aligned_result || (config.show_aligned_result && index > (config.which[0] - 2) && index < config.which[1]))"
-                v-for="(position,index) in (config.show_aligned_result ? item.object_detction_new : item.object_detction)" v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
-              </span>
-              <div class="api" slot="content">
-                123132
-              </div>
-            </Poptip>
-            <div class="img-container mark-mode" v-if='config.mode == "Mark"'>
-              <img :width="item.width" :height="item.height" :alt="item.index" :src="item.src">
-              <span class='bounding-box face-bounding-box'
-                v-for="(position, index) in (config.show_aligned_result ? item.face_detction_new.boxes : item.face_detction.boxes)"
-                v-if="config.show_face_bouding && (!config.show_aligned_result || (config.show_aligned_result && index > (config.which[0] - 2) && index < config.which[1]))"
+              <span class='bounding-box body-bounding-box' v-if="config.show_body_bouding && (!config.show_aligned_result || (config.show_aligned_result && index > (config.which[0] - 2) && index < config.which[1]))"
+                v-for="(position,index) in (config.show_aligned_result ? item.object_detction_new : item.object_detction)"
                 v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
               </span>
-              <span class='bounding-box body-bounding-box'
-                v-if="config.show_body_bouding && (!config.show_aligned_result || (config.show_aligned_result && index > (config.which[0] - 2) && index < config.which[1]))"
-                v-for="(position,index) in (config.show_aligned_result ? item.object_detction_new : item.object_detction)" v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
+              <span class='bounding-box close-bounding-box' v-if="config.show_clothes_bouding" v-for="(position,index) in item.clothes.box"
+                v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
               </span>
-              <Row class='lables'>
+              <Row class='lables' v-if='config.mode == "Mark"'>
                 <i-col :lg='24/config.task.option.length' v-for="(option, index) in config.task.option">
                   <i-button type="ghost" @click='mark(option,item.id)'>{{option}}</i-button>
                 </i-col>
@@ -433,6 +420,14 @@
         </Row>
         <Row>
           <i-col span="12" class='left'>
+            <span>Show the clothes BoudingBox</span>
+          </i-col>
+          <i-col span="12" class='right'>
+            <i-switch v-model="config.show_clothes_bouding"></i-switch>
+          </i-col>
+        </Row>
+        <Row>
+          <i-col span="12" class='left'>
             <span>Work Mode</span>
           </i-col>
           <i-col span="12" class='right'>
@@ -463,22 +458,41 @@
           </i-col>
         </Row>
         <Row v-if="config.show_aligned_result">
-            <i-col span="12" class='left'>
-              <span>Which to Show</span>
+          <i-col span="12" class='left'>
+            <span>Which to Show</span>
+          </i-col>
+          <i-col span="12" class='right'>
+            <i-col span="10">
+              <input-number v-model='config.which[0]' :min="1" :precision='0'></input-number>
             </i-col>
-            <i-col span="12" class='right'>
-              <i-col span="10">
-                <input-number v-model='config.which[0]' :min="1" :precision='0'></input-number>
-              </i-col>
-              <i-col span="2" class='text'>
-                to
-              </i-col>
-              <i-col span="10">
-                <input-number v-model='config.which[1]' :min="1" :precision='0'></input-number>
-              </i-col>
+            <i-col span="2" class='text'>
+              to
             </i-col>
-          </Row>
+            <i-col span="10">
+              <input-number v-model='config.which[1]' :min="1" :precision='0'></input-number>
+            </i-col>
+          </i-col>
+        </Row>
       </Modal>
+      <div v-if='magnify' class='magnify-container'>
+        <div class='pre-btn button' @click='changeMagnify(1)'></div>
+        <div class="img-container mark-mode">
+          <img :alt="magnify.index" :src="magnify.src">
+          <span class='bounding-box face-bounding-box' v-for="(position, index) in (config.show_aligned_result ? magnify.face_detction_new.boxes : magnify.face_detction.boxes)"
+            v-if="config.show_face_bouding && (!config.show_aligned_result || (config.show_aligned_result && index > (config.which[0] - 2) && index < config.which[1]))"
+            v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
+          </span>
+          <span class='bounding-box body-bounding-box' v-if="config.show_body_bouding && (!config.show_aligned_result || (config.show_aligned_result && index > (config.which[0] - 2) && index < config.which[1]))"
+            v-for="(position,index) in (config.show_aligned_result ? magnify.object_detction_new : magnify.object_detction)"
+            v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
+          </span>
+          <span class='bounding-box close-bounding-box' v-if="config.show_clothes_bouding" v-for="(position,index) in magnify.clothes.box"
+            v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
+          </span>
+        </div>
+        <div class='next-btn button' @click='changeMagnify(2)'></div>
+        <div class='close-btn button' @click='magnify=null'></div>
+      </div>
     </div>
     <script src="../static/js/vue.min.js"></script>
     <script src="../static/js/axios.min.js"></script>
@@ -498,16 +512,18 @@
           searchCountry: [],
           countryList: [],
           taskList: [],
+          magnify: null,
           config: {
             layouts: 6,
             batch: 120,
             page: 1,
             show_face_bouding: true,
             show_body_bouding: true,
+            show_clothes_bouding: true,
             mode: "Mark",
             task: "",
             show_aligned_result: false,
-            which: [1,30]
+            which: [1, 30]
           },
           filters: {
             time: ['', ''],
@@ -566,7 +582,7 @@
             /**
              * mock/index.json  是本地mock数据  真正测试时需要修改为线上服务器路径
              */
-            axios.get('/mock/test.json', data).then((response) => {
+            axios.get('/mock/index.json', data).then((response) => {
               // axios.post('/get_items',data).then((response)=> {
               let data = response.data.data;
               this.items = data;
@@ -610,6 +626,7 @@
               let height = item.height || '640'
               let face_arr = ['face_detction', 'face_detction_new'];
               let body_arr = ['object_detction', 'object_detction_new']
+              let close_arr = ['clothes']
               face_arr.forEach((child) => {
                 if (item[child]) {
                   let type = typeof item[child]
@@ -670,6 +687,46 @@
                   data[index][child] = temp;
                 } else {
                   item[child] = [];
+                }
+              })
+              close_arr.forEach((child) => {
+                if (item[child]) {
+                  let type = typeof item[child]
+                  if (type === 'string') {
+                    item[child] = JSON.parse(item[child])
+                  }
+                  let body_det = item[child];
+                  let temp = [];
+                  body_det.forEach((item) => {
+                    let box = item.box
+                    /**
+                     * box表示身体bouding-box
+                     * box[0] 中心点x坐标
+                     * box[1] 中心点y坐标
+                     * box[2] width
+                     * box[3] height
+                     */
+                    // let obj = {
+                    //   left: (box[0] - box[2] / 2) / width * 100 + '%',
+                    //   top: (box[1] - box[3] / 2) / height * 100 + '%',
+                    //   width: Math.abs(box[2]) / width * 100 + '%',
+                    //   height: Math.abs(box[3]) / height * 100 + '%',
+                    // }
+                    let obj = {
+                      left: box[0] / width * 100 + '%',
+                      top: box[1] / height * 100 + '%',
+                      width: (box[2] - box[0]) / width * 100 + '%',
+                      height: (box[3] - box[1]) / height * 100 + '%',
+                    }
+                    temp.push(obj)
+                  })
+                  data[index][child] = {
+                    box: temp
+                  };
+                } else {
+                  item[child] = {
+                    box: []
+                  };
                 }
               })
             })
@@ -750,6 +807,31 @@
             axios.post('/label', param).then((res) => {
               console.log(res)
             })
+          },
+          changeMagnify: function (type,index) {
+            switch(type){
+              case 0:
+                this.index = index
+              break;
+              case 1:
+                if(this.index == 0){
+                  this.$Message.warning('当前是第一张图片,不能再向前翻');
+                  // this.$Notice.warning({
+                  //   title: 'warning',
+                  //   desc: '当前是第一张图片'
+                  // });
+                }else{
+                  this.index--
+                }
+              break;
+              case 2:
+                if(this.index == this.items.length - 1){
+                  this.$Message.warning('当前是最后一张图片，不能再向后翻');
+                }else{
+                  this.index++
+                }
+            }
+            this.magnify = this.items[this.index]
           }
         }
       })
