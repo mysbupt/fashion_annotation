@@ -98,17 +98,52 @@
     height: 100%;
     width: 100%;
     background: rgba(70, 70, 70, 0.9);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    padding: 20px;
     z-index: 1000; }
-    #app .magnify-container .img-container {
-      width: 640px;
-      height: 640px;
-      padding: 0; }
+    #app .magnify-container .magnify-content {
+      background: white;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 100%;
+      width: 100%;
+      overflow: scroll;
+      min-width: 690px; }
+      #app .magnify-container .magnify-content .title {
+        font-weight: 500; }
+      #app .magnify-container .magnify-content .img-box {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-grow: 0; }
+        #app .magnify-container .magnify-content .img-box .img-container {
+          width: 640px;
+          height: 640px;
+          padding: 0; }
+      #app .magnify-container .magnify-content .info-box {
+        flex-grow: 1;
+        display: block;
+        height: 100%; }
+        #app .magnify-container .magnify-content .info-box .header {
+          padding: 20px;
+          margin-top: 15px; }
+          #app .magnify-container .magnify-content .info-box .header .title {
+            margin-right: 30px; }
+        #app .magnify-container .magnify-content .info-box .content {
+          margin-top: 5px; }
+        #app .magnify-container .magnify-content .info-box .footer {
+          position: absolute;
+          right: 35px;
+          bottom: 45px; }
+        #app .magnify-container .magnify-content .info-box .info-item {
+          border-bottom: 1px solid #e9eaec;
+          display: flex;
+          align-items: center; }
+          #app .magnify-container .magnify-content .info-box .info-item:hover {
+            background-color: #eaf4fe; }
     #app .magnify-container .button {
-      height: 65px;
-      width: 65px;
+      height: 45px;
+      width: 45px;
       background-color: transparent;
       background-position: center;
       background-repeat: no-repeat;

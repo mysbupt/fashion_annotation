@@ -43,8 +43,8 @@
                 v-for="(position,index) in (config.show_aligned_result ? item.object_detction_new : item.object_detction)"
                 v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
               </span>
-              <span class='bounding-box close-bounding-box' v-if="config.show_clothes_bouding" v-for="(position,index) in item.clothes.box"
-                v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
+              <span class='bounding-box close-bounding-box' v-if="config.show_clothes_bouding" v-for="(position,index) in item.clothes"
+                v-bind:style="{left: position.box.left,width: position.box.width,top: position.box.top,height: position.box.height}">
               </span>
               <Row class='lables' v-if='config.mode == "Mark"'>
                 <i-col :lg='24/config.task.option.length' v-for="(option, index) in config.task.option">
@@ -475,22 +475,60 @@
         </Row>
       </Modal>
       <div v-if='magnify' class='magnify-container'>
-        <div class='pre-btn button' @click='changeMagnify(1)'></div>
-        <div class="img-container mark-mode">
-          <img :alt="magnify.index" :src="magnify.src">
-          <!-- <span class='bounding-box face-bounding-box' v-for="(position, index) in (config.show_aligned_result ? magnify.face_detction_new.boxes : magnify.face_detction.boxes)"
-            v-if="config.show_face_bouding && (!config.show_aligned_result || (config.show_aligned_result && index > (config.which[0] - 2) && index < config.which[1]))"
-            v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
-          </span> -->
-          <!-- <span class='bounding-box body-bounding-box' v-if="config.show_body_bouding && (!config.show_aligned_result || (config.show_aligned_result && index > (config.which[0] - 2) && index < config.which[1]))"
-            v-for="(position,index) in (config.show_aligned_result ? magnify.object_detction_new : magnify.object_detction)"
-            v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
-          </span> -->
-          <span class='bounding-box close-bounding-box' v-if="config.show_clothes_bouding" v-for="(position,index) in magnify.clothes.box"
-            v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
-          </span>
+        <div class='magnify-content'>
+          <div class="img-box">
+            <div class='pre-btn button' @click='changeMagnify(1)'></div>
+            <div class="img-container mark-mode">
+              <img :alt="magnify.index" :src="magnify.src">
+              <span class='bounding-box close-bounding-box'
+                v-for="(position,index) in magnify.clothes"
+                v-if="magnifyConfig.selectIndex==index"
+                v-bind:style="{left: position.box.left,width: position.box.width,top: position.box.top,height: position.box.height}">
+              </span>
+            </div>
+            <div class='next-btn button' @click='changeMagnify(2)'></div>
+          </div>
+          <div class="info-box">
+            <div class="header">
+                <span class='title'>choose</span>
+                <radio-group v-model="magnifyConfig.selectIndex">
+                  <Radio label='-1'>base info</Radio>
+                  <Radio v-for='(position,index) in magnify.clothes' :label=index>close bouding box {{index+1}}</Radio>
+                </radio-group>
+            </div>
+            <div class="content">
+              <div v-if='magnifyConfig.selectIndex == -1'>
+                <i-col span="24" v-for='(config,index) in baseInfoConfig' class='info-item'>
+                  <i-col span="8" class='title'>{{config.key}}</i-col>
+                  <i-col span="2"></i-col>
+                  <i-col span="12">
+                    <a v-if="config.type=='link'" v-for='grand in config.value' :href="magnify[config.url]">
+                      {{magnify[grand]}}
+                    </a>
+                    <em v-if="config.type !=='link'" v-for='(grand, index) in config.value'>
+                      {{magnify[grand]}}
+                    </em>
+                  </i-col>
+                </i-col>
+              </div>
+              <div v-if='magnify.clothes[magnifyConfig.selectIndex]'>
+                <i-col span="24" v-for='(config,index) in magnify.clothes[magnifyConfig.selectIndex].tags' class='info-item'>
+                    <i-col span="8" class='title'>{{config.cpTag[0]}}</i-col>
+                    <i-col span="2"></i-col>
+                    <i-col span="8">
+                      <i-input type="text" v-model="config.cpTag[1]">
+                    </i-col>
+                    <i-col span="2">
+                      {{config.score}}
+                    </i-col>
+                  </i-col>
+              </div>
+            </div>
+            <div class="footer" v-if='magnifyConfig.selectIndex > -1'>
+              <i-button type="primary" size='large' @click='updateItem'>submit</i-button>
+            </div>
+          </div>
         </div>
-        <div class='next-btn button' @click='changeMagnify(2)'></div>
         <div class='close-btn button' @click='magnify=null'></div>
       </div>
     </div>
@@ -513,6 +551,27 @@
           countryList: [],
           taskList: [],
           magnify: null,
+          magnifyConfig:{
+            selectIndex: '-1'
+          },
+          baseInfoConfig:[{
+            key: "publish_time",
+            value: ["publish_time"]
+          },{
+            key: "location",
+            value: ["country","admin1","admin2","location_name"]
+          },{
+            key: "hashtag",
+            value: ["hash_tag"]
+          },{
+            key: "user",
+            value: ["blogger"],
+            type: "link",
+            url: "blogger_page_url"
+          },{
+            key: "desc",
+            value: ["text"]
+          }],
           config: {
             layouts: 6,
             batch: 120,
@@ -626,7 +685,7 @@
               let height = item.height || '640'
               let face_arr = ['face_detction', 'face_detction_new'];
               let body_arr = ['object_detction', 'object_detction_new']
-              let close_arr = ['clothes']
+              let clothes_arr = ['clothes']
               face_arr.forEach((child) => {
                 if (item[child]) {
                   let type = typeof item[child]
@@ -689,44 +748,25 @@
                   item[child] = [];
                 }
               })
-              close_arr.forEach((child) => {
+              clothes_arr.forEach((child) => {
                 if (item[child]) {
                   let type = typeof item[child]
                   if (type === 'string') {
                     item[child] = JSON.parse(item[child])
                   }
-                  let body_det = item[child];
-                  let temp = [];
-                  body_det.forEach((item) => {
-                    let box = item.box
-                    /**
-                     * box表示身体bouding-box
-                     * box[0] 中心点x坐标
-                     * box[1] 中心点y坐标
-                     * box[2] width
-                     * box[3] height
-                     */
-                    // let obj = {
-                    //   left: (box[0] - box[2] / 2) / width * 100 + '%',
-                    //   top: (box[1] - box[3] / 2) / height * 100 + '%',
-                    //   width: Math.abs(box[2]) / width * 100 + '%',
-                    //   height: Math.abs(box[3]) / height * 100 + '%',
-                    // }
+                  item[child].forEach((item1,index1) => {
+                    let box = item1.box
                     let obj = {
                       left: box[0] / width * 100 + '%',
                       top: box[1] / height * 100 + '%',
                       width: (box[2] - box[0]) / width * 100 + '%',
                       height: (box[3] - box[1]) / height * 100 + '%',
                     }
-                    temp.push(obj)
+                    item1.box = obj;
+                    // item[child][index1].box = obj;
                   })
-                  data[index][child] = {
-                    box: temp
-                  };
                 } else {
-                  item[child] = {
-                    box: []
-                  };
+                  item[child] = [];
                 }
               })
             })
@@ -816,10 +856,6 @@
               case 1:
                 if(this.index == 0){
                   this.$Message.warning('当前是第一张图片,不能再向前翻');
-                  // this.$Notice.warning({
-                  //   title: 'warning',
-                  //   desc: '当前是第一张图片'
-                  // });
                 }else{
                   this.index--
                 }
@@ -832,6 +868,27 @@
                 }
             }
             this.magnify = this.items[this.index]
+            this.formatTags(this.magnify)
+          },
+          formatTags:function(data){
+            data.clothes.forEach((item)=>{
+              item.tags.forEach((child)=>{
+                console.log(child)
+                child.cpTag = child.tag.split(':')
+              })
+            })
+          },
+          updateItem: function(){
+            this.formatCptag(this.magnify)
+            console.log(this.magnify);
+          },
+          formatCptag:function(data){
+            data.clothes.forEach((item)=>{
+              item.tags.forEach((child)=>{
+                child.tag = child.cpTag.join(':')
+                delete child.cpTag
+              })
+            })
           }
         }
       })
