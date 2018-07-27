@@ -528,8 +528,8 @@
               <i-button type="primary" size='large' @click='updateItem'>submit</i-button>
             </div>
           </div>
+          <div class='close-btn button' @click='magnify=null'></div>
         </div>
-        <div class='close-btn button' @click='magnify=null'></div>
       </div>
     </div>
     <script src="../static/js/vue.min.js"></script>
@@ -756,13 +756,16 @@
                   }
                   item[child].forEach((item1,index1) => {
                     let box = item1.box
-                    let obj = {
-                      left: box[0] / width * 100 + '%',
-                      top: box[1] / height * 100 + '%',
-                      width: (box[2] - box[0]) / width * 100 + '%',
-                      height: (box[3] - box[1]) / height * 100 + '%',
+                    // 有的boxlength为空
+                    if(box.length){
+                      let obj = {
+                        left: box[0] / width * 100 + '%',
+                        top: box[1] / height * 100 + '%',
+                        width: (box[2] - box[0]) / width * 100 + '%',
+                        height: (box[3] - box[1]) / height * 100 + '%',
+                      }
+                      item1.box = obj;
                     }
-                    item1.box = obj;
                     // item[child][index1].box = obj;
                   })
                 } else {

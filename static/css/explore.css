@@ -108,7 +108,8 @@
       height: 100%;
       width: 100%;
       overflow: scroll;
-      min-width: 690px; }
+      min-width: 690px;
+      position: relative; }
       #app .magnify-container .magnify-content .title {
         font-weight: 500; }
       #app .magnify-container .magnify-content .img-box {
@@ -126,9 +127,17 @@
         height: 100%; }
         #app .magnify-container .magnify-content .info-box .header {
           padding: 20px;
-          margin-top: 15px; }
+          margin-top: 15px;
+          display: flex;
+          align-items: center; }
           #app .magnify-container .magnify-content .info-box .header .title {
-            margin-right: 30px; }
+            margin-right: 30px;
+            width: 20%; }
+          #app .magnify-container .magnify-content .info-box .header .ivu-radio-group {
+            vertical-align: top;
+            width: 80%; }
+            #app .magnify-container .magnify-content .info-box .header .ivu-radio-group .ivu-radio-wrapper {
+              line-height: 25px; }
         #app .magnify-container .magnify-content .info-box .content {
           margin-top: 5px; }
         #app .magnify-container .magnify-content .info-box .footer {
@@ -141,28 +150,28 @@
           align-items: center; }
           #app .magnify-container .magnify-content .info-box .info-item:hover {
             background-color: #eaf4fe; }
-    #app .magnify-container .button {
-      height: 45px;
-      width: 45px;
-      background-color: transparent;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-size: 70%; }
-    #app .magnify-container .close-btn {
-      position: absolute;
-      top: 10px;
-      right: 20px;
-      background-image: url("../image/close.png"); }
-      #app .magnify-container .close-btn:hover {
-        background-image: url("../image/close-dark.png"); }
-    #app .magnify-container .pre-btn {
-      background-image: url("../image/left.png"); }
-      #app .magnify-container .pre-btn:hover {
-        background-image: url("../image/left-dark.png"); }
-    #app .magnify-container .next-btn {
-      background-image: url("../image/right.png"); }
-      #app .magnify-container .next-btn:hover {
-        background-image: url("../image/right-dark.png"); }
+      #app .magnify-container .magnify-content .button {
+        height: 45px;
+        width: 45px;
+        background-color: transparent;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: 70%; }
+      #app .magnify-container .magnify-content .close-btn {
+        position: absolute;
+        top: -5px;
+        right: -3px;
+        background-image: url("../image/close.png"); }
+        #app .magnify-container .magnify-content .close-btn:hover {
+          background-image: url("../image/close-dark.png"); }
+      #app .magnify-container .magnify-content .pre-btn {
+        background-image: url("../image/left.png"); }
+        #app .magnify-container .magnify-content .pre-btn:hover {
+          background-image: url("../image/left-dark.png"); }
+      #app .magnify-container .magnify-content .next-btn {
+        background-image: url("../image/right.png"); }
+        #app .magnify-container .magnify-content .next-btn:hover {
+          background-image: url("../image/right-dark.png"); }
 
 .filter-modal .ivu-modal-body::-webkit-scrollbar {
   display: none; }
