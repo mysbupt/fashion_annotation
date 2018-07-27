@@ -213,7 +213,8 @@ def get_a_batch_of_data(conn_mysql, query, limit, page_info):
             "location_lat": i[16],
             "location_lon": i[17],
             "width": i[40],
-            "height": i[41]
+            "height": i[41],
+            "clothes": ""
         }
         if i[11] is not None and i[11] != "null":
             data['face_detction'] = i[11]
@@ -223,6 +224,8 @@ def get_a_batch_of_data(conn_mysql, query, limit, page_info):
             data['face_detction_new'] = i[11]
         if i[34] is not None and i[34] != "null":
             data['object_detction_new'] = i[10]
+        if i[42] is not None and i[42] != "null":
+            data['clothes'] = i[42]
         if i[13] != "null":
             data['location_url'] = i[13]
         try:
