@@ -200,6 +200,7 @@ def get_a_batch_of_data(conn_mysql, query, limit, page_info):
             "href": i[3],
             "text": "",
             "blogger": i[7],
+            "blogger_page_url": "https://www.instagram.com/" + i[7],
             "likes": i[8],
             "src_site": i[9],
             "object_detction": "",
@@ -208,6 +209,9 @@ def get_a_batch_of_data(conn_mysql, query, limit, page_info):
             "face_detction_new": "",
             "location_name": "",
             "location_url": i[13],
+            "country": "",
+            "admin1": "",
+            "admin2": "",
             "comments": [14],
             "publish_time": "",
             "location_lat": i[16],
@@ -220,6 +224,12 @@ def get_a_batch_of_data(conn_mysql, query, limit, page_info):
             data['face_detction'] = i[11]
         if i[10] is not None and i[10] != "null":
             data['object_detction'] = i[10]
+        if i[19] is not None and i[19] != "null":
+            data['country'] = i[19]
+        if i[20] is not None and i[20] != "null":
+            data['admin1'] = i[20]
+        if i[21] is not None and i[21] != "null":
+            data['admin2'] = i[21]
         if i[35] is not None and i[35] != "null":
             data['face_detction_new'] = i[11]
         if i[34] is not None and i[34] != "null":
