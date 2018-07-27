@@ -478,14 +478,14 @@
         <div class='pre-btn button' @click='changeMagnify(1)'></div>
         <div class="img-container mark-mode">
           <img :alt="magnify.index" :src="magnify.src">
-          <span class='bounding-box face-bounding-box' v-for="(position, index) in (config.show_aligned_result ? magnify.face_detction_new.boxes : magnify.face_detction.boxes)"
+          <!-- <span class='bounding-box face-bounding-box' v-for="(position, index) in (config.show_aligned_result ? magnify.face_detction_new.boxes : magnify.face_detction.boxes)"
             v-if="config.show_face_bouding && (!config.show_aligned_result || (config.show_aligned_result && index > (config.which[0] - 2) && index < config.which[1]))"
             v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
-          </span>
-          <span class='bounding-box body-bounding-box' v-if="config.show_body_bouding && (!config.show_aligned_result || (config.show_aligned_result && index > (config.which[0] - 2) && index < config.which[1]))"
+          </span> -->
+          <!-- <span class='bounding-box body-bounding-box' v-if="config.show_body_bouding && (!config.show_aligned_result || (config.show_aligned_result && index > (config.which[0] - 2) && index < config.which[1]))"
             v-for="(position,index) in (config.show_aligned_result ? magnify.object_detction_new : magnify.object_detction)"
             v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
-          </span>
+          </span> -->
           <span class='bounding-box close-bounding-box' v-if="config.show_clothes_bouding" v-for="(position,index) in magnify.clothes.box"
             v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
           </span>
@@ -582,7 +582,7 @@
             /**
              * mock/index.json  是本地mock数据  真正测试时需要修改为线上服务器路径
              */
-            axios.get('/mock/index.json', data).then((response) => {
+            axios.get('/mock/get_items.json', data).then((response) => {
               // axios.post('/get_items',data).then((response)=> {
               let data = response.data.data;
               this.items = data;
