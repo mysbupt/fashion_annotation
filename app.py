@@ -67,7 +67,8 @@ def label_specific_task():
         username = session['username']
         req = request.get_json()
         print "label request:", req
-        res = {"msg": "success"}
+        res = label_by_req(conn_mysql, req)
+        #{"msg": "success"}
         return jsonify(res)
     else:
         return redirect(url_for('login'))

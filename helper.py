@@ -94,7 +94,7 @@ def check_req(req):
             if index_q in filters.keys() and filters[index_q][0] != '' and filters[index_q][0] is not None and filters[index_q][1] != '' and filters[index_q][1] is not None:
                 query[index_db] = "%s BETWEEN %s AND %s" %(index_db, filters[index_q][0], filters[index_q][1])
 
-    query['lable_y_n_ns'] = "lable_y_n_ns != 0"
+    query['label_y_n_ns'] = "label_y_n_ns is NULL OR label_y_n_ns != 0"
 
     page_num = int(req['page']['page'])
     if page_num < 1:
@@ -256,6 +256,34 @@ def get_a_batch_of_data(conn_mysql, query, limit, page_info):
         res_data.append(data)
 
     return {'pages': page, 'data': res_data}
+
+
+def label_by_req(conn, req):
+    res = {"msg": "success"}
+    if ("id" not in req) or ("label" not in req) or ("task" not in req):
+        res["msg"] = "error: request not complete"
+        return res
+    elif req["task"] not in ["image_filter"]:
+        res["msg"] = "error: task not in permitted list"
+        return res
+    
+    c = conn.cursor()
+    if req["task"] == "image_filter":
+        if req["label"] == "Yes":
+            label = "1"
+            c.execute("UPDATE images SET label_y_n_ns = %s WHERE id = %s", [label, req["id"]])
+            print "label %s is Yes" %(req["id"])
+        if req["label"] == "No":
+            label = "0"
+            c.execute("UPDATE images SET label_y_n_ns = %s WHERE id = %s", [label, req["id"]])
+            print "label %s is No" %(req["id"])
+        if req["label"] == "Not Sure":
+            label = "2"
+            c.execute("UPDATE images SET label_y_n_ns = %s WHERE id = %s", [label, req["id"]])
+            print "label %s is Not Sure" %(req["id"])
+        conn.commit()
+    return res
+    
 
 
 def get_an_image(conn_cassandra, image_id):
