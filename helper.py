@@ -94,6 +94,8 @@ def check_req(req):
             if index_q in filters.keys() and filters[index_q][0] != '' and filters[index_q][0] is not None and filters[index_q][1] != '' and filters[index_q][1] is not None:
                 query[index_db] = "%s BETWEEN %s AND %s" %(index_db, filters[index_q][0], filters[index_q][1])
 
+    query['lable_y_n_ns'] = "lable_y_n_ns != 0"
+
     page_num = int(req['page']['page'])
     if page_num < 1:
         page_num = 1
