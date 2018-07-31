@@ -32,7 +32,7 @@
       </i-menu>
       <div class='content'>
         <div class='imgs-box'>
-          <i-col :lg='24/config.layouts' v-for="(item, index) in items">
+          <i-col :lg='24/config.layouts' v-for="(item, index) in items" v-show="!item.hide">
             <div class="img-container mark-mode" @click='changeMagnify(0,index)'>
               <img :width="item.width" :height="item.height" :alt="item.index" :src="item.src">
               <span class='bounding-box face-bounding-box' v-for="(position, index) in (config.show_aligned_result ? item.face_detction_new.boxes : item.face_detction.boxes)"
@@ -47,8 +47,8 @@
                 v-bind:style="{left: position.box.left,width: position.box.width,top: position.box.top,height: position.box.height}">
               </span>
               <Row class='lables' v-if='config.mode == "Mark"'>
-                <i-col :lg='24/config.task.option.length' v-for="(option, index) in config.task.option">
-                  <i-button type="ghost" @click='mark(option,item.id)'>{{option}}</i-button>
+                <i-col :lg='24/config.task.option.length' v-for="option in config.task.option">
+                  <i-button type="ghost" @click='mark(option,item)' @click.stop>{{option}}</i-button>
                 </i-col>
               </Row>
             </div>
@@ -644,8 +644,8 @@
             axios.get('/mock/get_items.json', data).then((response) => {
               // axios.post('/get_items',data).then((response)=> {
               let data = response.data.data;
+              this.formatData(data)
               this.items = data;
-              this.formatData(this.items)
               this.pages = response.data.pages;
               this.filterModalConfig.show = false;
             })
@@ -681,6 +681,7 @@
           },
           formatData: function (data) {
             data.forEach((item, index) => {
+              item.hide = false;
               let width = item.width || '640'
               let height = item.height || '640'
               let face_arr = ['face_detction', 'face_detction_new'];
@@ -839,13 +840,16 @@
           selcetCountry: function (val) {
             this.filters.location.name = val;
           },
-          mark: function (label, id) {
+          mark: function (label, item) {
             let param = {
               task: this.config.task.task,
-              id: id,
+              id: item.id,
               lable: label,
               annotator: "xujx",
               label_time: new Date().getTime()
+            }
+            if(label == 'No'){
+              item.hide = true;
             }
             axios.post('/label', param).then((res) => {
               console.log(res)
@@ -871,6 +875,10 @@
                 }
             }
             this.magnify = this.items[this.index]
+            if(this.magnify.hide){
+              arguments.callee.call(this,type,this.index)
+              return
+            }
             this.formatTags(this.magnify)
           },
           formatTags:function(data){
