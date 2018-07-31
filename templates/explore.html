@@ -480,9 +480,7 @@
             <div class='pre-btn button' @click='changeMagnify(1)'></div>
             <div class="img-container mark-mode">
               <img :alt="magnify.index" :src="magnify.src">
-              <span class='bounding-box close-bounding-box'
-                v-for="(position,index) in magnify.clothes"
-                v-if="magnifyConfig.selectIndex==index"
+              <span class='bounding-box close-bounding-box' v-for="(position,index) in magnify.clothes" v-if="magnifyConfig.selectIndex==index"
                 v-bind:style="{left: position.box.left,width: position.box.width,top: position.box.top,height: position.box.height}">
               </span>
             </div>
@@ -490,11 +488,11 @@
           </div>
           <div class="info-box">
             <div class="header">
-                <span class='title'>choose</span>
-                <radio-group v-model="magnifyConfig.selectIndex">
-                  <Radio label='-1'>base info</Radio>
-                  <Radio v-for='(position,index) in magnify.clothes' :label=index>close bouding box {{index+1}}</Radio>
-                </radio-group>
+              <span class='title'>choose</span>
+              <radio-group v-model="magnifyConfig.selectIndex">
+                <Radio label='-1'>base info</Radio>
+                <Radio v-for='(position,index) in magnify.clothes' :label=index>close bouding box {{index+1}}</Radio>
+              </radio-group>
             </div>
             <div class="content">
               <div v-if='magnifyConfig.selectIndex == -1'>
@@ -513,15 +511,15 @@
               </div>
               <div v-if='magnify.clothes[magnifyConfig.selectIndex]'>
                 <i-col span="24" v-for='(config,index) in magnify.clothes[magnifyConfig.selectIndex].tags' class='info-item'>
-                    <i-col span="8" class='title'>{{config.cpTag[0]}}</i-col>
-                    <i-col span="2"></i-col>
-                    <i-col span="8">
-                      <i-input type="text" v-model="config.cpTag[1]">
-                    </i-col>
-                    <i-col span="2">
-                      {{config.score}}
-                    </i-col>
+                  <i-col span="8" class='title'>{{config.cpTag[0]}}</i-col>
+                  <i-col span="2"></i-col>
+                  <i-col span="8">
+                    <i-input type="text" v-model="config.cpTag[1]">
                   </i-col>
+                  <i-col span="2">
+                    {{config.score}}
+                  </i-col>
+                </i-col>
               </div>
             </div>
             <div class="footer" v-if='magnifyConfig.selectIndex > -1'>
@@ -551,24 +549,24 @@
           countryList: [],
           taskList: [],
           magnify: null,
-          magnifyConfig:{
+          magnifyConfig: {
             selectIndex: '-1'
           },
-          baseInfoConfig:[{
+          baseInfoConfig: [{
             key: "publish_time",
             value: ["publish_time"]
-          },{
+          }, {
             key: "location",
-            value: ["country","admin1","admin2","location_name"]
-          },{
+            value: ["country", "admin1", "admin2", "location_name"]
+          }, {
             key: "hashtag",
             value: ["hash_tag"]
-          },{
+          }, {
             key: "user",
             value: ["blogger"],
             type: "link",
             url: "blogger_page_url"
-          },{
+          }, {
             key: "desc",
             value: ["text"]
           }],
@@ -755,10 +753,10 @@
                   if (type === 'string') {
                     item[child] = JSON.parse(item[child])
                   }
-                  item[child].forEach((item1,index1) => {
+                  item[child].forEach((item1, index1) => {
                     let box = item1.box
                     // 有的boxlength为空
-                    if(box.length){
+                    if (box.length) {
                       let obj = {
                         left: box[0] / width * 100 + '%',
                         top: box[1] / height * 100 + '%',
@@ -848,54 +846,57 @@
               annotator: "xujx",
               label_time: new Date().getTime()
             }
-            if(label == 'No'){
+            if (label == 'No') {
               item.hide = true;
             }
             axios.post('/label', param).then((res) => {
               console.log(res)
             })
           },
-          changeMagnify: function (type,index) {
-            switch(type){
+          changeMagnify: function (type, index) {
+            switch (type) {
               case 0:
                 this.index = index
-              break;
+                break;
               case 1:
-                if(this.index == 0){
+                if (this.index == 0) {
                   this.$Message.warning('当前是第一张图片,不能再向前翻');
-                }else{
+                  return;
+                } else {
                   this.index--
                 }
-              break;
+                break;
               case 2:
-                if(this.index == this.items.length - 1){
+                if (this.index == this.items.length - 1) {
                   this.$Message.warning('当前是最后一张图片，不能再向后翻');
-                }else{
+                  this.index--
+                } else {
                   this.index++
                 }
+                break;
             }
             this.magnify = this.items[this.index]
-            if(this.magnify.hide){
-              arguments.callee.call(this,type,this.index)
+            if (this.magnify.hide) {
+              arguments.callee.call(this, type, this.index)
               return
             }
             this.formatTags(this.magnify)
           },
-          formatTags:function(data){
-            data.clothes.forEach((item)=>{
-              item.tags.forEach((child)=>{
+          formatTags: function (data) {
+            data.clothes.forEach((item) => {
+              item.tags.forEach((child) => {
                 console.log(child)
                 child.cpTag = child.tag.split(':')
               })
             })
           },
-          updateItem: function(){
+          updateItem: function () {
             this.formatCptag(this.magnify)
             console.log(this.magnify);
           },
-          formatCptag:function(data){
-            data.clothes.forEach((item)=>{
-              item.tags.forEach((child)=>{
+          formatCptag: function (data) {
+            data.clothes.forEach((item) => {
+              item.tags.forEach((child) => {
                 child.tag = child.cpTag.join(':')
                 delete child.cpTag
               })

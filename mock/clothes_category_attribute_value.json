@@ -1,1 +1,296 @@
-{"crossbody_bag": [{"bag_shape": ["fake value1", "fake value2", "fake value3"]}, {"product_color": ["fake value1", "fake value2", "fake value3"]}, {"product_pattern": ["fake value1", "fake value2", "fake value3"]}], "sport_shoes": [{"shoe_closure": ["fake value1", "fake value2", "fake value3"]}, {"product_color": ["fake value1", "fake value2", "fake value3"]}, {"product_pattern": ["fake value1", "fake value2", "fake value3"]}], "shoes": [{"shoe_type": ["fake value1", "fake value2", "fake value3"]}, {"heel_type": ["fake value1", "fake value2", "fake value3"]}, {"heel_height": ["fake value1", "fake value2", "fake value3"]}, {"toe_shape": ["fake value1", "fake value2", "fake value3"]}, {"toe_type": ["fake value1", "fake value2", "fake value3"]}, {"shoe_closure": ["fake value1", "fake value2", "fake value3"]}, {"shoe_decoration": ["fake value1", "fake value2", "fake value3"]}, {"product_color": ["fake value1", "fake value2", "fake value3"]}, {"product_pattern": ["fake value1", "fake value2", "fake value3"]}], "jeans": [{"pants_fit_type": ["fake value1", "fake value2", "fake value3"]}, {"denim_wash_color": ["fake value1", "fake value2", "fake value3"]}, {"product_color": ["fake value1", "fake value2", "fake value3"]}, {"product_pattern": ["fake value1", "fake value2", "fake value3"]}], "boots": [{"heel_type": ["fake value1", "fake value2", "fake value3"]}, {"heel_height": ["fake value1", "fake value2", "fake value3"]}, {"toe_shape": ["fake value1", "fake value2", "fake value3"]}, {"toe_type": ["fake value1", "fake value2", "fake value3"]}, {"shoe_closure": ["fake value1", "fake value2", "fake value3"]}, {"shaft_height": ["fake value1", "fake value2", "fake value3"]}, {"product_color": ["fake value1", "fake value2", "fake value3"]}, {"product_pattern": ["fake value1", "fake value2", "fake value3"]}], "sweatshirt": [{"sweatshirt_neckline": ["fake value1", "fake value2", "fake value3"]}, {"product_color": ["fake value1", "fake value2", "fake value3"]}, {"product_pattern": ["fake value1", "fake value2", "fake value3"]}], "skirt": [{"skirt_length": ["fake value1", "fake value2", "fake value3"]}, {"skirt_shape": ["fake value1", "fake value2", "fake value3"]}, {"product_color": ["fake value1", "fake value2", "fake value3"]}, {"product_pattern": ["fake value1", "fake value2", "fake value3"]}], "jumpsuit": [{"neckline": ["fake value1", "fake value2", "fake value3"]}, {"sleeve_length": ["fake value1", "fake value2", "fake value3"]}, {"sleeve_style": ["fake value1", "fake value2", "fake value3"]}, {"product_color": ["fake value1", "fake value2", "fake value3"]}, {"product_pattern": ["fake value1", "fake value2", "fake value3"]}], "clutch_wallet": [{"product_color": ["fake value1", "fake value2", "fake value3"]}, {"product_pattern": ["fake value1", "fake value2", "fake value3"]}], "cardigan": [{"closure_type": ["fake value1", "fake value2", "fake value3"]}, {"outerwear_length": ["fake value1", "fake value2", "fake value3"]}, {"product_color": ["fake value1", "fake value2", "fake value3"]}, {"product_pattern": ["fake value1", "fake value2", "fake value3"]}], "shirt": [{"neckline": ["fake value1", "fake value2", "fake value3"]}, {"sleeve_length": ["fake value1", "fake value2", "fake value3"]}, {"sleeve_style": ["fake value1", "fake value2", "fake value3"]}, {"top_length": ["fake value1", "fake value2", "fake value3"]}, {"product_color": ["fake value1", "fake value2", "fake value3"]}, {"product_pattern": ["fake value1", "fake value2", "fake value3"]}], "dress": [{"neckline": ["fake value1", "fake value2", "fake value3"]}, {"sleeve_length": ["fake value1", "fake value2", "fake value3"]}, {"sleeve_style": ["fake value1", "fake value2", "fake value3"]}, {"dress_length": ["fake value1", "fake value2", "fake value3"]}, {"dress_shape": ["fake value1", "fake value2", "fake value3"]}, {"product_color": ["fake value1", "fake value2", "fake value3"]}, {"product_pattern": ["fake value1", "fake value2", "fake value3"]}], "top": [{"neckline": ["fake value1", "fake value2", "fake value3"]}, {"sleeve_length": ["fake value1", "fake value2", "fake value3"]}, {"sleeve_style": ["fake value1", "fake value2", "fake value3"]}, {"top_length": ["fake value1", "fake value2", "fake value3"]}, {"product_color": ["fake value1", "fake value2", "fake value3"]}, {"product_pattern": ["fake value1", "fake value2", "fake value3"]}], "suit": [{"closure_type": ["fake value1", "fake value2", "fake value3"]}, {"product_color": ["fake value1", "fake value2", "fake value3"]}, {"product_pattern": ["fake value1", "fake value2", "fake value3"]}], "t_shirt": [{"neckline": ["fake value1", "fake value2", "fake value3"]}, {"sleeve_length": ["fake value1", "fake value2", "fake value3"]}, {"sleeve_style": ["fake value1", "fake value2", "fake value3"]}, {"top_length": ["fake value1", "fake value2", "fake value3"]}, {"product_color": ["fake value1", "fake value2", "fake value3"]}, {"product_pattern": ["fake value1", "fake value2", "fake value3"]}], "pants": [{"pants_fit_type": ["fake value1", "fake value2", "fake value3"]}, {"product_color": ["fake value1", "fake value2", "fake value3"]}, {"product_pattern": ["fake value1", "fake value2", "fake value3"]}], "blouse": [{"neckline": ["fake value1", "fake value2", "fake value3"]}, {"sleeve_length": ["fake value1", "fake value2", "fake value3"]}, {"sleeve_style": ["fake value1", "fake value2", "fake value3"]}, {"top_length": ["fake value1", "fake value2", "fake value3"]}, {"product_color": ["fake value1", "fake value2", "fake value3"]}, {"product_pattern": ["fake value1", "fake value2", "fake value3"]}], "shorts": [{"shorts_waist": ["fake value1", "fake value2", "fake value3"]}, {"product_color": ["fake value1", "fake value2", "fake value3"]}, {"product_pattern": ["fake value1", "fake value2", "fake value3"]}], "others": [{"product_color": ["fake value1", "fake value2", "fake value3"]}, {"product_pattern": ["fake value1", "fake value2", "fake value3"]}], "sandals": [{"sandal_type": ["fake value1", "fake value2", "fake value3"]}, {"heel_type": ["fake value1", "fake value2", "fake value3"]}, {"heel_height": ["fake value1", "fake value2", "fake value3"]}, {"toe_shape": ["fake value1", "fake value2", "fake value3"]}, {"toe_type": ["fake value1", "fake value2", "fake value3"]}, {"shoe_closure": ["fake value1", "fake value2", "fake value3"]}, {"shoe_decoration": ["fake value1", "fake value2", "fake value3"]}, {"product_color": ["fake value1", "fake value2", "fake value3"]}, {"product_pattern": ["fake value1", "fake value2", "fake value3"]}], "blazer": [{"closure_type": ["fake value1", "fake value2", "fake value3"]}, {"outerwear_length": ["fake value1", "fake value2", "fake value3"]}, {"outerwear_neckline": ["fake value1", "fake value2", "fake value3"]}, {"product_color": ["fake value1", "fake value2", "fake value3"]}, {"product_pattern": ["fake value1", "fake value2", "fake value3"]}], "coat": [{"closure_type": ["fake value1", "fake value2", "fake value3"]}, {"outerwear_length": ["fake value1", "fake value2", "fake value3"]}, {"outerwear_neckline": ["fake value1", "fake value2", "fake value3"]}, {"overcoat_style": ["fake value1", "fake value2", "fake value3"]}, {"product_color": ["fake value1", "fake value2", "fake value3"]}, {"product_pattern": ["fake value1", "fake value2", "fake value3"]}], "playsuit": [{"neckline": ["fake value1", "fake value2", "fake value3"]}, {"sleeve_length": ["fake value1", "fake value2", "fake value3"]}, {"sleeve_style": ["fake value1", "fake value2", "fake value3"]}, {"product_color": ["fake value1", "fake value2", "fake value3"]}, {"product_pattern": ["fake value1", "fake value2", "fake value3"]}], "jacket": [{"closure_type": ["fake value1", "fake value2", "fake value3"]}, {"outerwear_length": ["fake value1", "fake value2", "fake value3"]}, {"outerwear_neckline": ["fake value1", "fake value2", "fake value3"]}, {"product_color": ["fake value1", "fake value2", "fake value3"]}, {"product_pattern": ["fake value1", "fake value2", "fake value3"]}], "top_handle_bag": [{"bag_shape": ["fake value1", "fake value2", "fake value3"]}, {"product_color": ["fake value1", "fake value2", "fake value3"]}, {"product_pattern": ["fake value1", "fake value2", "fake value3"]}], "sweater": [{"sweater_neckline": ["fake value1", "fake value2", "fake value3"]}, {"outerwear_length": ["fake value1", "fake value2", "fake value3"]}, {"sweater_style": ["fake value1", "fake value2", "fake value3"]}, {"product_color": ["fake value1", "fake value2", "fake value3"]}, {"product_pattern": ["fake value1", "fake value2", "fake value3"]}], "backpack": [{"product_color": ["fake value1", "fake value2", "fake value3"]}, {"product_pattern": ["fake value1", "fake value2", "fake value3"]}], "polo_shirt": [{"neckline": ["fake value1", "fake value2", "fake value3"]}, {"sleeve_length": ["fake value1", "fake value2", "fake value3"]}, {"sleeve_style": ["fake value1", "fake value2", "fake value3"]}, {"top_length": ["fake value1", "fake value2", "fake value3"]}, {"product_color": ["fake value1", "fake value2", "fake value3"]}, {"product_pattern": ["fake value1", "fake value2", "fake value3"]}]}
+{
+  "crossbody_bag": [{
+    "bag_shape": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_color": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_pattern": ["fake value1", "fake value2", "fake value3"]
+  }],
+  "sport_shoes": [{
+    "shoe_closure": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_color": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_pattern": ["fake value1", "fake value2", "fake value3"]
+  }],
+  "shoes": [{
+    "shoe_type": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "heel_type": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "heel_height": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "toe_shape": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "toe_type": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "shoe_closure": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "shoe_decoration": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_color": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_pattern": ["fake value1", "fake value2", "fake value3"]
+  }],
+  "jeans": [{
+    "pants_fit_type": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "denim_wash_color": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_color": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_pattern": ["fake value1", "fake value2", "fake value3"]
+  }],
+  "boots": [{
+    "heel_type": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "heel_height": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "toe_shape": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "toe_type": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "shoe_closure": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "shaft_height": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_color": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_pattern": ["fake value1", "fake value2", "fake value3"]
+  }],
+  "sweatshirt": [{
+    "sweatshirt_neckline": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_color": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_pattern": ["fake value1", "fake value2", "fake value3"]
+  }],
+  "skirt": [{
+    "skirt_length": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "skirt_shape": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_color": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_pattern": ["fake value1", "fake value2", "fake value3"]
+  }],
+  "jumpsuit": [{
+    "neckline": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "sleeve_length": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "sleeve_style": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_color": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_pattern": ["fake value1", "fake value2", "fake value3"]
+  }],
+  "clutch_wallet": [{
+    "product_color": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_pattern": ["fake value1", "fake value2", "fake value3"]
+  }],
+  "cardigan": [{
+    "closure_type": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "outerwear_length": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_color": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_pattern": ["fake value1", "fake value2", "fake value3"]
+  }],
+  "shirt": [{
+    "neckline": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "sleeve_length": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "sleeve_style": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "top_length": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_color": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_pattern": ["fake value1", "fake value2", "fake value3"]
+  }],
+  "dress": [{
+    "neckline": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "sleeve_length": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "sleeve_style": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "dress_length": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "dress_shape": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_color": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_pattern": ["fake value1", "fake value2", "fake value3"]
+  }],
+  "top": [{
+    "neckline": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "sleeve_length": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "sleeve_style": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "top_length": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_color": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_pattern": ["fake value1", "fake value2", "fake value3"]
+  }],
+  "suit": [{
+    "closure_type": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_color": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_pattern": ["fake value1", "fake value2", "fake value3"]
+  }],
+  "t_shirt": [{
+    "neckline": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "sleeve_length": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "sleeve_style": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "top_length": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_color": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_pattern": ["fake value1", "fake value2", "fake value3"]
+  }],
+  "pants": [{
+    "pants_fit_type": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_color": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_pattern": ["fake value1", "fake value2", "fake value3"]
+  }],
+  "blouse": [{
+    "neckline": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "sleeve_length": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "sleeve_style": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "top_length": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_color": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_pattern": ["fake value1", "fake value2", "fake value3"]
+  }],
+  "shorts": [{
+    "shorts_waist": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_color": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_pattern": ["fake value1", "fake value2", "fake value3"]
+  }],
+  "others": [{
+    "product_color": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_pattern": ["fake value1", "fake value2", "fake value3"]
+  }],
+  "sandals": [{
+    "sandal_type": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "heel_type": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "heel_height": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "toe_shape": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "toe_type": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "shoe_closure": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "shoe_decoration": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_color": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_pattern": ["fake value1", "fake value2", "fake value3"]
+  }],
+  "blazer": [{
+    "closure_type": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "outerwear_length": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "outerwear_neckline": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_color": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_pattern": ["fake value1", "fake value2", "fake value3"]
+  }],
+  "coat": [{
+    "closure_type": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "outerwear_length": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "outerwear_neckline": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "overcoat_style": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_color": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_pattern": ["fake value1", "fake value2", "fake value3"]
+  }],
+  "playsuit": [{
+    "neckline": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "sleeve_length": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "sleeve_style": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_color": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_pattern": ["fake value1", "fake value2", "fake value3"]
+  }],
+  "jacket": [{
+    "closure_type": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "outerwear_length": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "outerwear_neckline": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_color": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_pattern": ["fake value1", "fake value2", "fake value3"]
+  }],
+  "top_handle_bag": [{
+    "bag_shape": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_color": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_pattern": ["fake value1", "fake value2", "fake value3"]
+  }],
+  "sweater": [{
+    "sweater_neckline": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "outerwear_length": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "sweater_style": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_color": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_pattern": ["fake value1", "fake value2", "fake value3"]
+  }],
+  "backpack": [{
+    "product_color": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_pattern": ["fake value1", "fake value2", "fake value3"]
+  }],
+  "polo_shirt": [{
+    "neckline": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "sleeve_length": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "sleeve_style": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "top_length": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_color": ["fake value1", "fake value2", "fake value3"]
+  }, {
+    "product_pattern": ["fake value1", "fake value2", "fake value3"]
+  }]
+}
