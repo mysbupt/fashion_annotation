@@ -10,6 +10,8 @@
     <link href="../static/css/style.css" rel="stylesheet">
     <link href="../static/css/ivew.css" rel="stylesheet">
     <link href="../static/css/explore.css" rel="stylesheet">
+    <link href="../static/css/cropper.css" rel="stylesheet">
+    <script src="../static/js/vue.min.js"></script>
   </head>
 
   <body>
@@ -30,7 +32,7 @@
           <a class="nav-link navbar-right" href="/logout">Logout</a>
         </i-menu-item>
       </i-menu>
-      <div class='content'>
+      <div class='content'  v-if='items.length'>
         <div class='imgs-box'>
           <i-col :lg='24/config.layouts' v-for="(item, index) in items" v-show="!item.hide">
             <div class="img-container mark-mode" @click='changeMagnify(0,index)'>
@@ -474,12 +476,12 @@
           </i-col>
         </Row>
       </Modal>
-      <div v-if='magnify' class='magnify-container'>
+      <div class='magnify-container' v-if='magnify'>
         <div class='magnify-content'>
           <div class="img-box">
             <div class='pre-btn button' @click='changeMagnify(1)'></div>
             <div class="img-container mark-mode">
-              <img :alt="magnify.index" :src="magnify.src">
+              <img :alt="magnify.index" :src="magnify.src" id='cropper'>
               <span class='bounding-box close-bounding-box' v-for="(position,index) in magnify.clothes" v-if="magnifyConfig.selectIndex==index"
                 v-bind:style="{left: position.box.left,width: position.box.width,top: position.box.top,height: position.box.height}">
               </span>
@@ -514,7 +516,16 @@
                   <i-col span="8" class='title'>{{config.cpTag[0]}}</i-col>
                   <i-col span="2"></i-col>
                   <i-col span="8">
-                    <i-input type="text" v-model="config.cpTag[1]">
+                    <i-select v-if="config.cpTag[0]=='category'" style="width:120px" v-model="config.cpTag[1]" @on-change='changeCate'>
+                      <i-option
+                      v-for="child in getCategoryValueList(config.cpTag[0],config.cpTag[1])"
+                      :value="child" :key="config.cpTag[0]">{{child}}</i-option>
+                    </i-select>
+                    <i-select v-if="config.cpTag[0]!=='category'" style="width:120px" v-model="config.cpTag[1]">
+                        <i-option
+                        v-for="child in getCategoryValueList(config.cpTag[0],config.cpTag[1])"
+                        :value="child" :key="config.cpTag[0]">{{child}}</i-option>
+                      </i-select>
                   </i-col>
                   <i-col span="2">
                     {{config.score}}
@@ -522,17 +533,18 @@
                 </i-col>
               </div>
             </div>
-            <div class="footer" v-if='magnifyConfig.selectIndex > -1'>
-              <i-button type="primary" size='large' @click='updateItem'>submit</i-button>
+            <div class="footer">
+              <i-button v-if='magnifyConfig.selectIndex > -1' type="primary" size='large' @click='updateItem'>submit</i-button>
+              <i-button type="primary" size='large' @click='addBoundingBox'>add bouding box</i-button>
             </div>
           </div>
           <div class='close-btn button' @click='magnify=null'></div>
         </div>
       </div>
     </div>
-    <script src="../static/js/vue.min.js"></script>
     <script src="../static/js/axios.min.js"></script>
     <script src="../static/js/ivew.min.js"></script>
+    <script src="../static/js/cropper.js"></script>
     <script>
       var app = new Vue({
         el: '#app',
@@ -542,12 +554,15 @@
           this.getHashTagList();
           this.getCountryList();
           this.getTaskList();
+          this.getCatAttrValList();
         },
         data: {
+          show: false,
           hashTagList: [],
           searchCountry: [],
           countryList: [],
           taskList: [],
+          catAttrValList: null,
           magnify: null,
           magnifyConfig: {
             selectIndex: '-1'
@@ -667,6 +682,13 @@
               // axios.get('/get_country_list').then((response)=> {
               let data = response.data.data;
               this.countryList = data;
+            })
+          },
+          getCatAttrValList: function () {
+            axios.get('/mock/clothes_category_attribute_value.json').then((response) => {
+              // axios.get('/get_cat_attr_val_list').then((response)=> {
+              let data = response.data;
+              this.catAttrValList = data || {};
             })
           },
           getTaskList: function () {
@@ -889,18 +911,70 @@
                 child.cpTag = child.tag.split(':')
               })
             })
+            console.log(data.clothes)
+          },
+          getCategoryValueList:function(attr,val){
+            if(attr === 'category'){
+              return Object.keys(this.catAttrValList)
+            }else{
+              let cate = this.magnify.clothes[this.magnifyConfig.selectIndex].tags[0].cpTag[1]
+              let list = this.catAttrValList[cate];
+              let res = [];
+              list.forEach((item)=>{
+                if(item[attr]){
+                  res = item[attr]
+                  return;
+                }
+              })
+              return res
+            }
           },
           updateItem: function () {
             this.formatCptag(this.magnify)
             console.log(this.magnify);
           },
+          changeCate:function(val){
+            let tags = this.magnify.clothes[this.magnifyConfig.selectIndex].tags;
+            let newTags = tags.slice(0,1);
+            this.catAttrValList[val].forEach((item,index)=>{
+              let attr = Object.keys(item)[0]
+              let json = {
+                cpTag: [attr,'']
+              }
+              newTags.push(json)
+            })
+            this.magnify.clothes[this.magnifyConfig.selectIndex].tags = newTags;
+            console.log(this.magnify.clothes[this.magnifyConfig.selectIndex])
+          },
           formatCptag: function (data) {
             data.clothes.forEach((item) => {
               item.tags.forEach((child) => {
                 child.tag = child.cpTag.join(':')
-                delete child.cpTag
+                // delete child.cpTag
               })
             })
+          },
+          addBoundingBox:function(){
+            const image = document.getElementById('cropper');
+            const cropper = new Cropper(image, {
+              aspectRatio: 16 / 9,
+              zoomable: false,
+              crop(event) {
+                console.log(event.detail.x);
+                console.log(event.detail.y);
+                console.log(event.detail.width);
+                console.log(event.detail.height);
+                // console.log(event.detail.rotate);
+                // console.log(event.detail.scaleX);
+                // console.log(event.detail.scaleY);
+              },
+              ready:function(){
+                // this.cropper.crop()
+              }
+            });
+            setTimeout(()=>{
+              cropper.destroy()
+            },1000)
           }
         }
       })

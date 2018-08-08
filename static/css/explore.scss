@@ -1,4 +1,7 @@
 #app {
+  [v-cloak] {
+    display: none !important;
+  }
   overflow: hidden;
   .mmkg-header {
     padding: 0 30px;
