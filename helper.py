@@ -13,22 +13,25 @@ from cassandra.auth import PlainTextAuthProvider
 from cassandra.cluster import SimpleStatement
 from cassandra.query import ValueSequence
 
+import yaml
 
 total_cnt_cache = {}
 
 
-def create_connection_cassandra(keyspace):
-    hostname = '127.0.0.1'
+def create_connection_cassandra(conf):
+    hostname = conf["host"] 
+    keyspace = conf["keyspace"]
     nodes = [hostname]
     cluster = Cluster(nodes)
     session = cluster.connect(keyspace)
     return session
 
 
-def create_connection_mysql(db_name):
-    HOSTNAME = 'localhost'
-    USERNAME = 'root'
-    PASSWD = 'mayunshan880909'
+def create_connection_mysql(conf):
+    db_name = conf["db_name"]
+    HOSTNAME = conf["host"]
+    USERNAME = conf["username"]
+    PASSWD = conf["password"] 
     try:
         conn = MySQLdb.connect(host=HOSTNAME, user=USERNAME, passwd=PASSWD , db=db_name)
         return conn
@@ -37,7 +40,7 @@ def create_connection_mysql(db_name):
         exit()
 
 
-def check_req(req):
+def check_req(req, occasion_tag_mapping):
     print req
     filters = req['filters']
 
@@ -75,6 +78,10 @@ def check_req(req):
         tmp_str = ','.join(["'" + i + "'" for i in filters['hashtags']])
         query['tag'] = "tag IN (%s)" %(tmp_str)
 
+    if 'occasion' in filters.keys() and filters['occasion'] != "" and filters['occasion'] is not None and filters['occasion'] in occasion_tag_mapping:
+        tmp_str = ','.join(["'" + i + "'" for i in occasion_tag_mapping[filters['occasion']]])
+        query['tag'] = "tag IN (%s)" %(tmp_str)
+
     if 'is_face_in_body' in filters.keys() and filters['is_face_in_body'] == True: 
         query['is_face_in_body'] = "is_face_in_body is true"
 
@@ -94,7 +101,34 @@ def check_req(req):
             if index_q in filters.keys() and filters[index_q][0] != '' and filters[index_q][0] is not None and filters[index_q][1] != '' and filters[index_q][1] is not None:
                 query[index_db] = "%s BETWEEN %s AND %s" %(index_db, filters[index_q][0], filters[index_q][1])
 
-    query['label_y_n_ns'] = "label_y_n_ns is NULL OR label_y_n_ns != 0"
+    if 'filter_by_score' in filters.keys() and filters['filter_by_score'] == True: 
+        left = filters["binary_score"][0] 
+        right = filters["binary_score"][1] 
+        if left >= 0 and left <=1 and right >= 0 and right <= 1 and left < right:
+            query["binary_score"] = "binary_pred_score BETWEEN %s AND %s" %(left, right)
+
+    if 'must_have_location' in filters.keys() and filters['must_have_location'] == True: 
+        query["have_location"] = "parse_cc is not NULL" 
+
+    select_set = []
+    if filters['label_yes'] == True:
+        select_set.append("1")
+    if filters['label_no'] == True:
+        select_set.append("0")
+    if filters['label_not_sure'] == True:
+        select_set.append("2")
+    label_filter = ""
+    if len(select_set) != 0:
+        label_filter = "label_y_n_ns in (%s)" %(",".join(select_set))
+    if filters['label_null'] == True:
+        if label_filter == "":
+            query["label_y_n_ns"] = "label_y_n_ns IS NULL"
+        else:
+            query["label_y_n_ns"] = label_filter + " OR label_y_n_ns IS NULL"
+    else:
+        if label_filter != "":
+            query["label_y_n_ns"] = label_filter
+    #query['label_y_n_ns'] = "label_y_n_ns is NULL OR label_y_n_ns != 0"
 
     page_num = int(req['page']['page'])
     if page_num < 1:
@@ -131,6 +165,11 @@ def get_total_cnt(conn_mysql, q_total_cnt):
 def get_task_list_byfile():
     task_list = json.load(open("./data/task_list.json"))
     return task_list
+
+
+def get_cat_attr_val_list_byfile():
+    cat_attr_val_list = json.load(open("./data/clothes_category_attribute_value.json"))
+    return cat_attr_val_list
 
 
 def get_country_list_bydb(conn_mysql):
@@ -233,9 +272,9 @@ def get_a_batch_of_data(conn_mysql, query, limit, page_info):
         if i[21] is not None and i[21] != "null":
             data['admin2'] = i[21]
         if i[35] is not None and i[35] != "null":
-            data['face_detction_new'] = i[11]
+            data['face_detction_new'] = i[35]
         if i[34] is not None and i[34] != "null":
-            data['object_detction_new'] = i[10]
+            data['object_detction_new'] = i[34]
         if i[42] is not None and i[42] != "null":
             data['clothes'] = i[42]
         if i[13] != "null":

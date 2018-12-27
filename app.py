@@ -10,14 +10,19 @@ from flask import Flask, send_from_directory, send_file, jsonify, flash, redirec
 from StringIO import StringIO
 from helper import *
 
+import yaml
+
 
 app = Flask(__name__)
-conn_mysql = create_connection_mysql('fashion')
-conn_cassandra = create_connection_cassandra('instagram_scene')
+conf = yaml.load(open("./config.yaml"))
+conn_mysql = create_connection_mysql(conf["mysql"])
+conn_cassandra = create_connection_cassandra(conf["cassandra"])
 
 country_list = get_country_list_bydb(conn_mysql)
 hashtag_list = get_hashtag_list_bydb(conn_mysql)
 task_list = get_task_list_byfile()
+cat_attr_val_list = get_cat_attr_val_list_byfile()
+occasion_tag_mapping = yaml.load(open("./data/occasion_tag_rough_map.yaml"))
 
 @app.route('/')
 @app.route('/explore', methods=['GET'])
@@ -33,7 +38,7 @@ def explore():
 @app.route('/get_items', methods=['POST'])
 def get_items():
     req = request.get_json()
-    query, limit, page_info = check_req(req)
+    query, limit, page_info = check_req(req, occasion_tag_mapping)
     print query
     print limit
     print page_info
@@ -53,6 +58,12 @@ def get_task_list():
 def get_country_list():
     global country_list
     return jsonify(country_list)
+
+
+@app.route('/get_cat_attr_val_list', methods=['GET'])
+def get_cat_attr_val_list():
+    global cat_attr_val_list
+    return jsonify(cat_attr_val_list)
 
 
 @app.route('/get_hashtag_list', methods=['GET'])
@@ -146,4 +157,4 @@ if __name__ == "__main__":
     app.secret_key = 'super secret key'
     app.config['SESSION_TYPE'] = 'filesystem'
 
-    app.run(host='0.0.0.0', port=2222)
+    app.run(host='0.0.0.0', port=1111)
