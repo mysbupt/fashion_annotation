@@ -718,7 +718,29 @@
             ]
         },
         {
+            "neckline": [
+                "cowl",
+                "hooded",
+                "o_neck",
+                "v_neck",
+                "shawl",
+                "turtleneck"
+            ]
+        },
+        {
             "outerwear_length": [
+                "short",
+                "long"
+            ]
+        },
+        {
+            "sleeve_length": [
+                "short",
+                "long"
+            ]
+        },
+        {
+            "upperbody_length": [
                 "short",
                 "long"
             ]

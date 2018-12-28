@@ -1,2 +1,2 @@
 # fashion_annotation
-This is an elastic website for the annotation and exploration of large scale images
+This is a website for the annotation and exploration of large scale images
