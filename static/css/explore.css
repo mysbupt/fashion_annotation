@@ -234,9 +234,10 @@
 }
 
 #app .magnify-container .magnify-content .info-box .footer {
-    position: absolute;
-    right: 35px;
-    bottom: 45px;
+    /* height:55px; */
+    /* position: relative; */
+    /* top: 10px; */
+    min-height: 45px;
 }
 
 #app .magnify-container .magnify-content .info-box .info-item {
