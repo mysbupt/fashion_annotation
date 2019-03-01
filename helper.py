@@ -82,6 +82,14 @@ def check_req(req, occasion_tag_mapping):
         tmp_str = ','.join(["'" + i + "'" for i in occasion_tag_mapping[filters['occasion']]])
         query['tag'] = "tag IN (%s)" %(tmp_str)
 
+    if 'id' in filters.keys() and filters['id'] != "" and filters['id'] is not None:
+        query['id'] = "id = '%s'" %(filters['id'])
+
+    if 'annotate_state' in filters.keys() and filters['annotate_state'] is not None and filters['annotate_state'] != "":
+        state = filters['annotate_state']
+        if state in [0, 1]:
+            query['test_annotate_state'] = "test_annotate_state = %s" %(state)
+
     if 'is_face_in_body' in filters.keys() and filters['is_face_in_body'] == True: 
         query['is_face_in_body'] = "is_face_in_body is true"
 
@@ -240,45 +248,45 @@ def get_a_batch_of_data(conn_mysql, query, limit, page_info):
             "src": '/images/' + i[0] + '.jpg',
             "href": i[3],
             "text": "",
-            "blogger": i[7],
-            "blogger_page_url": "https://www.instagram.com/" + i[7],
-            "likes": i[8],
-            "src_site": i[9],
+            "blogger": i[6],
+            "blogger_page_url": "https://www.instagram.com/" + i[6],
+            "likes": i[7],
+            "src_site": "Instagram",
             "object_detction": "",
             "object_detction_new": "",
             "face_detction": "",
             "face_detction_new": "",
             "location_name": "",
-            "location_url": i[13],
+            "location_url": i[11],
             "country": "",
             "admin1": "",
             "admin2": "",
-            "comments": [14],
+            "comments": [12],
             "publish_time": "",
-            "location_lat": i[16],
-            "location_lon": i[17],
-            "width": i[40],
-            "height": i[41],
+            "location_lat": i[14],
+            "location_lon": i[15],
+            "width": i[43],
+            "height": i[44],
             "clothes": ""
         }
-        if i[11] is not None and i[11] != "null":
-            data['face_detction'] = i[11]
-        if i[10] is not None and i[10] != "null":
-            data['object_detction'] = i[10]
+        if i[8] is not None and i[8] != "null":
+            data['object_detction'] = i[8]
+        if i[9] is not None and i[9] != "null":
+            data['face_detction'] = i[9]
+        if i[11] != "null":
+            data['location_url'] = i[11]
+        if i[17] is not None and i[17] != "null":
+            data['country'] = i[17]
+        if i[18] is not None and i[18] != "null":
+            data['admin1'] = i[18]
         if i[19] is not None and i[19] != "null":
-            data['country'] = i[19]
-        if i[20] is not None and i[20] != "null":
-            data['admin1'] = i[20]
-        if i[21] is not None and i[21] != "null":
-            data['admin2'] = i[21]
+            data['admin2'] = i[19]
+        if i[32] is not None and i[32] != "null":
+            data['object_detction_new'] = i[32]
+        if i[33] is not None and i[33] != "null":
+            data['face_detction_new'] = i[33]
         if i[35] is not None and i[35] != "null":
-            data['face_detction_new'] = i[35]
-        if i[34] is not None and i[34] != "null":
-            data['object_detction_new'] = i[34]
-        if i[42] is not None and i[42] != "null":
-            data['clothes'] = i[42]
-        if i[13] != "null":
-            data['location_url'] = i[13]
+            data['clothes'] = i[35]
         try:
             data['text'] = i[4].decode('latin-1')
         except:
@@ -288,7 +296,7 @@ def get_a_batch_of_data(conn_mysql, query, limit, page_info):
         except:
             pass
         try:
-            data['publish_time'] = i[15].strftime("%Y-%m-%d %H:%M:%S")
+            data['publish_time'] = i[13].strftime("%Y-%m-%d %H:%M:%S")
         except:
             pass
 
@@ -323,6 +331,76 @@ def label_by_req(conn, req):
         conn.commit()
     return res
     
+
+def annotate_clothes_by_req(conn, req, user_name):
+    res = {"msg": "success"}
+    if ("id" not in req) or ("action" not in req):
+        res["msg"] = "error: request not complete"
+        return res
+    
+    c = conn.cursor()
+    try:
+        c.execute("SELECT clothes FROM images WHERE id = %s", [req["id"]])
+    except:
+        res["msg"] = "error: query mysql fail"
+        return res
+
+    ori_cloth = c.fetchall() 
+    if len(ori_cloth) == 0:
+        res["msg"] = "error: invalid img id"
+        return res
+    ori_cloth = json.loads(ori_cloth[0][0])
+
+    if req["action"] == "del_cloth":
+        if req['cloth_id'] < 0 or req['cloth_id'] >= len(ori_cloth):
+            res["msg"] = "error: invalid cloth id"
+            return res
+        del ori_cloth[req['cloth_id']]
+        try:
+            c.execute("UPDATE images SET clothes = %s WHERE id = %s", [json.dumps(ori_cloth), req["id"]])
+        except:
+            res["msg"] = "error: update mysql fail"
+            return res
+        conn.commit()
+
+    elif req["action"] == "del_attr":
+        if 'cloth_id' not in req or 'index' not in req:
+            res["msg"] = "error: request not complete"
+            return res
+        if req['cloth_id'] < 0 or req['cloth_id'] >= len(ori_cloth):
+            res["msg"] = "error: invalid cloth id"
+            return res
+        if req['index'] < 1 or req['index'] >= len(ori_cloth[req['cloth_id']]['tags']):
+            res["msg"] = "error: invalid attr index"
+            return res
+
+        del ori_cloth[req['cloth_id']]['tags'][req['index']]
+        try:
+            c.execute("UPDATE images SET clothes = %s WHERE id = %s", [json.dumps(ori_cloth), req["id"]])
+        except:
+            res["msg"] = "error: update mysql fail"
+            return res
+        conn.commit()
+
+    elif req["action"] == "modify_cat_attr":
+        if "clothes" not in req:
+            res["msg"] = "error: no clothes"
+            return res
+        for i, new in enumerate(req["clothes"]):
+            for j, new_tag in enumerate(new["tags"]):
+                ori_cloth[i]["tags"][j]["tag"] = ":".join(new_tag["cpTag"])
+        try:
+            c.execute("UPDATE images SET clothes = %s, if_annotate_cloth = %s, annotate_cloth_datetime = %s, annotate_cloth_worker = %s WHERE id = %s", [json.dumps(ori_cloth), 1, datetime.datetime.now(), user_name, req["id"]])
+        except:
+            res["msg"] = "error: update mysql fail"
+            return res
+        conn.commit()
+        
+    else:
+        res["msg"] = "error: invalid action"
+        return res
+ 
+    return res
 
 
 def get_an_image(conn_cassandra, image_id):

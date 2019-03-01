@@ -85,6 +85,17 @@ def label_specific_task():
         return redirect(url_for('login'))
 
 
+@app.route('/annotate_clothes', methods=['POST'])
+def label_clothes():
+    if 'username' in session:
+        username = session['username']
+        req = request.get_json()
+        res = annotate_clothes_by_req(conn_mysql, req, username)
+        return jsonify(res)
+    else:
+        return redirect(url_for('login'))
+
+
 @app.route('/images/<image_id>.jpg', methods=['GET'])
 def get_image(image_id):
     if re.match(r"\w{32}", image_id):
@@ -157,4 +168,4 @@ if __name__ == "__main__":
     app.secret_key = 'super secret key'
     app.config['SESSION_TYPE'] = 'filesystem'
 
-    app.run(host='0.0.0.0', port=1111)
+    app.run(host='0.0.0.0', port=2222)

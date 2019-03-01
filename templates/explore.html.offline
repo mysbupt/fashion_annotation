@@ -37,18 +37,15 @@
         <i-col :lg='24/config.layouts' v-for="(item, index) in items" v-show="!item.hide">
           <div class="img-container mark-mode" @click='changeMagnify(0,index)'>
             <img :width="item.width" :height="item.height" :alt="item.index" :src="item.src">
-            <span class='bounding-box face-bounding-box'
-              v-for="(position, index) in (config.show_aligned_result ? item.face_detction_new.boxes : item.face_detction.boxes)"
+            <span class='bounding-box face-bounding-box' v-for="(position, index) in (config.show_aligned_result ? item.face_detction_new.boxes : item.face_detction.boxes)"
               v-if="config.show_face_bouding && (!config.show_aligned_result || (config.show_aligned_result && index > (config.which[0] - 2) && index < config.which[1]))"
               v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
             </span>
-            <span class='bounding-box body-bounding-box'
-              v-if="config.show_body_bouding && (!config.show_aligned_result || (config.show_aligned_result && index > (config.which[0] - 2) && index < config.which[1]))"
+            <span class='bounding-box body-bounding-box' v-if="config.show_body_bouding && (!config.show_aligned_result || (config.show_aligned_result && index > (config.which[0] - 2) && index < config.which[1]))"
               v-for="(position,index) in (config.show_aligned_result ? item.object_detction_new : item.object_detction)"
               v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
             </span>
-            <span class='bounding-box close-bounding-box' v-if="config.show_clothes_bouding"
-              v-for="(position,index) in item.clothes"
+            <span class='bounding-box close-bounding-box' v-if="config.show_clothes_bouding" v-for="(position,index) in item.clothes"
               v-bind:style="{left: position.box.left,width: position.box.width,top: position.box.top,height: position.box.height}">
             </span>
             <Row class='lables' v-if='config.mode == "Mark"'>
@@ -61,11 +58,11 @@
       </div>
     </div>
     <footer>
-      <Page :page-size='config.batch' :current="config.page" :total="pages.count" show-elevator show-total
-        @on-change='pageChange' @on-page-size-change='pageSizeChange'></Page>
+      <Page :page-size='config.batch' :current="config.page" :total="pages.count" show-elevator show-total @on-change='pageChange'
+        @on-page-size-change='pageSizeChange'></Page>
     </footer>
-    <Modal v-model="filterModalConfig.show" :mask-closable="filterModalConfig.maskClosable"
-      :loading="filterModalConfig.loading" title="Filter Modal" class='filter-modal' @on-ok="filterConfirm">
+    <Modal v-model="filterModalConfig.show" :mask-closable="filterModalConfig.maskClosable" :loading="filterModalConfig.loading"
+      title="Filter Modal" class='filter-modal' @on-ok="filterConfirm">
       <Row>
         <i-col span="12" class='left'>
           <span>Start Time</span>
@@ -127,8 +124,7 @@
           <span>Country</span>
         </i-col>
         <i-col span="12" class='right'>
-          <auto-complete @on-search="handleSearch" @on-select='selcetCountry' placeholder="Select value"
-            style="width:200px">
+          <auto-complete @on-search="handleSearch" @on-select='selcetCountry' placeholder="Select value" style="width:200px">
             <i-option v-for="item in searchCountry" :value="item.value" :key="item.name">
               <span>{{item.name}}</span>
               <span class='num-tip'>{{item.num}}</span>
@@ -217,8 +213,7 @@
             to
           </i-col>
           <i-col span="10">
-            <input-number v-model='filters.comments[1]' :min="filters.comments[0] || 0" class='small' :precision='0'>
-            </input-number>
+            <input-number v-model='filters.comments[1]' :min="filters.comments[0] || 0" class='small' :precision='0'></input-number>
           </i-col>
         </i-col>
       </Row>
@@ -567,8 +562,7 @@
           <div class='pre-btn button' @click='changeMagnify(1)'></div>
           <div class="img-container mark-mode">
             <img :alt="magnify.index" :src="magnify.src" id='cropper'>
-            <span class='bounding-box close-bounding-box' v-for="(position,index) in magnify.clothes"
-              v-if="magnifyConfig.selectIndex==index"
+            <span class='bounding-box close-bounding-box' v-for="(position,index) in magnify.clothes" v-if="magnifyConfig.selectIndex==index"
               v-bind:style="{left: position.box.left,width: position.box.width,top: position.box.top,height: position.box.height}">
               <span class='cloth' @click='deleteBox(magnify,index)'></span>
             </span>
@@ -599,17 +593,15 @@
               </i-col>
             </div>
             <div v-if='magnify.clothes[magnifyConfig.selectIndex]'>
-              <i-col span="24" v-for='(config,index) in magnify.clothes[magnifyConfig.selectIndex].tags'
-                class='info-item'>
+              <i-col span="24" v-for='(config,index) in magnify.clothes[magnifyConfig.selectIndex].tags' class='info-item'>
                 <i-col span="8" class='title'>{{config.cpTag[0]}}</i-col>
                 <i-col span="2"></i-col>
                 <i-col span="8">
-                  <i-select v-if="config.cpTag[0]=='category'" style="width:240px" v-model="config.cpTag[1]"
-                    @on-change='changeCate'>
+                  <i-select v-if="config.cpTag[0]=='category'" style="width:120px" v-model="config.cpTag[1]" @on-change='changeCate'>
                     <i-option v-for="child in getCategoryValueList(config.cpTag[0],config.cpTag[1])" :value="child"
                       :key="config.cpTag[0]">{{child}}</i-option>
                   </i-select>
-                  <i-select v-if="config.cpTag[0]!=='category'" style="width:240px" v-model="config.cpTag[1]">
+                  <i-select v-if="config.cpTag[0]!=='category'" style="width:120px" v-model="config.cpTag[1]">
                     <i-option v-for="child in getCategoryValueList(config.cpTag[0],config.cpTag[1])" :value="child"
                       :key="config.cpTag[0]">{{child}}</i-option>
                   </i-select>
@@ -622,9 +614,6 @@
                 </i-col>
               </i-col>
             </div>
-          </div>
-          <div class='footer'>
-            <i-button type="primary" @click='submit()'>submit</i-button>
           </div>
         </div>
         <div class='close-btn button' @click='magnify=null'></div>
@@ -697,8 +686,8 @@
           id: '',
           hashtags: '',
           occasion: '',
-          persons: [1, 5],
-          faces: [1, 5],
+          persons: [1, 1],
+          faces: [1, 1],
           likes: ['', ''],
           comments: ['', ''],
           bloggers: '',
@@ -753,8 +742,8 @@
           /**
            * mock/index.json  是本地mock数据  真正测试时需要修改为线上服务器路径
            */
-          //axios.get('/mock/get_items.json', data).then((response) => {
-          axios.post('/get_items',data).then((response)=> {
+          axios.get('/mock/get_items.json', data).then((response) => {
+            //axios.post('/get_items',data).then((response)=> {
             let data = response.data.data;
             this.formatData(data)
             this.items = data;
@@ -763,8 +752,8 @@
           })
         },
         getHashTagList: function () {
-          //axios.get('/mock/get_hashtag_list.json').then((response) => {
-          axios.get('/get_hashtag_list').then((response)=> {
+          axios.get('/mock/get_hashtag_list.json').then((response) => {
+            //axios.get('/get_hashtag_list').then((response)=> {
             let data = response.data.data;
             let keys = Object.keys(data);
             keys.forEach((item) => {
@@ -777,22 +766,22 @@
           })
         },
         getCountryList: function () {
-          //axios.get('/mock/get_country_list.json').then((response) => {
-          axios.get('/get_country_list').then((response)=> {
+          axios.get('/mock/get_country_list.json').then((response) => {
+            //axios.get('/get_country_list').then((response)=> {
             let data = response.data.data;
             this.countryList = data;
           })
         },
         getCatAttrValList: function () {
-          //axios.get('/mock/clothes_category_attribute_value.json').then((response) => {
-          axios.get('/get_cat_attr_val_list').then((response)=> {
+          axios.get('/mock/clothes_category_attribute_value.json').then((response) => {
+            //axios.get('/get_cat_attr_val_list').then((response)=> {
             let data = response.data;
             this.catAttrValList = data;// || {};
           })
         },
         getTaskList: function () {
-          //axios.get('/mock/get_task_list.json').then((response) => {
-          axios.get('/get_task_list').then((response)=> {
+          axios.get('/mock/get_task_list.json').then((response) => {
+            //axios.get('/get_task_list').then((response)=> {
             let data = response.data.list;
             this.taskList = data;
             this.config.task = data[0]
@@ -1074,10 +1063,8 @@
           let originData = lodash.cloneDeep(data);
           data.clothes.splice(index, 1)
           let json = {
-            //clothes: data.clothes,
-            //originClothes: originData.clothes,
-            action: "del_cloth",
-            cloth_id: index,
+            clothes: data.clothes,
+            originClothes:originData.clothes,
             id: data.id
           }
           console.log(json)
@@ -1089,39 +1076,20 @@
               console.log(error);
             });
         },
-        deleteAttr(data, index) {
+        deleteAttr(data,index){
           let select = this.magnifyConfig.selectIndex;
           let lodash = _;
           let originData = lodash.cloneDeep(data);
           data.clothes[select].tags.splice(index, 1)
           let json = {
-            //clothes: data.clothes,
-            //originClothes: originData.clothes,
-            action: "del_attr",
-            cloth_id: select,
-            attr_id: index,
+            clothes: data.clothes,
+            originClothes:originData.clothes,
             id: data.id
           }
           console.log(json)
           axios.post('/annotate_clothes', json)
             .then(function (response) {
               console.log(response);
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
-        },
-        submit() {
-          console.log(this.magnify);
-          let json = {
-            clothes: this.magnify.clothes,
-            action: "modify_cat_attr",
-            id: this.magnify.id
-          }
-          console.log(json)
-          axios.post('/annotate_clothes', json)
-            .then(function (response) {
-              
             })
             .catch(function (error) {
               console.log(error);
