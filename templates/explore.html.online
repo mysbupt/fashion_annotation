@@ -1,1062 +1,1137 @@
 <html lang="en">
 
-  <head>
-    <meta charset="utf-8">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <link rel="icon" href="/static/favicon.ico">
-    <title>MMKG in Fashion</title>
-    <link href="../static/css/signin.css" rel="stylesheet">
-    <link href="../static/css/style.css" rel="stylesheet">
-    <link href="../static/css/ivew.css" rel="stylesheet">
-    <link href="../static/css/explore.css" rel="stylesheet">
-    <link href="../static/css/cropper.css" rel="stylesheet">
-    <script src="../static/js/vue.min.js"></script>
-  </head>
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="icon" href="/static/favicon.ico">
+  <title>MMKG in Fashion</title>
+  <link href="../static/css/signin.css" rel="stylesheet">
+  <link href="../static/css/style.css" rel="stylesheet">
+  <link href="../static/css/ivew.css" rel="stylesheet">
+  <link href="../static/css/explore.css" rel="stylesheet">
+  <link href="../static/css/cropper.css" rel="stylesheet">
+  <script src="../static/js/vue.min.js"></script>
+</head>
 
-  <body>
-    <div id="app">
-      <i-menu mode="horizontal" :theme="'dark'" active-name="1" class='mmkg-header'>
-        <i-menu-item name="1" class='logo'>
-          <a class="navbar-brand" href="/explore">MMKG in Fashion</a>
-        </i-menu-item>
-        <i-menu-item name="2">
-          <i-button type="primary" class='filter' @click="filter">Filter</i-button>
-        </i-menu-item>
-        <i-menu-item name="3">
-          <i-button type="primary" class='setting filter' @click='setting'>Setting</i-button>
-        </i-menu-item>
-        <i-menu-item name="4" class='login'>
-          <!-- <span class="navbar-text navbar-right">{{username}}</span> -->
-          <span class="navbar-text navbar-right">admin</span>
-          <a class="nav-link navbar-right" href="/logout">Logout</a>
-        </i-menu-item>
-      </i-menu>
-      <div class='content'  v-if='items.length'>
-        <div class='imgs-box'>
-          <i-col :lg='24/config.layouts' v-for="(item, index) in items" v-show="!item.hide">
-            <div class="img-container mark-mode" @click='changeMagnify(0,index)'>
-              <img :width="item.width" :height="item.height" :alt="item.index" :src="item.src">
-              <span class='bounding-box face-bounding-box' v-for="(position, index) in (config.show_aligned_result ? item.face_detction_new.boxes : item.face_detction.boxes)"
-                v-if="config.show_face_bouding && (!config.show_aligned_result || (config.show_aligned_result && index > (config.which[0] - 2) && index < config.which[1]))"
-                v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
-              </span>
-              <span class='bounding-box body-bounding-box' v-if="config.show_body_bouding && (!config.show_aligned_result || (config.show_aligned_result && index > (config.which[0] - 2) && index < config.which[1]))"
-                v-for="(position,index) in (config.show_aligned_result ? item.object_detction_new : item.object_detction)"
-                v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
-              </span>
-              <span class='bounding-box close-bounding-box' v-if="config.show_clothes_bouding" v-for="(position,index) in item.clothes"
-                v-bind:style="{left: position.box.left,width: position.box.width,top: position.box.top,height: position.box.height}">
-              </span>
-              <Row class='lables' v-if='config.mode == "Mark"'>
-                <i-col :lg='24/config.task.option.length' v-for="option in config.task.option">
-                  <i-button type="ghost" @click='mark(option,item)' @click.stop>{{option}}</i-button>
-                </i-col>
-              </Row>
-            </div>
-          </i-col>
-        </div>
-      </div>
-      <footer>
-        <Page :page-size='config.batch' :current="config.page" :total="pages.count" show-elevator show-total @on-change='pageChange'
-          @on-page-size-change='pageSizeChange'></Page>
-      </footer>
-      <Modal v-model="filterModalConfig.show" :mask-closable="filterModalConfig.maskClosable" :loading="filterModalConfig.loading"
-        title="Filter Modal" class='filter-modal' @on-ok="filterConfirm">
-        <Row>
-          <i-col span="12" class='left'>
-            <span>Start Time</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <date-picker type="datetime" placeholder="Select time" @on-change='startTimeChange'></date-picker>
-          </i-col>
-        </Row>
-        <Row>
-          <i-col span="12" class='left'>
-            <span>End Time</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <date-picker type="datetime" placeholder="Select time" @on-change='endTimeChange'></date-picker>
-          </i-col>
-        </Row>
-        <Row>
-          <i-col span="12" class='left'>
-            <span>Longitude</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <i-col span="10">
-              <input-number v-model='filters.location.longitude[0]' :min="-180" :max="180" class='small'></input-number>
-            </i-col>
-            <i-col span="2" class='text'>
-              to
-            </i-col>
-            <i-col span="10">
-              <input-number v-model='filters.location.longitude[1]' :min="-180" :max="180" class='small'></input-number>
-            </i-col>
-          </i-col>
-        </Row>
-        <Row>
-          <i-col span="12" class='left'>
-            <span>Latitude</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <i-col span="10">
-              <input-number v-model='filters.location.latitude[0]' :min="-90" :max="90" class='small'></input-number>
-            </i-col>
-            <i-col span="2" class='text'>
-              to
-            </i-col>
-            <i-col span="10">
-              <input-number v-model='filters.location.latitude[1]' :min="-90" :max="90" class='small'></input-number>
-            </i-col>
-          </i-col>
-        </Row>
-        <Row>
-          <i-col span="12" class='left'>
-            <span>Country</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <auto-complete @on-search="handleSearch" @on-select='selcetCountry' placeholder="Select value" style="width:200px">
-              <i-option v-for="item in searchCountry" :value="item.value" :key="item.name">
-                <span>{{item.name}}</span>
-                <span class='num-tip'>{{item.num}}</span>
-              </i-option>
-            </auto-complete>
-          </i-col>
-        </Row>
-        <Row>
-          <i-col span="12" class='left'>
-            <span>Occasion</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <i-input v-model='filters.occasion'></i-input>
-          </i-col>
-        </Row>
-        <Row>
-          <i-col span="12" class='left'>
-            <span>Hashtags</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <i-select v-model="filters.hashtags" style="width:200px" multiple>
-              <i-option v-for="item in hashTagList" :value="item.key" :key="item.key">
-                <span>{{item.key}}</span>
-                <span class='num-tip'>{{item.value}}</span>
-              </i-option>
-            </i-select>
-          </i-col>
-        </Row>
-        <Row>
-          <i-col span="12" class='left'>
-            <span>Num of Persons</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <i-col span="10">
-              <input-number v-model='filters.persons[0]' :min="0" class='small' :precision='0'></input-number>
-            </i-col>
-            <i-col span="2" class='text'>
-              to
-            </i-col>
-            <i-col span="10">
-              <input-number v-model='filters.persons[1]' :min="0" class='small' :precision='0'></input-number>
-            </i-col>
-          </i-col>
-        </Row>
-        <Row>
-          <i-col span="12" class='left'>
-            <span>Num of Faces</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <i-col span="10">
-              <input-number v-model='filters.faces[0]' :min="0" class='small' :precision='0'></input-number>
-            </i-col>
-            <i-col span="2" class='text'>
-              to
-            </i-col>
-            <i-col span="10">
-              <input-number v-model='filters.faces[1]' :min="0" class='small' :precision='0'></input-number>
-            </i-col>
-          </i-col>
-        </Row>
-        <Row>
-          <i-col span="12" class='left'>
-            <span>Num of Likes</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <i-col span="10">
-              <input-number v-model='filters.likes[0]' :min="0" class='small' :precision='0'></input-number>
-            </i-col>
-            <i-col span="2" class='text'>
-              to
-            </i-col>
-            <i-col span="10">
-              <input-number v-model='filters.likes[1]' :min="0" class='small' :precision='0'></input-number>
-            </i-col>
-          </i-col>
-        </Row>
-        <Row>
-          <i-col span="12" class='left'>
-            <span>Num of Comments</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <i-col span="10">
-              <input-number v-model='filters.comments[0]' :min="0" class='small' :precision='0'></input-number>
-            </i-col>
-            <i-col span="2" class='text'>
-              to
-            </i-col>
-            <i-col span="10">
-              <input-number v-model='filters.comments[1]' :min="filters.comments[0] || 0" class='small' :precision='0'></input-number>
-            </i-col>
-          </i-col>
-        </Row>
-        <Row>
-          <i-col span="12" class='left'>
-            <span>Posters</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <i-input placeholder="multi-posters splited by '|'" v-model='filters.bloggers'></i-input>
-          </i-col>
-        </Row>
-        <Row>
-          <i-col span="12" class='left'>
-            <span>dark_degree</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <input-number v-model='filters.dark_degree' :min="0" :max="1" class='small' :precision='0'></input-number>
-          </i-col>
-        </Row>
-        <Row>
-          <i-col span="12" class='left'>
-            <span>has_url</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <i-switch v-model="filters.has_url"></i-switch>
-          </i-col>
-        </Row>
-        <Row>
-          <i-col span="12" class='left'>
-            <span>has_watermark</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <i-switch v-model="filters.has_watermark"></i-switch>
-          </i-col>
-        </Row>
-        <Row>
-          <i-col span="12" class='left'>
-            <span>is_face_in_body</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <i-switch v-model="filters.is_face_in_body"></i-switch>
-          </i-col>
-        </Row>
-        <Row>
-          <i-col span="12" class='left'>
-            <span>filter_by_score</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <i-switch v-model="filters.filter_by_score"></i-switch>
-          </i-col>
-        </Row>
-        <Row>
-          <i-col span="12" class='left'>
-            <span>must_have_location</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <i-switch v-model="filters.must_have_location"></i-switch>
-          </i-col>
-        </Row>
-        <Row>
-          <i-col span="12" class='left'>
-            <span>label_yes</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <i-switch v-model="filters.label_yes"></i-switch>
-          </i-col>
-        </Row>
-        <Row>
-          <i-col span="12" class='left'>
-            <span>label_no</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <i-switch v-model="filters.label_no"></i-switch>
-          </i-col>
-        </Row>
-        <Row>
-          <i-col span="12" class='left'>
-            <span>label_not_sure</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <i-switch v-model="filters.label_not_sure"></i-switch>
-          </i-col>
-        </Row>
-        <Row>
-          <i-col span="12" class='left'>
-            <span>label_null</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <i-switch v-model="filters.label_null"></i-switch>
-          </i-col>
-        </Row>
-        <Row v-if='filters.filter_by_score'>
-          <i-col span="12" class='left'>
-            <span>binary_score</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <i-col span="10">
-              <input-number v-model='filters.binary_score[0]' :min="0" :max='1' :precision='2'></input-number>
-            </i-col>
-            <i-col span="2" class='text'>
-              to
-            </i-col>
-            <i-col span="10">
-              <input-number v-model='filters.binary_score[1]' :min="0" :max='1' :precision='2'></input-number>
-            </i-col>
-          </i-col>
-        </Row>
-        <Row v-if='filters.is_face_in_body'>
-          <i-col span="12" class='left'>
-            <span>face_body_per</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <i-col span="10">
-              <input-number v-model='filters.face_body_per[0]' :min="0" :max='1' :precision='2'></input-number>
-            </i-col>
-            <i-col span="2" class='text'>
-              to
-            </i-col>
-            <i-col span="10">
-              <input-number v-model='filters.face_body_per[1]' :min="0" :max='1' :precision='2'></input-number>
-            </i-col>
-          </i-col>
-        </Row>
-        <Row v-if='filters.is_face_in_body'>
-          <i-col span="12" class='left'>
-            <span>face_per</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <i-col span="10">
-              <input-number v-model='filters.face_per[0]' :min="0" :max='1' :precision='2'></input-number>
-            </i-col>
-            <i-col span="2" class='text'>
-              to
-            </i-col>
-            <i-col span="10">
-              <input-number v-model='filters.face_per[1]' :min="0" :max='1' :precision='2'></input-number>
-            </i-col>
-          </i-col>
-        </Row>
-        <Row v-if='filters.is_face_in_body'>
-          <i-col span="12" class='left'>
-            <span>body_per</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <i-col span="10">
-              <input-number v-model='filters.body_per[0]' :min="0" :max='1' :precision='2'></input-number>
-            </i-col>
-            <i-col span="2" class='text'>
-              to
-            </i-col>
-            <i-col span="10">
-              <input-number v-model='filters.body_per[1]' :min="0" :max='1' :precision='2'></input-number>
-            </i-col>
-          </i-col>
-        </Row>
-        <Row v-if='filters.is_face_in_body'>
-          <i-col span="12" class='left'>
-            <span>face_body_w_per</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <i-col span="10">
-              <input-number v-model='filters.face_body_w_per[0]' :min="0" :max='1' :precision='2'></input-number>
-            </i-col>
-            <i-col span="2" class='text'>
-              to
-            </i-col>
-            <i-col span="10">
-              <input-number v-model='filters.face_body_w_per[1]' :min="0" :max='1' :precision='2'></input-number>
-            </i-col>
-          </i-col>
-        </Row>
-        <Row v-if='filters.is_face_in_body'>
-          <i-col span="12" class='left'>
-            <span>face_body_h_per</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <i-col span="10">
-              <input-number v-model='filters.face_body_h_per[0]' :min="0" :max='1' :precision='2'></input-number>
-            </i-col>
-            <i-col span="2" class='text'>
-              to
-            </i-col>
-            <i-col span="10">
-              <input-number v-model='filters.face_body_h_per[1]' :min="0" :max='1' :precision='2'></input-number>
-            </i-col>
-          </i-col>
-        </Row>
-        <Row v-if='filters.is_face_in_body'>
-          <i-col span="12" class='left'>
-            <span>face_w_per</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <i-col span="10">
-              <input-number v-model='filters.face_w_per[0]' :min="0" :max='1' :precision='2'></input-number>
-            </i-col>
-            <i-col span="2" class='text'>
-              to
-            </i-col>
-            <i-col span="10">
-              <input-number v-model='filters.face_w_per[1]' :min="0" :max='1' :precision='2'></input-number>
-            </i-col>
-          </i-col>
-        </Row>
-        <Row v-if='filters.is_face_in_body'>
-          <i-col span="12" class='left'>
-            <span>face_h_per</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <i-col span="10">
-              <input-number v-model='filters.face_h_per[0]' :min="0" :max='1' :precision='2'></input-number>
-            </i-col>
-            <i-col span="2" class='text'>
-              to
-            </i-col>
-            <i-col span="10">
-              <input-number v-model='filters.face_h_per[1]' :min="0" :max='1' :precision='2'></input-number>
-            </i-col>
-          </i-col>
-        </Row>
-        <Row v-if='filters.is_face_in_body'>
-          <i-col span="12" class='left'>
-            <span>body_w_per</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <i-col span="10">
-              <input-number v-model='filters.body_w_per[0]' :min="0" :max='1' :precision='2'></input-number>
-            </i-col>
-            <i-col span="2" class='text'>
-              to
-            </i-col>
-            <i-col span="10">
-              <input-number v-model='filters.body_w_per[1]' :min="0" :max='1' :precision='2'></input-number>
-            </i-col>
-          </i-col>
-        </Row>
-        <Row v-if='filters.is_face_in_body'>
-          <i-col span="12" class='left'>
-            <span>body_h_per</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <i-col span="10">
-              <input-number v-model='filters.body_h_per[0]' :min="0" :max='1' :precision='2'></input-number>
-            </i-col>
-            <i-col span="2" class='text'>
-              to
-            </i-col>
-            <i-col span="10">
-              <input-number v-model='filters.body_h_per[1]' :min="0" :max='1' :precision='2'></input-number>
-            </i-col>
-          </i-col>
-        </Row>
-      </Modal>
-      <Modal v-model="settingModalConfig.show" :mask-closable="settingModalConfig.maskClosable" title="Seeting Modal" class='filter-modal'
-        @on-ok="settingConfirm" @on-cancel="settingCancel">
-        <Row>
-          <i-col span="12" class='left'>
-            <span>Request Batch</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <input-number v-model='config.batch' :min="1" :precision='0'></input-number>
-          </i-col>
-        </Row>
-        <Row>
-          <i-col span="12" class='left'>
-            <span>Number of Images Per Line</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <input-number v-model='config.layouts' :min="2" :max='8' :precision='0' :step='2'></input-number>
-          </i-col>
-        </Row>
-        <Row>
-          <i-col span="12" class='left'>
-            <span>Show the Face BoudingBox</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <i-switch v-model="config.show_face_bouding"></i-switch>
-          </i-col>
-        </Row>
-        <Row>
-          <i-col span="12" class='left'>
-            <span>Show the Body BoudingBox</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <i-switch v-model="config.show_body_bouding"></i-switch>
-          </i-col>
-        </Row>
-        <Row>
-          <i-col span="12" class='left'>
-            <span>Show the clothes BoudingBox</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <i-switch v-model="config.show_clothes_bouding"></i-switch>
-          </i-col>
-        </Row>
-        <Row>
-          <i-col span="12" class='left'>
-            <span>Work Mode</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <radio-group v-model="config.mode">
-              <Radio label="Browse">Browse</Radio>
-              <Radio label="Mark">Mark</Radio>
-            </radio-group>
-          </i-col>
-        </Row>
-        <Row v-if='config.mode==="Mark"'>
-          <i-col span="12" class='left'>
-            <span>Selcet Task</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <i-select v-model="config.task" style="width:200px">
-              <i-option v-for="item in taskList" :value="item" :key="item.task">
-                <span>{{item.task}}</span>
-              </i-option>
-            </i-select>
-          </i-col>
-        </Row>
-        <Row>
-          <i-col span="12" class='left'>
-            <span>Show Aligned Result</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <i-switch v-model="config.show_aligned_result"></i-switch>
-          </i-col>
-        </Row>
-        <Row v-if="config.show_aligned_result">
-          <i-col span="12" class='left'>
-            <span>Which to Show</span>
-          </i-col>
-          <i-col span="12" class='right'>
-            <i-col span="10">
-              <input-number v-model='config.which[0]' :min="1" :precision='0'></input-number>
-            </i-col>
-            <i-col span="2" class='text'>
-              to
-            </i-col>
-            <i-col span="10">
-              <input-number v-model='config.which[1]' :min="1" :precision='0'></input-number>
-            </i-col>
-          </i-col>
-        </Row>
-      </Modal>
-      <div class='magnify-container' v-if='magnify'>
-        <div class='magnify-content'>
-          <div class="img-box">
-            <div class='pre-btn button' @click='changeMagnify(1)'></div>
-            <div class="img-container mark-mode">
-              <img :alt="magnify.index" :src="magnify.src" id='cropper'>
-              <span class='bounding-box close-bounding-box' v-for="(position,index) in magnify.clothes" v-if="magnifyConfig.selectIndex==index"
-                v-bind:style="{left: position.box.left,width: position.box.width,top: position.box.top,height: position.box.height}">
-              </span>
-            </div>
-            <div class='next-btn button' @click='changeMagnify(2)'></div>
+<body>
+  <div id="app">
+    <i-menu mode="horizontal" :theme="'dark'" active-name="1" class='mmkg-header'>
+      <i-menu-item name="1" class='logo'>
+        <a class="navbar-brand" href="/explore">MMKG in Fashion</a>
+      </i-menu-item>
+      <i-menu-item name="2">
+        <i-button type="primary" class='filter' @click="filter">Filter</i-button>
+      </i-menu-item>
+      <i-menu-item name="3">
+        <i-button type="primary" class='setting filter' @click='setting'>Setting</i-button>
+      </i-menu-item>
+      <i-menu-item name="4" class='login'>
+        <!-- <span class="navbar-text navbar-right">{{username}}</span> -->
+        <span class="navbar-text navbar-right">admin</span>
+        <a class="nav-link navbar-right" href="/logout">Logout</a>
+      </i-menu-item>
+    </i-menu>
+    <div class='content' v-if='items.length'>
+      <div class='imgs-box'>
+        <i-col :lg='24/config.layouts' v-for="(item, index) in items" v-show="!item.hide">
+          <div class="img-container mark-mode" @click='changeMagnify(0,index)'>
+            <img :width="item.width" :height="item.height" :alt="item.index" :src="item.src">
+            <span class='bounding-box face-bounding-box'
+              v-for="(position, index) in (config.show_aligned_result ? item.face_detction_new.boxes : item.face_detction.boxes)"
+              v-if="config.show_face_bouding && (!config.show_aligned_result || (config.show_aligned_result && index > (config.which[0] - 2) && index < config.which[1]))"
+              v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
+            </span>
+            <span class='bounding-box body-bounding-box'
+              v-if="config.show_body_bouding && (!config.show_aligned_result || (config.show_aligned_result && index > (config.which[0] - 2) && index < config.which[1]))"
+              v-for="(position,index) in (config.show_aligned_result ? item.object_detction_new : item.object_detction)"
+              v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
+            </span>
+            <span class='bounding-box close-bounding-box' v-if="config.show_clothes_bouding"
+              v-for="(position,index) in item.clothes"
+              v-bind:style="{left: position.box.left,width: position.box.width,top: position.box.top,height: position.box.height}">
+            </span>
+            <Row class='lables' v-if='config.mode == "Mark"'>
+              <i-col :lg='24/config.task.option.length' v-for="option in config.task.option">
+                <i-button type="ghost" @click='mark(option,item)' @click.stop>{{option}}</i-button>
+              </i-col>
+            </Row>
           </div>
-          <div class="info-box">
-            <div class="header">
-              <span class='title'>choose</span>
-              <radio-group v-model="magnifyConfig.selectIndex">
-                <Radio label='-1'>base info</Radio>
-                <Radio v-for='(position,index) in magnify.clothes' :label=index>cloth bbox {{index+1}}</Radio>
-              </radio-group>
-            </div>
-            <div class="content">
-              <div v-if='magnifyConfig.selectIndex == -1'>
-                <i-col span="24" v-for='(config,index) in baseInfoConfig' class='info-item'>
-                  <i-col span="8" class='title'>{{config.key}}</i-col>
-                  <i-col span="2"></i-col>
-                  <i-col span="12">
-                    <a v-if="config.type=='link'" v-for='grand in config.value' :href="magnify[config.url]">
-                      {{magnify[grand]}}
-                    </a>
-                    <em v-if="config.type !=='link'" v-for='(grand, index) in config.value'>
-                      {{magnify[grand]}}
-                    </em>
-                  </i-col>
-                </i-col>
-              </div>
-              <div v-if='magnify.clothes[magnifyConfig.selectIndex]'>
-                <i-col span="24" v-for='(config,index) in magnify.clothes[magnifyConfig.selectIndex].tags' class='info-item'>
-                  <i-col span="8" class='title'>{{config.cpTag[0]}}</i-col>
-                  <i-col span="2"></i-col>
-                  <i-col span="8">
-                    <i-select v-if="config.cpTag[0]=='category'" style="width:120px" v-model="config.cpTag[1]" @on-change='changeCate'>
-                      <i-option
-                      v-for="child in getCategoryValueList(config.cpTag[0],config.cpTag[1])"
-                      :value="child" :key="config.cpTag[0]">{{child}}</i-option>
-                    </i-select>
-                    <i-select v-if="config.cpTag[0]!=='category'" style="width:120px" v-model="config.cpTag[1]">
-                        <i-option
-                        v-for="child in getCategoryValueList(config.cpTag[0],config.cpTag[1])"
-                        :value="child" :key="config.cpTag[0]">{{child}}</i-option>
-                      </i-select>
-                  </i-col>
-                  <i-col span="2">
-                    {{config.score.toFixed(2)}}
-                  </i-col>
-                </i-col>
-              </div>
-            </div>
-          </div>
-          <div class='close-btn button' @click='magnify=null'></div>
-        </div>
+        </i-col>
       </div>
     </div>
-    <script src="../static/js/axios.min.js"></script>
-    <script src="../static/js/ivew.min.js"></script>
-    <script src="../static/js/cropper.js"></script>
-    <script>
-      var app = new Vue({
-        el: '#app',
-        components: {},
-        mounted: function () {
-          this.getItems();
-          this.getHashTagList();
-          this.getCountryList();
-          this.getTaskList();
-          this.getCatAttrValList();
+    <footer>
+      <Page :page-size='config.batch' :current="config.page" :total="pages.count" show-elevator show-total
+        @on-change='pageChange' @on-page-size-change='pageSizeChange'></Page>
+    </footer>
+    <Modal v-model="filterModalConfig.show" :mask-closable="filterModalConfig.maskClosable"
+      :loading="filterModalConfig.loading" title="Filter Modal" class='filter-modal' @on-ok="filterConfirm">
+      <Row>
+        <i-col span="12" class='left'>
+          <span>Start Time</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <date-picker type="datetime" placeholder="Select time" @on-change='startTimeChange'></date-picker>
+        </i-col>
+      </Row>
+      <Row>
+        <i-col span="12" class='left'>
+          <span>End Time</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <date-picker type="datetime" placeholder="Select time" @on-change='endTimeChange'></date-picker>
+        </i-col>
+      </Row>
+      <Row>
+        <i-col span="12" class='left'>
+          <span>Longitude</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-col span="10">
+            <input-number v-model='filters.location.longitude[0]' :min="-180" :max="180" class='small'></input-number>
+          </i-col>
+          <i-col span="2" class='text'>
+            to
+          </i-col>
+          <i-col span="10">
+            <input-number v-model='filters.location.longitude[1]' :min="-180" :max="180" class='small'></input-number>
+          </i-col>
+        </i-col>
+      </Row>
+      <Row>
+        <i-col span="12" class='left'>
+          <span>Latitude</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-col span="10">
+            <input-number v-model='filters.location.latitude[0]' :min="-90" :max="90" class='small'></input-number>
+          </i-col>
+          <i-col span="2" class='text'>
+            to
+          </i-col>
+          <i-col span="10">
+            <input-number v-model='filters.location.latitude[1]' :min="-90" :max="90" class='small'></input-number>
+          </i-col>
+        </i-col>
+      </Row>
+      <Row>
+        <i-col span="12" class='left'>
+          <span>id</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-input v-model='filters.id'></i-input>
+        </i-col>
+      </Row>
+      <Row>
+        <i-col span="12" class='left'>
+          <span>Country</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <auto-complete @on-search="handleSearch" @on-select='selcetCountry' placeholder="Select value"
+            style="width:200px">
+            <i-option v-for="item in searchCountry" :value="item.value" :key="item.name">
+              <span>{{item.name}}</span>
+              <span class='num-tip'>{{item.num}}</span>
+            </i-option>
+          </auto-complete>
+        </i-col>
+      </Row>
+      <Row>
+        <i-col span="12" class='left'>
+          <span>Occasion</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-input v-model='filters.occasion'></i-input>
+        </i-col>
+      </Row>
+      <Row>
+        <i-col span="12" class='left'>
+          <span>Hashtags</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-select v-model="filters.hashtags" style="width:200px" multiple>
+            <i-option v-for="item in hashTagList" :value="item.key" :key="item.key">
+              <span>{{item.key}}</span>
+              <span class='num-tip'>{{item.value}}</span>
+            </i-option>
+          </i-select>
+        </i-col>
+      </Row>
+      <Row>
+        <i-col span="12" class='left'>
+          <span>Num of Persons</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-col span="10">
+            <input-number v-model='filters.persons[0]' :min="0" class='small' :precision='0'></input-number>
+          </i-col>
+          <i-col span="2" class='text'>
+            to
+          </i-col>
+          <i-col span="10">
+            <input-number v-model='filters.persons[1]' :min="0" class='small' :precision='0'></input-number>
+          </i-col>
+        </i-col>
+      </Row>
+      <Row>
+        <i-col span="12" class='left'>
+          <span>Num of Faces</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-col span="10">
+            <input-number v-model='filters.faces[0]' :min="0" class='small' :precision='0'></input-number>
+          </i-col>
+          <i-col span="2" class='text'>
+            to
+          </i-col>
+          <i-col span="10">
+            <input-number v-model='filters.faces[1]' :min="0" class='small' :precision='0'></input-number>
+          </i-col>
+        </i-col>
+      </Row>
+      <Row>
+        <i-col span="12" class='left'>
+          <span>Num of Likes</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-col span="10">
+            <input-number v-model='filters.likes[0]' :min="0" class='small' :precision='0'></input-number>
+          </i-col>
+          <i-col span="2" class='text'>
+            to
+          </i-col>
+          <i-col span="10">
+            <input-number v-model='filters.likes[1]' :min="0" class='small' :precision='0'></input-number>
+          </i-col>
+        </i-col>
+      </Row>
+      <Row>
+        <i-col span="12" class='left'>
+          <span>Num of Comments</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-col span="10">
+            <input-number v-model='filters.comments[0]' :min="0" class='small' :precision='0'></input-number>
+          </i-col>
+          <i-col span="2" class='text'>
+            to
+          </i-col>
+          <i-col span="10">
+            <input-number v-model='filters.comments[1]' :min="filters.comments[0] || 0" class='small' :precision='0'>
+            </input-number>
+          </i-col>
+        </i-col>
+      </Row>
+      <Row>
+        <i-col span="12" class='left'>
+          <span>Posters</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-input placeholder="multi-posters splited by '|'" v-model='filters.bloggers'></i-input>
+        </i-col>
+      </Row>
+      <Row>
+        <i-col span="12" class='left'>
+          <span>dark_degree</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <input-number v-model='filters.dark_degree' :min="0" :max="1" class='small' :precision='0'></input-number>
+        </i-col>
+      </Row>
+      <Row>
+        <i-col span="12" class='left'>
+          <span>has_url</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-switch v-model="filters.has_url"></i-switch>
+        </i-col>
+      </Row>
+      <Row>
+        <i-col span="12" class='left'>
+          <span>has_watermark</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-switch v-model="filters.has_watermark"></i-switch>
+        </i-col>
+      </Row>
+      <Row>
+        <i-col span="12" class='left'>
+          <span>is_face_in_body</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-switch v-model="filters.is_face_in_body"></i-switch>
+        </i-col>
+      </Row>
+      <Row>
+        <i-col span="12" class='left'>
+          <span>filter_by_score</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-switch v-model="filters.filter_by_score"></i-switch>
+        </i-col>
+      </Row>
+      <Row>
+        <i-col span="12" class='left'>
+          <span>must_have_location</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-switch v-model="filters.must_have_location"></i-switch>
+        </i-col>
+      </Row>
+      <Row>
+        <i-col span="12" class='left'>
+          <span>label_yes</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-switch v-model="filters.label_yes"></i-switch>
+        </i-col>
+      </Row>
+      <Row>
+        <i-col span="12" class='left'>
+          <span>label_no</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-switch v-model="filters.label_no"></i-switch>
+        </i-col>
+      </Row>
+      <Row>
+        <i-col span="12" class='left'>
+          <span>label_not_sure</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-switch v-model="filters.label_not_sure"></i-switch>
+        </i-col>
+      </Row>
+      <Row>
+        <i-col span="12" class='left'>
+          <span>label_null</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-switch v-model="filters.label_null"></i-switch>
+        </i-col>
+      </Row>
+      <Row v-if='filters.filter_by_score'>
+        <i-col span="12" class='left'>
+          <span>binary_score</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-col span="10">
+            <input-number v-model='filters.binary_score[0]' :min="0" :max='1' :precision='2'></input-number>
+          </i-col>
+          <i-col span="2" class='text'>
+            to
+          </i-col>
+          <i-col span="10">
+            <input-number v-model='filters.binary_score[1]' :min="0" :max='1' :precision='2'></input-number>
+          </i-col>
+        </i-col>
+      </Row>
+      <Row v-if='filters.is_face_in_body'>
+        <i-col span="12" class='left'>
+          <span>face_body_per</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-col span="10">
+            <input-number v-model='filters.face_body_per[0]' :min="0" :max='1' :precision='2'></input-number>
+          </i-col>
+          <i-col span="2" class='text'>
+            to
+          </i-col>
+          <i-col span="10">
+            <input-number v-model='filters.face_body_per[1]' :min="0" :max='1' :precision='2'></input-number>
+          </i-col>
+        </i-col>
+      </Row>
+      <Row v-if='filters.is_face_in_body'>
+        <i-col span="12" class='left'>
+          <span>face_per</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-col span="10">
+            <input-number v-model='filters.face_per[0]' :min="0" :max='1' :precision='2'></input-number>
+          </i-col>
+          <i-col span="2" class='text'>
+            to
+          </i-col>
+          <i-col span="10">
+            <input-number v-model='filters.face_per[1]' :min="0" :max='1' :precision='2'></input-number>
+          </i-col>
+        </i-col>
+      </Row>
+      <Row v-if='filters.is_face_in_body'>
+        <i-col span="12" class='left'>
+          <span>body_per</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-col span="10">
+            <input-number v-model='filters.body_per[0]' :min="0" :max='1' :precision='2'></input-number>
+          </i-col>
+          <i-col span="2" class='text'>
+            to
+          </i-col>
+          <i-col span="10">
+            <input-number v-model='filters.body_per[1]' :min="0" :max='1' :precision='2'></input-number>
+          </i-col>
+        </i-col>
+      </Row>
+      <Row v-if='filters.is_face_in_body'>
+        <i-col span="12" class='left'>
+          <span>face_body_w_per</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-col span="10">
+            <input-number v-model='filters.face_body_w_per[0]' :min="0" :max='1' :precision='2'></input-number>
+          </i-col>
+          <i-col span="2" class='text'>
+            to
+          </i-col>
+          <i-col span="10">
+            <input-number v-model='filters.face_body_w_per[1]' :min="0" :max='1' :precision='2'></input-number>
+          </i-col>
+        </i-col>
+      </Row>
+      <Row v-if='filters.is_face_in_body'>
+        <i-col span="12" class='left'>
+          <span>face_body_h_per</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-col span="10">
+            <input-number v-model='filters.face_body_h_per[0]' :min="0" :max='1' :precision='2'></input-number>
+          </i-col>
+          <i-col span="2" class='text'>
+            to
+          </i-col>
+          <i-col span="10">
+            <input-number v-model='filters.face_body_h_per[1]' :min="0" :max='1' :precision='2'></input-number>
+          </i-col>
+        </i-col>
+      </Row>
+      <Row v-if='filters.is_face_in_body'>
+        <i-col span="12" class='left'>
+          <span>face_w_per</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-col span="10">
+            <input-number v-model='filters.face_w_per[0]' :min="0" :max='1' :precision='2'></input-number>
+          </i-col>
+          <i-col span="2" class='text'>
+            to
+          </i-col>
+          <i-col span="10">
+            <input-number v-model='filters.face_w_per[1]' :min="0" :max='1' :precision='2'></input-number>
+          </i-col>
+        </i-col>
+      </Row>
+      <Row v-if='filters.is_face_in_body'>
+        <i-col span="12" class='left'>
+          <span>face_h_per</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-col span="10">
+            <input-number v-model='filters.face_h_per[0]' :min="0" :max='1' :precision='2'></input-number>
+          </i-col>
+          <i-col span="2" class='text'>
+            to
+          </i-col>
+          <i-col span="10">
+            <input-number v-model='filters.face_h_per[1]' :min="0" :max='1' :precision='2'></input-number>
+          </i-col>
+        </i-col>
+      </Row>
+      <Row v-if='filters.is_face_in_body'>
+        <i-col span="12" class='left'>
+          <span>body_w_per</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-col span="10">
+            <input-number v-model='filters.body_w_per[0]' :min="0" :max='1' :precision='2'></input-number>
+          </i-col>
+          <i-col span="2" class='text'>
+            to
+          </i-col>
+          <i-col span="10">
+            <input-number v-model='filters.body_w_per[1]' :min="0" :max='1' :precision='2'></input-number>
+          </i-col>
+        </i-col>
+      </Row>
+      <Row v-if='filters.is_face_in_body'>
+        <i-col span="12" class='left'>
+          <span>body_h_per</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-col span="10">
+            <input-number v-model='filters.body_h_per[0]' :min="0" :max='1' :precision='2'></input-number>
+          </i-col>
+          <i-col span="2" class='text'>
+            to
+          </i-col>
+          <i-col span="10">
+            <input-number v-model='filters.body_h_per[1]' :min="0" :max='1' :precision='2'></input-number>
+          </i-col>
+        </i-col>
+      </Row>
+    </Modal>
+    <Modal v-model="settingModalConfig.show" :mask-closable="settingModalConfig.maskClosable" title="Seeting Modal"
+      class='filter-modal' @on-ok="settingConfirm" @on-cancel="settingCancel">
+      <Row>
+        <i-col span="12" class='left'>
+          <span>Request Batch</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <input-number v-model='config.batch' :min="1" :precision='0'></input-number>
+        </i-col>
+      </Row>
+      <Row>
+        <i-col span="12" class='left'>
+          <span>Number of Images Per Line</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <input-number v-model='config.layouts' :min="2" :max='8' :precision='0' :step='2'></input-number>
+        </i-col>
+      </Row>
+      <Row>
+        <i-col span="12" class='left'>
+          <span>Show the Face BoudingBox</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-switch v-model="config.show_face_bouding"></i-switch>
+        </i-col>
+      </Row>
+      <Row>
+        <i-col span="12" class='left'>
+          <span>Show the Body BoudingBox</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-switch v-model="config.show_body_bouding"></i-switch>
+        </i-col>
+      </Row>
+      <Row>
+        <i-col span="12" class='left'>
+          <span>Show the clothes BoudingBox</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-switch v-model="config.show_clothes_bouding"></i-switch>
+        </i-col>
+      </Row>
+      <Row>
+        <i-col span="12" class='left'>
+          <span>Work Mode</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <radio-group v-model="config.mode">
+            <Radio label="Browse">Browse</Radio>
+            <Radio label="Mark">Mark</Radio>
+          </radio-group>
+        </i-col>
+      </Row>
+      <Row v-if='config.mode==="Mark"'>
+        <i-col span="12" class='left'>
+          <span>Selcet Task</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-select v-model="config.task" style="width:200px">
+            <i-option v-for="item in taskList" :value="item" :key="item.task">
+              <span>{{item.task}}</span>
+            </i-option>
+          </i-select>
+        </i-col>
+      </Row>
+      <Row>
+        <i-col span="12" class='left'>
+          <span>Show Aligned Result</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-switch v-model="config.show_aligned_result"></i-switch>
+        </i-col>
+      </Row>
+      <Row v-if="config.show_aligned_result">
+        <i-col span="12" class='left'>
+          <span>Which to Show</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-col span="10">
+            <input-number v-model='config.which[0]' :min="1" :precision='0'></input-number>
+          </i-col>
+          <i-col span="2" class='text'>
+            to
+          </i-col>
+          <i-col span="10">
+            <input-number v-model='config.which[1]' :min="1" :precision='0'></input-number>
+          </i-col>
+        </i-col>
+      </Row>
+    </Modal>
+    <div class='magnify-container' v-if='magnify'>
+      <div class='magnify-content'>
+        <div class="img-box">
+          <div class='pre-btn button' @click='changeMagnify(1)'></div>
+          <div class="img-container mark-mode">
+            <img :alt="magnify.index" :src="magnify.src" id='cropper'>
+            <span class='bounding-box close-bounding-box' v-for="(position,index) in magnify.clothes"
+              v-if="magnifyConfig.selectIndex==index"
+              v-bind:style="{left: position.box.left,width: position.box.width,top: position.box.top,height: position.box.height}">
+              <span class='cloth' @click='deleteBox(magnify,index)'></span>
+            </span>
+          </div>
+          <div class='next-btn button' @click='changeMagnify(2)'></div>
+        </div>
+        <div class="info-box">
+          <div class="header">
+            <span class='title'>choose</span>
+            <radio-group v-model="magnifyConfig.selectIndex">
+              <Radio label='-1'>base info</Radio>
+              <Radio v-for='(position,index) in magnify.clothes' :label=index>cloth bbox {{index+1}}</Radio>
+            </radio-group>
+          </div>
+          <div class="content">
+            <div v-if='magnifyConfig.selectIndex == -1'>
+              <i-col span="24" v-for='(config,index) in baseInfoConfig' class='info-item'>
+                <i-col span="8" class='title'>{{config.key}}</i-col>
+                <i-col span="2"></i-col>
+                <i-col span="12">
+                  <a v-if="config.type=='link'" v-for='grand in config.value' :href="magnify[config.url]">
+                    {{magnify[grand]}}
+                  </a>
+                  <em v-if="config.type !=='link'" v-for='(grand, index) in config.value'>
+                    {{magnify[grand]}}
+                  </em>
+                </i-col>
+              </i-col>
+            </div>
+            <div v-if='magnify.clothes[magnifyConfig.selectIndex]'>
+              <i-col span="24" v-for='(config,index) in magnify.clothes[magnifyConfig.selectIndex].tags'
+                class='info-item'>
+                <i-col span="8" class='title'>{{config.cpTag[0]}}</i-col>
+                <i-col span="2"></i-col>
+                <i-col span="8">
+                  <i-select v-if="config.cpTag[0]=='category'" style="width:240px" v-model="config.cpTag[1]"
+                    @on-change='changeCate'>
+                    <i-option v-for="child in getCategoryValueList(config.cpTag[0],config.cpTag[1])" :value="child"
+                      :key="config.cpTag[0]">{{child}}</i-option>
+                  </i-select>
+                  <i-select v-if="config.cpTag[0]!=='category'" style="width:240px" v-model="config.cpTag[1]">
+                    <i-option v-for="child in getCategoryValueList(config.cpTag[0],config.cpTag[1])" :value="child"
+                      :key="config.cpTag[0]">{{child}}</i-option>
+                  </i-select>
+                </i-col>
+                <i-col span="2">
+                  {{config.score.toFixed(2)}}
+                </i-col>
+                <i-col span="2">
+                  <span class='close' @click='deleteAttr(magnify,index)'></span>
+                </i-col>
+              </i-col>
+            </div>
+          </div>
+          <div class='footer'>
+            <i-button type="primary" @click='submit()'>submit</i-button>
+          </div>
+        </div>
+        <div class='close-btn button' @click='magnify=null'></div>
+      </div>
+    </div>
+  </div>
+  <script src="../static/js/axios.min.js"></script>
+  <script src="../static/js/ivew.min.js"></script>
+  <script src="../static/js/cropper.js"></script>
+  <script src="../static/js/lodash.min.js"></script>
+  <script>
+    var app = new Vue({
+      el: '#app',
+      components: {},
+      mounted: function () {
+        this.getItems();
+        this.getHashTagList();
+        this.getCountryList();
+        this.getTaskList();
+        this.getCatAttrValList();
+      },
+      data: {
+        show: false,
+        hashTagList: [],
+        searchCountry: [],
+        countryList: [],
+        taskList: [],
+        catAttrValList: null,
+        magnify: null,
+        magnifyConfig: {
+          selectIndex: '-1'
         },
-        data: {
+        baseInfoConfig: [{
+          key: "publish_time",
+          value: ["publish_time"]
+        }, {
+          key: "location",
+          value: ["country", "admin1", "admin2", "location_name"]
+        }, {
+          key: "hashtag",
+          value: ["hash_tag"]
+        }, {
+          key: "user",
+          value: ["blogger"],
+          type: "link",
+          url: "blogger_page_url"
+        }, {
+          key: "desc",
+          value: ["text"]
+        }],
+        config: {
+          layouts: 6,
+          batch: 120,
+          page: 1,
+          show_face_bouding: true,
+          show_body_bouding: true,
+          show_clothes_bouding: true,
+          mode: "Mark",
+          task: "",
+          show_aligned_result: false,
+          which: [1, 30]
+        },
+        filters: {
+          time: ['', ''],
+          location: {
+            name: "",
+            longitude: ['', ''],
+            latitude: ['', ''],
+          },
+          id: '',
+          hashtags: '',
+          occasion: '',
+          persons: [1, 5],
+          faces: [1, 5],
+          likes: ['', ''],
+          comments: ['', ''],
+          bloggers: '',
+          is_face_in_body: true,
+          face_body_per: ["", ""],
+          face_per: ["", ""],
+          body_per: ["", ""],
+          face_body_w_per: ["", ""],
+          face_body_h_per: [0.0, 0.25],
+          face_w_per: ["", ""],
+          face_h_per: ["", ""],
+          body_w_per: ["", ""],
+          body_h_per: [0.5, 1],
+          has_url: false,
+          has_watermark: false,
+          dark_degree: "",
+          label_yes: true,
+          label_no: false,
+          label_not_sure: false,
+          label_null: false,
+          filter_by_score: false,
+          binary_score: [0.5, 1.0],
+          must_have_location: false
+        },
+        items: [],
+        pages: {},
+        filterModalConfig: {
+          title: 'Filter Modal',
           show: false,
-          hashTagList: [],
-          searchCountry: [],
-          countryList: [],
-          taskList: [],
-          catAttrValList: null,
-          magnify: null,
-          magnifyConfig: {
-            selectIndex: '-1'
-          },
-          baseInfoConfig: [{
-            key: "publish_time",
-            value: ["publish_time"]
-          }, {
-            key: "location",
-            value: ["country", "admin1", "admin2", "location_name"]
-          }, {
-            key: "hashtag",
-            value: ["hash_tag"]
-          }, {
-            key: "user",
-            value: ["blogger"],
-            type: "link",
-            url: "blogger_page_url"
-          }, {
-            key: "desc",
-            value: ["text"]
-          }],
-          config: {
-            layouts: 6,
-            batch: 120,
-            page: 1,
-            show_face_bouding: true,
-            show_body_bouding: true,
-            show_clothes_bouding: true,
-            mode: "Mark",
-            task: "",
-            show_aligned_result: false,
-            which: [1, 30]
-          },
-          filters: {
-            time: ['', ''],
-            location: {
-              name: "",
-              longitude: ['', ''],
-              latitude: ['', ''],
-            },
-            hashtags: '',
-            occasion: '',
-            persons: [1, 1],
-            faces: [1, 1],
-            likes: ['', ''],
-            comments: ['', ''],
-            bloggers: '',
-            is_face_in_body: true,
-            face_body_per: ["", ""],
-            face_per: ["", ""],
-            body_per: ["", ""],
-            face_body_w_per: ["", ""],
-            face_body_h_per: [0.0, 0.25],
-            face_w_per: ["", ""],
-            face_h_per: ["", ""],
-            body_w_per: ["", ""],
-            body_h_per: [0.5, 1],
-            has_url: false,
-            has_watermark: false,
-            dark_degree: "",
-            label_yes: true,
-            label_no: false,
-            label_not_sure: false,
-            label_null: false,
-            filter_by_score: false,
-            binary_score: [0.5, 1.0],
-            must_have_location: false
-          },
-          items: [],
-          pages: {},
-          filterModalConfig: {
-            title: 'Filter Modal',
-            show: false,
-            maskClosable: false,
-            loading: true,
-          },
-          settingModalConfig: {
-            title: 'Filter Modal',
-            show: false,
-            maskClosable: false,
-            loading: true,
-          }
+          maskClosable: false,
+          loading: true,
         },
-        methods: {
-          getItems: function () {
-            /**
-             * 把hashTags bloggers 分割成数组  分隔符 |
-             */
-            let params = Object.assign({}, this.filters)
-            this.formatVerticalBar(['bloggers'], params);
-            let data = {
-              filters: params,
-              page: this.config
-            }
-            console.log(data)
-            /**
-             * mock/index.json  是本地mock数据  真正测试时需要修改为线上服务器路径
-             */
-            //axios.get('/mock/get_items.json', data).then((response) => {
-              axios.post('/get_items',data).then((response)=> {
-              let data = response.data.data;
-              this.formatData(data)
-              this.items = data;
-              this.pages = response.data.pages;
-              this.filterModalConfig.show = false;
+        settingModalConfig: {
+          title: 'Filter Modal',
+          show: false,
+          maskClosable: false,
+          loading: true,
+        }
+      },
+      methods: {
+        getItems: function () {
+          /**
+           * 把hashTags bloggers 分割成数组  分隔符 |
+           */
+          let params = Object.assign({}, this.filters)
+          this.formatVerticalBar(['bloggers'], params);
+          let data = {
+            filters: params,
+            page: this.config
+          }
+          console.log(data)
+          /**
+           * mock/index.json  是本地mock数据  真正测试时需要修改为线上服务器路径
+           */
+          //axios.get('/mock/get_items.json', data).then((response) => {
+          axios.post('/get_items',data).then((response)=> {
+            let data = response.data.data;
+            this.formatData(data)
+            this.items = data;
+            this.pages = response.data.pages;
+            this.filterModalConfig.show = false;
+          })
+        },
+        getHashTagList: function () {
+          //axios.get('/mock/get_hashtag_list.json').then((response) => {
+          axios.get('/get_hashtag_list').then((response)=> {
+            let data = response.data.data;
+            let keys = Object.keys(data);
+            keys.forEach((item) => {
+              let json = {
+                key: item,
+                value: data[item]
+              }
+              this.hashTagList.push(json)
             })
-          },
-          getHashTagList: function () {
-            //axios.get('/mock/get_hashtag_list.json').then((response) => {
-              axios.get('/get_hashtag_list').then((response)=> {
-              let data = response.data.data;
-              let keys = Object.keys(data);
-              keys.forEach((item) => {
-                let json = {
-                  key: item,
-                  value: data[item]
+          })
+        },
+        getCountryList: function () {
+          //axios.get('/mock/get_country_list.json').then((response) => {
+          axios.get('/get_country_list').then((response)=> {
+            let data = response.data.data;
+            this.countryList = data;
+          })
+        },
+        getCatAttrValList: function () {
+          //axios.get('/mock/clothes_category_attribute_value.json').then((response) => {
+          axios.get('/get_cat_attr_val_list').then((response)=> {
+            let data = response.data;
+            this.catAttrValList = data;// || {};
+          })
+        },
+        getTaskList: function () {
+          //axios.get('/mock/get_task_list.json').then((response) => {
+          axios.get('/get_task_list').then((response)=> {
+            let data = response.data.list;
+            this.taskList = data;
+            this.config.task = data[0]
+          })
+        },
+        formatData: function (data) {
+          data.forEach((item, index) => {
+            item.hide = false;
+            let width = item.width || '640'
+            let height = item.height || '640'
+            let face_arr = ['face_detction', 'face_detction_new'];
+            let body_arr = ['object_detction', 'object_detction_new']
+            let clothes_arr = ['clothes']
+            face_arr.forEach((child) => {
+              if (item[child]) {
+                let type = typeof item[child]
+                if (type === 'string') {
+                  item[child] = JSON.parse(item[child])
                 }
-                this.hashTagList.push(json)
-              })
-            })
-          },
-          getCountryList: function () {
-            //axios.get('/mock/get_country_list.json').then((response) => {
-              axios.get('/get_country_list').then((response)=> {
-              let data = response.data.data;
-              this.countryList = data;
-            })
-          },
-          getCatAttrValList: function () {
-            //axios.get('/mock/clothes_category_attribute_value.json').then((response) => {
-              axios.get('/get_cat_attr_val_list').then((response)=> {
-              let data = response.data;
-              this.catAttrValList = data;// || {};
-            })
-          },
-          getTaskList: function () {
-            //axios.get('/mock/get_task_list.json').then((response) => {
-              axios.get('/get_task_list').then((response)=> {
-              let data = response.data.list;
-              this.taskList = data;
-              this.config.task = data[0]
-            })
-          },
-          formatData: function (data) {
-            data.forEach((item, index) => {
-              item.hide = false;
-              let width = item.width || '640'
-              let height = item.height || '640'
-              let face_arr = ['face_detction', 'face_detction_new'];
-              let body_arr = ['object_detction', 'object_detction_new']
-              let clothes_arr = ['clothes']
-              face_arr.forEach((child) => {
-                if (item[child]) {
-                  let type = typeof item[child]
-                  if (type === 'string') {
-                    item[child] = JSON.parse(item[child])
+                item[child].boxes.forEach((box, index) => {
+                  /**
+                   * box表示身体bouding-box
+                   * box[0] 左上角x坐标
+                   * box[1] 左上角y坐标
+                   * box[2] width
+                   * box[3] height
+                   */
+                  let temp = {
+                    left: box[0] / width * 100 + '%',
+                    top: box[1] / height * 100 + '%',
+                    width: (box[2] - box[0]) / width * 100 + '%',
+                    height: (box[3] - box[1]) / height * 100 + '%',
                   }
-                  item[child].boxes.forEach((box, index) => {
-                    /**
-                     * box表示身体bouding-box
-                     * box[0] 左上角x坐标
-                     * box[1] 左上角y坐标
-                     * box[2] width
-                     * box[3] height
-                     */
-                    let temp = {
+                  item[child].boxes[index] = temp;
+                })
+              } else {
+                item[child] = {
+                  boxes: []
+                }
+              }
+            })
+            body_arr.forEach((child) => {
+              if (item[child]) {
+                let type = typeof item[child]
+                if (type === 'string') {
+                  item[child] = JSON.parse(item[child])
+                }
+                let body_det = item[child];
+                let temp = [];
+                if (body_det.T_F) {
+                  body_det.result.forEach((item) => {
+                    if (item[0] == 'person') {
+                      let box = item[2]
+                      /**
+                       * box表示身体bouding-box
+                       * box[0] 中心点x坐标
+                       * box[1] 中心点y坐标
+                       * box[2] width
+                       * box[3] height
+                       */
+                      let obj = {
+                        left: (box[0] - box[2] / 2) / width * 100 + '%',
+                        top: (box[1] - box[3] / 2) / height * 100 + '%',
+                        width: Math.abs(box[2]) / width * 100 + '%',
+                        height: Math.abs(box[3]) / height * 100 + '%',
+                      }
+                      temp.push(obj)
+                    }
+                  })
+                }
+                data[index][child] = temp;
+              } else {
+                item[child] = [];
+              }
+            })
+            clothes_arr.forEach((child) => {
+              if (item[child]) {
+                let type = typeof item[child]
+                if (type === 'string') {
+                  item[child] = JSON.parse(item[child])
+                }
+                item[child].forEach((item1, index1) => {
+                  let box = item1.box
+                  // 有的boxlength为空
+                  if (box.length) {
+                    let obj = {
                       left: box[0] / width * 100 + '%',
                       top: box[1] / height * 100 + '%',
                       width: (box[2] - box[0]) / width * 100 + '%',
                       height: (box[3] - box[1]) / height * 100 + '%',
                     }
-                    item[child].boxes[index] = temp;
-                  })
-                } else {
-                  item[child] = {
-                    boxes: []
+                    item1.box = obj;
                   }
-                }
-              })
-              body_arr.forEach((child) => {
-                if (item[child]) {
-                  let type = typeof item[child]
-                  if (type === 'string') {
-                    item[child] = JSON.parse(item[child])
-                  }
-                  let body_det = item[child];
-                  let temp = [];
-                  if (body_det.T_F) {
-                    body_det.result.forEach((item) => {
-                      if (item[0] == 'person') {
-                        let box = item[2]
-                        /**
-                         * box表示身体bouding-box
-                         * box[0] 中心点x坐标
-                         * box[1] 中心点y坐标
-                         * box[2] width
-                         * box[3] height
-                         */
-                        let obj = {
-                          left: (box[0] - box[2] / 2) / width * 100 + '%',
-                          top: (box[1] - box[3] / 2) / height * 100 + '%',
-                          width: Math.abs(box[2]) / width * 100 + '%',
-                          height: Math.abs(box[3]) / height * 100 + '%',
-                        }
-                        temp.push(obj)
-                      }
-                    })
-                  }
-                  data[index][child] = temp;
-                } else {
-                  item[child] = [];
-                }
-              })
-              clothes_arr.forEach((child) => {
-                if (item[child]) {
-                  let type = typeof item[child]
-                  if (type === 'string') {
-                    item[child] = JSON.parse(item[child])
-                  }
-                  item[child].forEach((item1, index1) => {
-                    let box = item1.box
-                    // 有的boxlength为空
-                    if (box.length) {
-                      let obj = {
-                        left: box[0] / width * 100 + '%',
-                        top: box[1] / height * 100 + '%',
-                        width: (box[2] - box[0]) / width * 100 + '%',
-                        height: (box[3] - box[1]) / height * 100 + '%',
-                      }
-                      item1.box = obj;
-                    }
-                    // item[child][index1].box = obj;
-                  })
-                } else {
-                  item[child] = [];
-                }
-              })
-            })
-          },
-          filter: function () {
-            this.filterModalConfig.show = true;
-          },
-          setting: function () {
-            this.settingModalConfig.show = true;
-          },
-          filterConfirm: function () {
-            this.config.page = 1;
-            this.getItems()
-          },
-          settingConfirm: function () {
-            console.log(this.config)
-          },
-          settingCancel: function () {
-            return;
-          },
-          formatVerticalBar: function (data, target) {
-            data.forEach((item, index) => {
-              target[item] = target[item].split('|')
-              let temp = target[item];
-              temp.forEach((item, index) => {
-                temp[index] = item.trim()
-              })
-            })
-          },
-          pageChange: function (page) {
-            /**
-             *page 当前选中页数
-             */
-            this.config.page = page;
-            this.getItems();
-          },
-          pageSizeChange: function (size) {
-            /**
-             *size 每页显示条数
-             */
-            this.config.batch = size;
-            this.config.page = 1;
-            this.getItems();
-          },
-          startTimeChange: function (data) {
-            this.filters.time[0] = data;
-          },
-          endTimeChange: function (data) {
-            this.filters.time[1] = data;
-          },
-          handleSearch: function (value) {
-            this.searchCountry = [];
-            let data = this.countryList
-            value = value.toLowerCase();
-            for (var i in data) {
-              let name = data[i].name.toLowerCase()
-              if (name.indexOf(value) > -1) {
-                let json = {
-                  name: data[i].name,
-                  value: i,
-                  num: data[i].num_of_ret
-                }
-                this.searchCountry.push(json)
+                  // item[child][index1].box = obj;
+                })
+              } else {
+                item[child] = [];
               }
-            }
-          },
-          selcetCountry: function (val) {
-            this.filters.location.name = val;
-          },
-          mark: function (label, item) {
-            let param = {
-              task: this.config.task.task,
-              id: item.id,
-              label: label,
-              annotator: "xujx",
-              label_time: new Date().getTime()
-            }
-            if (label == 'No') {
-              item.hide = true;
-            }
-            axios.post('/label', param).then((res) => {
-              console.log(res)
             })
-          },
-          changeMagnify: function (type, index) {
-            switch (type) {
-              case 0:
-                this.index = index
-                break;
-              case 1:
-                if (this.index == 0) {
-                  this.$Message.warning('当前是第一张图片,不能再向前翻');
-                  return;
-                } else {
-                  this.index--
-                }
-                break;
-              case 2:
-                if (this.index == this.items.length - 1) {
-                  this.$Message.warning('当前是最后一张图片，不能再向后翻');
-                  this.index--
-                } else {
-                  this.index++
-                }
-                break;
-            }
-            this.magnify = this.items[this.index]
-            if (this.magnify.hide) {
-              arguments.callee.call(this, type, this.index)
-              return
-            }
-            this.formatTags(this.magnify)
-          },
-          formatTags: function (data) {
-            data.clothes.forEach((item) => {
-              item.tags.forEach((child) => {
-                console.log(child)
-                child.cpTag = child.tag.split(':')
-              })
+          })
+        },
+        filter: function () {
+          this.filterModalConfig.show = true;
+        },
+        setting: function () {
+          this.settingModalConfig.show = true;
+        },
+        filterConfirm: function () {
+          this.config.page = 1;
+          this.getItems()
+        },
+        settingConfirm: function () {
+          console.log(this.config)
+        },
+        settingCancel: function () {
+          return;
+        },
+        formatVerticalBar: function (data, target) {
+          data.forEach((item, index) => {
+            target[item] = target[item].split('|')
+            let temp = target[item];
+            temp.forEach((item, index) => {
+              temp[index] = item.trim()
             })
-            console.log(data.clothes)
-          },
-          getCategoryValueList:function(attr,val){
-            if(attr === 'category'){
-              return Object.keys(this.catAttrValList)
-            }else{
-              let cate = this.magnify.clothes[this.magnifyConfig.selectIndex].tags[0].cpTag[1]
-              let list = this.catAttrValList[cate];
-              let res = [];
-              list.forEach((item)=>{
-                if(item[attr]){
-                  res = item[attr]
-                  return res;
-                }
-              })
-              return res
-            }
-          },
-          updateItem: function () {
-            this.formatCptag(this.magnify)
-            console.log(this.magnify);
-          },
-          changeCate:function(val){
-            let tags = this.magnify.clothes[this.magnifyConfig.selectIndex].tags;
-            let newTags = tags.slice(0,1);
-            this.catAttrValList[val].forEach((item,index)=>{
-              let attr = Object.keys(item)[0]
+          })
+        },
+        pageChange: function (page) {
+          /**
+           *page 当前选中页数
+           */
+          this.config.page = page;
+          this.getItems();
+        },
+        pageSizeChange: function (size) {
+          /**
+           *size 每页显示条数
+           */
+          this.config.batch = size;
+          this.config.page = 1;
+          this.getItems();
+        },
+        startTimeChange: function (data) {
+          this.filters.time[0] = data;
+        },
+        endTimeChange: function (data) {
+          this.filters.time[1] = data;
+        },
+        handleSearch: function (value) {
+          this.searchCountry = [];
+          let data = this.countryList
+          value = value.toLowerCase();
+          for (var i in data) {
+            let name = data[i].name.toLowerCase()
+            if (name.indexOf(value) > -1) {
               let json = {
-                cpTag: [attr,'']
+                name: data[i].name,
+                value: i,
+                num: data[i].num_of_ret
               }
-              newTags.push(json)
-            })
-            this.magnify.clothes[this.magnifyConfig.selectIndex].tags = newTags;
-            console.log(this.magnify.clothes[this.magnifyConfig.selectIndex])
-          },
-          formatCptag: function (data) {
-            data.clothes.forEach((item) => {
-              item.tags.forEach((child) => {
-                child.tag = child.cpTag.join(':')
-                // delete child.cpTag
-              })
-            })
-          },
-          addBoundingBox:function(){
-            const image = document.getElementById('cropper');
-            const cropper = new Cropper(image, {
-              aspectRatio: 16 / 9,
-              zoomable: false,
-              crop(event) {
-                console.log(event.detail.x);
-                console.log(event.detail.y);
-                console.log(event.detail.width);
-                console.log(event.detail.height);
-                // console.log(event.detail.rotate);
-                // console.log(event.detail.scaleX);
-                // console.log(event.detail.scaleY);
-              },
-              ready:function(){
-                // this.cropper.crop()
-              }
-            });
-            // setTimeout(()=>{
-            //   cropper.destroy()
-            // },1000)
+              this.searchCountry.push(json)
+            }
           }
+        },
+        selcetCountry: function (val) {
+          this.filters.location.name = val;
+        },
+        mark: function (label, item) {
+          let param = {
+            task: this.config.task.task,
+            id: item.id,
+            label: label,
+            annotator: "xujx",
+            label_time: new Date().getTime()
+          }
+          if (label == 'No') {
+            item.hide = true;
+          }
+          axios.post('/label', param).then((res) => {
+            console.log(res)
+          })
+        },
+        changeMagnify: function (type, index) {
+          switch (type) {
+            case 0:
+              this.index = index
+              break;
+            case 1:
+              if (this.index == 0) {
+                this.$Message.warning('当前是第一张图片,不能再向前翻');
+                return;
+              } else {
+                this.index--
+              }
+              break;
+            case 2:
+              if (this.index == this.items.length - 1) {
+                this.$Message.warning('当前是最后一张图片，不能再向后翻');
+                this.index--
+              } else {
+                this.index++
+              }
+              break;
+          }
+          this.magnify = this.items[this.index]
+          if (this.magnify.hide) {
+            arguments.callee.call(this, type, this.index)
+            return
+          }
+          this.formatTags(this.magnify)
+        },
+        formatTags: function (data) {
+          data.clothes.forEach((item) => {
+            item.tags.forEach((child) => {
+              console.log(child)
+              child.cpTag = child.tag.split(':')
+            })
+          })
+          console.log(data.clothes)
+        },
+        getCategoryValueList: function (attr, val) {
+          if (attr === 'category') {
+            return Object.keys(this.catAttrValList)
+          } else {
+            let cate = this.magnify.clothes[this.magnifyConfig.selectIndex].tags[0].cpTag[1]
+            let list = this.catAttrValList[cate];
+            let res = [];
+            list.forEach((item) => {
+              if (item[attr]) {
+                res = item[attr]
+                return res;
+              }
+            })
+            return res
+          }
+        },
+        updateItem: function () {
+          this.formatCptag(this.magnify)
+          console.log(this.magnify);
+        },
+        changeCate: function (val) {
+          let tags = this.magnify.clothes[this.magnifyConfig.selectIndex].tags;
+          let newTags = tags.slice(0, 1);
+          this.catAttrValList[val].forEach((item, index) => {
+            let attr = Object.keys(item)[0]
+            let json = {
+              cpTag: [attr, '']
+            }
+            newTags.push(json)
+          })
+          this.magnify.clothes[this.magnifyConfig.selectIndex].tags = newTags;
+          console.log(this.magnify.clothes[this.magnifyConfig.selectIndex])
+        },
+        formatCptag: function (data) {
+          data.clothes.forEach((item) => {
+            item.tags.forEach((child) => {
+              child.tag = child.cpTag.join(':')
+              // delete child.cpTag
+            })
+          })
+        },
+        addBoundingBox: function () {
+          const image = document.getElementById('cropper');
+          const cropper = new Cropper(image, {
+            aspectRatio: 16 / 9,
+            zoomable: false,
+            crop(event) {
+              console.log(event.detail.x);
+              console.log(event.detail.y);
+              console.log(event.detail.width);
+              console.log(event.detail.height);
+            },
+            ready: function () {
+              // this.cropper.crop()
+            }
+          });
+        },
+        deleteBox(data, index) {
+          let lodash = _;
+          let originData = lodash.cloneDeep(data);
+          data.clothes.splice(index, 1)
+          let json = {
+            //clothes: data.clothes,
+            //originClothes: originData.clothes,
+            action: "del_cloth",
+            cloth_id: index,
+            id: data.id
+          }
+          console.log(json)
+          axios.post('/annotate_clothes', json)
+            .then(function (response) {
+              console.log(response);
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+        },
+        deleteAttr(data, index) {
+          let select = this.magnifyConfig.selectIndex;
+          let lodash = _;
+          let originData = lodash.cloneDeep(data);
+          data.clothes[select].tags.splice(index, 1)
+          let json = {
+            //clothes: data.clothes,
+            //originClothes: originData.clothes,
+            action: "del_attr",
+            cloth_id: select,
+            attr_id: index,
+            id: data.id
+          }
+          console.log(json)
+          axios.post('/annotate_clothes', json)
+            .then(function (response) {
+              console.log(response);
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+        },
+        submit() {
+          console.log(this.magnify);
+          let json = {
+            clothes: this.magnify.clothes,
+            action: "modify_cat_attr",
+            id: this.magnify.id
+          }
+          console.log(json)
+          axios.post('/annotate_clothes', json)
+            .then(function (response) {
+              
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
         }
-      })
+      }
+    })
 
-    </script>
+  </script>
 
-  </body>
+</body>
 
 </html>
