@@ -85,10 +85,15 @@ def check_req(req, occasion_tag_mapping):
     if 'id' in filters.keys() and filters['id'] != "" and filters['id'] is not None:
         query['id'] = "id = '%s'" %(filters['id'])
 
-    if 'annotate_state' in filters.keys() and filters['annotate_state'] is not None and filters['annotate_state'] != "":
-        state = filters['annotate_state']
-        if state in [0, 1]:
-            query['test_annotate_state'] = "test_annotate_state = %s" %(state)
+    if 'annotate_type' in filters.keys() and filters['annotate_type'] is not None and filters['annotate_type'] != "":
+        state = filters['annotate_type']
+        query['annotate_type'] = "annotate_type = %s" %(state)
+
+    if 'if_annotate_cloth' in filters.keys():
+        if filters['if_annotate_cloth'] == True:
+            query["if_annotate_cloth"] = "if_annotate_cloth is true" 
+        else:
+            query["if_annotate_cloth"] = "if_annotate_cloth is false or if_annotate_cloth is NULL" 
 
     if 'is_face_in_body' in filters.keys() and filters['is_face_in_body'] == True: 
         query['is_face_in_body'] = "is_face_in_body is true"

@@ -124,6 +124,14 @@
       </Row>
       <Row>
         <i-col span="12" class='left'>
+          <span>annotate_type</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-input v-model='filters.annotate_type'></i-input>
+        </i-col>
+      </Row>
+      <Row>
+        <i-col span="12" class='left'>
           <span>Country</span>
         </i-col>
         <i-col span="12" class='right'>
@@ -252,6 +260,14 @@
         </i-col>
         <i-col span="12" class='right'>
           <i-switch v-model="filters.has_watermark"></i-switch>
+        </i-col>
+      </Row>
+      <Row>
+        <i-col span="12" class='left'>
+          <span>if_annotate_cloth</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-switch v-model="filters.if_annotate_cloth"></i-switch>
         </i-col>
       </Row>
       <Row>
@@ -695,6 +711,8 @@
             latitude: ['', ''],
           },
           id: '',
+          annotate_type: 1,
+          if_annotate_cloth: false,
           hashtags: '',
           occasion: '',
           persons: [1, 5],
