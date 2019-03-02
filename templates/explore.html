@@ -1014,7 +1014,6 @@
               }
               break;
           }
-          debugger
           this.magnify = this.items[this.index]
           if (this.magnify.hide) {
             arguments.callee.call(this, type, this.index)
@@ -1133,6 +1132,14 @@
         },
         submit() {
           console.log(this.magnify);
+          let clothes =  this.magnify.clothes;
+          clothes.forEach(el=>{
+            el.tags.forEach(child=>{
+              if(child.cpTag){
+                child.tag = child.cpTag.join(":")
+              }
+            })
+          })
           let json = {
             clothes: this.magnify.clothes,
             action: "modify_cat_attr",
