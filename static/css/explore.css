@@ -278,11 +278,12 @@
     position: absolute;
     top: -5px;
     right: -3px;
-    background-image: url("../image/close.png");
+    /* background-image: url("../image/close.png"); */
+    background-image: url("../image/close-dark.png");
 }
 
 #app .magnify-container .magnify-content .close-btn:hover {
-    background-image: url("../image/close-dark.png");
+    /* background-image: url("../image/close-dark.png"); */
 }
 
 #app .magnify-container .magnify-content .pre-btn {
