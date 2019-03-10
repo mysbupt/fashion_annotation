@@ -25,6 +25,7 @@ country_list = get_country_list_bydb(conn_mysql)
 hashtag_list = get_hashtag_list_bydb(conn_mysql)
 task_list = get_task_list_byfile()
 cat_attr_val_list = get_cat_attr_val_list_byfile()
+eng_chi_mapping = json.load(open("./data/eng_chi_mapping.json"))
 occasion_tag_mapping = yaml.load(open("./data/occasion_tag_rough_map.yaml"))
 
 @app.route('/')
@@ -68,6 +69,12 @@ def get_country_list():
 def get_cat_attr_val_list():
     global cat_attr_val_list
     return jsonify(cat_attr_val_list)
+
+
+@app.route('/get_translation', methods=['GET'])
+def get_translation():
+    global eng_chi_mapping 
+    return jsonify(eng_chi_mapping)
 
 
 @app.route('/get_hashtag_list', methods=['GET'])
@@ -172,4 +179,4 @@ def stats():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=2223, threaded=True)
+    app.run(host='0.0.0.0', port=2222, threaded=True)
