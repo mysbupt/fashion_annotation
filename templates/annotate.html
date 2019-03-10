@@ -30,7 +30,7 @@
         <!-- <span class="navbar-text navbar-right">{{username}}</span> -->
         <!-- <span class="navbar-text navbar-right">admin</span> -->
         <a class="nav-link navbar-right" href="/logout">Logout</a>
-      </i-menu-item> -->
+      </i-menu-item>
     </i-menu>
     <div class='content' v-if='items.length'>
       <div class='imgs-box'>
@@ -68,422 +68,10 @@
       :loading="filterModalConfig.loading" title="Filter Modal" class='filter-modal' @on-ok="filterConfirm">
       <Row>
         <i-col span="12" class='left'>
-          <span>Start Time</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <date-picker type="datetime" placeholder="Select time" @on-change='startTimeChange'></date-picker>
-        </i-col>
-      </Row>
-      <Row>
-        <i-col span="12" class='left'>
-          <span>End Time</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <date-picker type="datetime" placeholder="Select time" @on-change='endTimeChange'></date-picker>
-        </i-col>
-      </Row>
-      <Row>
-        <i-col span="12" class='left'>
-          <span>Longitude</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-col span="10">
-            <input-number v-model='filters.location.longitude[0]' :min="-180" :max="180" class='small'></input-number>
-          </i-col>
-          <i-col span="2" class='text'>
-            to
-          </i-col>
-          <i-col span="10">
-            <input-number v-model='filters.location.longitude[1]' :min="-180" :max="180" class='small'></input-number>
-          </i-col>
-        </i-col>
-      </Row>
-      <Row>
-        <i-col span="12" class='left'>
-          <span>Latitude</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-col span="10">
-            <input-number v-model='filters.location.latitude[0]' :min="-90" :max="90" class='small'></input-number>
-          </i-col>
-          <i-col span="2" class='text'>
-            to
-          </i-col>
-          <i-col span="10">
-            <input-number v-model='filters.location.latitude[1]' :min="-90" :max="90" class='small'></input-number>
-          </i-col>
-        </i-col>
-      </Row>
-      <Row>
-        <i-col span="12" class='left'>
-          <span>id</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-input v-model='filters.id'></i-input>
-        </i-col>
-      </Row>
-      <Row>
-        <i-col span="12" class='left'>
-          <span>annotate_type</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-input v-model='filters.annotate_type'></i-input>
-        </i-col>
-      </Row>
-      <Row>
-        <i-col span="12" class='left'>
-          <span>Country</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <auto-complete @on-search="handleSearch" @on-select='selcetCountry' placeholder="Select value"
-            style="width:200px">
-            <i-option v-for="item in searchCountry" :value="item.value" :key="item.name">
-              <span>{{item.name}}</span>
-              <span class='num-tip'>{{item.num}}</span>
-            </i-option>
-          </auto-complete>
-        </i-col>
-      </Row>
-      <Row>
-        <i-col span="12" class='left'>
-          <span>Occasion</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-input v-model='filters.occasion'></i-input>
-        </i-col>
-      </Row>
-      <Row>
-        <i-col span="12" class='left'>
-          <span>Hashtags</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-select v-model="filters.hashtags" style="width:200px" multiple>
-            <i-option v-for="item in hashTagList" :value="item.key" :key="item.key">
-              <span>{{item.key}}</span>
-              <span class='num-tip'>{{item.value}}</span>
-            </i-option>
-          </i-select>
-        </i-col>
-      </Row>
-      <Row>
-        <i-col span="12" class='left'>
-          <span>Num of Persons</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-col span="10">
-            <input-number v-model='filters.persons[0]' :min="0" class='small' :precision='0'></input-number>
-          </i-col>
-          <i-col span="2" class='text'>
-            to
-          </i-col>
-          <i-col span="10">
-            <input-number v-model='filters.persons[1]' :min="0" class='small' :precision='0'></input-number>
-          </i-col>
-        </i-col>
-      </Row>
-      <Row>
-        <i-col span="12" class='left'>
-          <span>Num of Faces</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-col span="10">
-            <input-number v-model='filters.faces[0]' :min="0" class='small' :precision='0'></input-number>
-          </i-col>
-          <i-col span="2" class='text'>
-            to
-          </i-col>
-          <i-col span="10">
-            <input-number v-model='filters.faces[1]' :min="0" class='small' :precision='0'></input-number>
-          </i-col>
-        </i-col>
-      </Row>
-      <Row>
-        <i-col span="12" class='left'>
-          <span>Num of Likes</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-col span="10">
-            <input-number v-model='filters.likes[0]' :min="0" class='small' :precision='0'></input-number>
-          </i-col>
-          <i-col span="2" class='text'>
-            to
-          </i-col>
-          <i-col span="10">
-            <input-number v-model='filters.likes[1]' :min="0" class='small' :precision='0'></input-number>
-          </i-col>
-        </i-col>
-      </Row>
-      <Row>
-        <i-col span="12" class='left'>
-          <span>Num of Comments</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-col span="10">
-            <input-number v-model='filters.comments[0]' :min="0" class='small' :precision='0'></input-number>
-          </i-col>
-          <i-col span="2" class='text'>
-            to
-          </i-col>
-          <i-col span="10">
-            <input-number v-model='filters.comments[1]' :min="filters.comments[0] || 0" class='small' :precision='0'>
-            </input-number>
-          </i-col>
-        </i-col>
-      </Row>
-      <Row>
-        <i-col span="12" class='left'>
-          <span>Posters</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-input placeholder="multi-posters splited by '|'" v-model='filters.bloggers'></i-input>
-        </i-col>
-      </Row>
-      <Row>
-        <i-col span="12" class='left'>
-          <span>dark_degree</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <input-number v-model='filters.dark_degree' :min="0" :max="1" class='small' :precision='0'></input-number>
-        </i-col>
-      </Row>
-      <Row>
-        <i-col span="12" class='left'>
-          <span>has_url</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-switch v-model="filters.has_url"></i-switch>
-        </i-col>
-      </Row>
-      <Row>
-        <i-col span="12" class='left'>
-          <span>has_watermark</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-switch v-model="filters.has_watermark"></i-switch>
-        </i-col>
-      </Row>
-      <Row>
-        <i-col span="12" class='left'>
           <span>if_annotate_cloth</span>
         </i-col>
         <i-col span="12" class='right'>
           <i-switch v-model="filters.if_annotate_cloth"></i-switch>
-        </i-col>
-      </Row>
-      <Row>
-        <i-col span="12" class='left'>
-          <span>is_face_in_body</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-switch v-model="filters.is_face_in_body"></i-switch>
-        </i-col>
-      </Row>
-      <Row>
-        <i-col span="12" class='left'>
-          <span>filter_by_score</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-switch v-model="filters.filter_by_score"></i-switch>
-        </i-col>
-      </Row>
-      <Row>
-        <i-col span="12" class='left'>
-          <span>must_have_location</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-switch v-model="filters.must_have_location"></i-switch>
-        </i-col>
-      </Row>
-      <Row>
-        <i-col span="12" class='left'>
-          <span>label_yes</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-switch v-model="filters.label_yes"></i-switch>
-        </i-col>
-      </Row>
-      <Row>
-        <i-col span="12" class='left'>
-          <span>label_no</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-switch v-model="filters.label_no"></i-switch>
-        </i-col>
-      </Row>
-      <Row>
-        <i-col span="12" class='left'>
-          <span>label_not_sure</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-switch v-model="filters.label_not_sure"></i-switch>
-        </i-col>
-      </Row>
-      <Row>
-        <i-col span="12" class='left'>
-          <span>label_null</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-switch v-model="filters.label_null"></i-switch>
-        </i-col>
-      </Row>
-      <Row v-if='filters.filter_by_score'>
-        <i-col span="12" class='left'>
-          <span>binary_score</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-col span="10">
-            <input-number v-model='filters.binary_score[0]' :min="0" :max='1' :precision='2'></input-number>
-          </i-col>
-          <i-col span="2" class='text'>
-            to
-          </i-col>
-          <i-col span="10">
-            <input-number v-model='filters.binary_score[1]' :min="0" :max='1' :precision='2'></input-number>
-          </i-col>
-        </i-col>
-      </Row>
-      <Row v-if='filters.is_face_in_body'>
-        <i-col span="12" class='left'>
-          <span>face_body_per</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-col span="10">
-            <input-number v-model='filters.face_body_per[0]' :min="0" :max='1' :precision='2'></input-number>
-          </i-col>
-          <i-col span="2" class='text'>
-            to
-          </i-col>
-          <i-col span="10">
-            <input-number v-model='filters.face_body_per[1]' :min="0" :max='1' :precision='2'></input-number>
-          </i-col>
-        </i-col>
-      </Row>
-      <Row v-if='filters.is_face_in_body'>
-        <i-col span="12" class='left'>
-          <span>face_per</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-col span="10">
-            <input-number v-model='filters.face_per[0]' :min="0" :max='1' :precision='2'></input-number>
-          </i-col>
-          <i-col span="2" class='text'>
-            to
-          </i-col>
-          <i-col span="10">
-            <input-number v-model='filters.face_per[1]' :min="0" :max='1' :precision='2'></input-number>
-          </i-col>
-        </i-col>
-      </Row>
-      <Row v-if='filters.is_face_in_body'>
-        <i-col span="12" class='left'>
-          <span>body_per</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-col span="10">
-            <input-number v-model='filters.body_per[0]' :min="0" :max='1' :precision='2'></input-number>
-          </i-col>
-          <i-col span="2" class='text'>
-            to
-          </i-col>
-          <i-col span="10">
-            <input-number v-model='filters.body_per[1]' :min="0" :max='1' :precision='2'></input-number>
-          </i-col>
-        </i-col>
-      </Row>
-      <Row v-if='filters.is_face_in_body'>
-        <i-col span="12" class='left'>
-          <span>face_body_w_per</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-col span="10">
-            <input-number v-model='filters.face_body_w_per[0]' :min="0" :max='1' :precision='2'></input-number>
-          </i-col>
-          <i-col span="2" class='text'>
-            to
-          </i-col>
-          <i-col span="10">
-            <input-number v-model='filters.face_body_w_per[1]' :min="0" :max='1' :precision='2'></input-number>
-          </i-col>
-        </i-col>
-      </Row>
-      <Row v-if='filters.is_face_in_body'>
-        <i-col span="12" class='left'>
-          <span>face_body_h_per</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-col span="10">
-            <input-number v-model='filters.face_body_h_per[0]' :min="0" :max='1' :precision='2'></input-number>
-          </i-col>
-          <i-col span="2" class='text'>
-            to
-          </i-col>
-          <i-col span="10">
-            <input-number v-model='filters.face_body_h_per[1]' :min="0" :max='1' :precision='2'></input-number>
-          </i-col>
-        </i-col>
-      </Row>
-      <Row v-if='filters.is_face_in_body'>
-        <i-col span="12" class='left'>
-          <span>face_w_per</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-col span="10">
-            <input-number v-model='filters.face_w_per[0]' :min="0" :max='1' :precision='2'></input-number>
-          </i-col>
-          <i-col span="2" class='text'>
-            to
-          </i-col>
-          <i-col span="10">
-            <input-number v-model='filters.face_w_per[1]' :min="0" :max='1' :precision='2'></input-number>
-          </i-col>
-        </i-col>
-      </Row>
-      <Row v-if='filters.is_face_in_body'>
-        <i-col span="12" class='left'>
-          <span>face_h_per</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-col span="10">
-            <input-number v-model='filters.face_h_per[0]' :min="0" :max='1' :precision='2'></input-number>
-          </i-col>
-          <i-col span="2" class='text'>
-            to
-          </i-col>
-          <i-col span="10">
-            <input-number v-model='filters.face_h_per[1]' :min="0" :max='1' :precision='2'></input-number>
-          </i-col>
-        </i-col>
-      </Row>
-      <Row v-if='filters.is_face_in_body'>
-        <i-col span="12" class='left'>
-          <span>body_w_per</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-col span="10">
-            <input-number v-model='filters.body_w_per[0]' :min="0" :max='1' :precision='2'></input-number>
-          </i-col>
-          <i-col span="2" class='text'>
-            to
-          </i-col>
-          <i-col span="10">
-            <input-number v-model='filters.body_w_per[1]' :min="0" :max='1' :precision='2'></input-number>
-          </i-col>
-        </i-col>
-      </Row>
-      <Row v-if='filters.is_face_in_body'>
-        <i-col span="12" class='left'>
-          <span>body_h_per</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-col span="10">
-            <input-number v-model='filters.body_h_per[0]' :min="0" :max='1' :precision='2'></input-number>
-          </i-col>
-          <i-col span="2" class='text'>
-            to
-          </i-col>
-          <i-col span="10">
-            <input-number v-model='filters.body_h_per[1]' :min="0" :max='1' :precision='2'></input-number>
-          </i-col>
         </i-col>
       </Row>
     </Modal>
@@ -529,53 +117,6 @@
           <i-switch v-model="config.show_clothes_bouding"></i-switch>
         </i-col>
       </Row>
-      <Row>
-        <i-col span="12" class='left'>
-          <span>Work Mode</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <radio-group v-model="config.mode">
-            <Radio label="Browse">Browse</Radio>
-            <Radio label="Mark">Mark</Radio>
-          </radio-group>
-        </i-col>
-      </Row>
-      <Row v-if='config.mode==="Mark"'>
-        <i-col span="12" class='left'>
-          <span>Selcet Task</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-select v-model="config.task" style="width:200px">
-            <i-option v-for="item in taskList" :value="item" :key="item.task">
-              <span>{{item.task}}</span>
-            </i-option>
-          </i-select>
-        </i-col>
-      </Row>
-      <Row>
-        <i-col span="12" class='left'>
-          <span>Show Aligned Result</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-switch v-model="config.show_aligned_result"></i-switch>
-        </i-col>
-      </Row>
-      <Row v-if="config.show_aligned_result">
-        <i-col span="12" class='left'>
-          <span>Which to Show</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-col span="10">
-            <input-number v-model='config.which[0]' :min="1" :precision='0'></input-number>
-          </i-col>
-          <i-col span="2" class='text'>
-            to
-          </i-col>
-          <i-col span="10">
-            <input-number v-model='config.which[1]' :min="1" :precision='0'></input-number>
-          </i-col>
-        </i-col>
-      </Row>
     </Modal>
     <div class='magnify-container' v-if='magnify'>
       <div class='magnify-content'>
@@ -601,7 +142,7 @@
           </div>
           <div class="content">
             <div class='footer'>
-              <i-button type="primary" @click='submit()'>submit</i-button>
+              <i-button type="primary" @click='submit(); changeMagnify(2);'>submit</i-button>
             </div>
             <div v-if='magnifyConfig.selectIndex == -1'>
               <i-col span="24" v-for='(config,index) in baseInfoConfig' class='info-item'>
@@ -695,8 +236,8 @@
           layouts: 6,
           batch: 120,
           page: 1,
-          show_face_bouding: true,
-          show_body_bouding: true,
+          show_face_bouding: false,
+          show_body_bouding: false,
           show_clothes_bouding: true,
           mode: "Mark",
           task: "",
@@ -711,7 +252,7 @@
             latitude: ['', ''],
           },
           id: '',
-          annotate_type: 1,
+          annotate_type: "",
           if_annotate_cloth: false,
           hashtags: '',
           occasion: '',
@@ -720,16 +261,16 @@
           likes: ['', ''],
           comments: ['', ''],
           bloggers: '',
-          is_face_in_body: true,
+          is_face_in_body: "",
           face_body_per: ["", ""],
           face_per: ["", ""],
           body_per: ["", ""],
           face_body_w_per: ["", ""],
-          face_body_h_per: [0.0, 0.25],
+          face_body_h_per: ["", ""],
           face_w_per: ["", ""],
           face_h_per: ["", ""],
           body_w_per: ["", ""],
-          body_h_per: [0.5, 1],
+          body_h_per: ["", ""],
           has_url: false,
           has_watermark: false,
           dark_degree: "",
@@ -771,8 +312,8 @@
           /**
            * mock/index.json  是本地mock数据  真正测试时需要修改为线上服务器路径
            */
-          axios.get('/mock/get_items.json', data).then((response) => {
-            //axios.post('/get_items',data).then((response)=> {
+          //axios.get('/mock/get_items.json', data).then((response) => {
+          axios.post('/get_items',data).then((response)=> {
             let data = response.data.data;
             this.formatData(data)
             this.items = data;
@@ -781,8 +322,8 @@
           })
         },
         getHashTagList: function () {
-          axios.get('/mock/get_hashtag_list.json').then((response) => {
-            //axios.get('/get_hashtag_list').then((response)=> {
+          //axios.get('/mock/get_hashtag_list.json').then((response) => {
+          axios.get('/get_hashtag_list').then((response)=> {
             let data = response.data.data;
             let keys = Object.keys(data);
             keys.forEach((item) => {
@@ -795,22 +336,22 @@
           })
         },
         getCountryList: function () {
-          axios.get('/mock/get_country_list.json').then((response) => {
-            // axios.get('/get_country_list').then((response)=> {
+          //axios.get('/mock/get_country_list.json').then((response) => {
+          axios.get('/get_country_list').then((response)=> {
             let data = response.data.data;
             this.countryList = data;
           })
         },
         getCatAttrValList: function () {
-          axios.get('/mock/clothes_category_attribute_value.json').then((response) => {
-            // axios.get('/get_cat_attr_val_list').then((response)=> {
+          //axios.get('/mock/clothes_category_attribute_value.json').then((response) => {
+          axios.get('/get_cat_attr_val_list').then((response)=> {
             let data = response.data;
             this.catAttrValList = data;// || {};
           })
         },
         getTaskList: function () {
-          axios.get('/mock/get_task_list.json').then((response) => {
-            // axios.get('/get_task_list').then((response)=> {
+          //axios.get('/mock/get_task_list.json').then((response) => {
+          axios.get('/get_task_list').then((response)=> {
             let data = response.data.list;
             this.taskList = data;
             this.config.task = data[0]
@@ -1054,25 +595,15 @@
           let tags = this.magnify.clothes[this.magnifyConfig.selectIndex].tags;
           let newTags = tags.slice(0, 1);
           this.catAttrValList[val].forEach((item, index) => {
-            console.log(tags);
-            let attr = Object.keys(item)[0];
-            let json = this.getExistAttr(tags, attr) || {
+            let attr = Object.keys(item)[0]
+            let json = {
               cpTag: [attr, ''],
-              score: 0
-            };
+              score:0
+            }
             newTags.push(json)
           })
           this.magnify.clothes[this.magnifyConfig.selectIndex].tags = newTags;
           console.log(this.magnify.clothes[this.magnifyConfig.selectIndex])
-        },
-        getExistAttr(tags,attr){
-          let res = null;
-          tags.forEach(el =>{
-            if(el.cpTag[0] === attr){
-              res = el;
-            }
-          })
-          return res;
         },
         formatCptag: function (data) {
           data.clothes.forEach((item) => {
@@ -1142,10 +673,10 @@
         },
         submit() {
           console.log(this.magnify);
-          let clothes = this.magnify.clothes;
-          clothes.forEach(el => {
-            el.tags.forEach(child => {
-              if (child.cpTag) {
+          let clothes =  this.magnify.clothes;
+          clothes.forEach(el=>{
+            el.tags.forEach(child=>{
+              if(child.cpTag){
                 child.tag = child.cpTag.join(":")
               }
             })
@@ -1158,7 +689,7 @@
           console.log(json)
           axios.post('/annotate_clothes', json)
             .then(function (response) {
-
+              
             })
             .catch(function (error) {
               console.log(error);

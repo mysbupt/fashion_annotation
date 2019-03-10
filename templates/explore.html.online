@@ -28,9 +28,9 @@
       </i-menu-item>
       <i-menu-item name="4" class='login'>
         <!-- <span class="navbar-text navbar-right">{{username}}</span> -->
-        <span class="navbar-text navbar-right">admin</span>
+        <!-- <span class="navbar-text navbar-right">admin</span> -->
         <a class="nav-link navbar-right" href="/logout">Logout</a>
-      </i-menu-item>
+      </i-menu-item> -->
     </i-menu>
     <div class='content' v-if='items.length'>
       <div class='imgs-box'>
@@ -120,6 +120,14 @@
         </i-col>
         <i-col span="12" class='right'>
           <i-input v-model='filters.id'></i-input>
+        </i-col>
+      </Row>
+      <Row>
+        <i-col span="12" class='left'>
+          <span>annotate_type</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-input v-model='filters.annotate_type'></i-input>
         </i-col>
       </Row>
       <Row>
@@ -252,6 +260,14 @@
         </i-col>
         <i-col span="12" class='right'>
           <i-switch v-model="filters.has_watermark"></i-switch>
+        </i-col>
+      </Row>
+      <Row>
+        <i-col span="12" class='left'>
+          <span>if_annotate_cloth</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-switch v-model="filters.if_annotate_cloth"></i-switch>
         </i-col>
       </Row>
       <Row>
@@ -584,6 +600,9 @@
             </radio-group>
           </div>
           <div class="content">
+            <div class='footer'>
+              <i-button type="primary" @click='submit()'>submit</i-button>
+            </div>
             <div v-if='magnifyConfig.selectIndex == -1'>
               <i-col span="24" v-for='(config,index) in baseInfoConfig' class='info-item'>
                 <i-col span="8" class='title'>{{config.key}}</i-col>
@@ -603,7 +622,7 @@
                 class='info-item'>
                 <i-col span="8" class='title'>{{config.cpTag[0]}}</i-col>
                 <i-col span="2"></i-col>
-                <i-col span="8">
+                <i-col span="10">
                   <i-select v-if="config.cpTag[0]=='category'" style="width:240px" v-model="config.cpTag[1]"
                     @on-change='changeCate'>
                     <i-option v-for="child in getCategoryValueList(config.cpTag[0],config.cpTag[1])" :value="child"
@@ -622,9 +641,6 @@
                 </i-col>
               </i-col>
             </div>
-          </div>
-          <div class='footer'>
-            <i-button type="primary" @click='submit()'>submit</i-button>
           </div>
         </div>
         <div class='close-btn button' @click='magnify=null'></div>
@@ -695,6 +711,8 @@
             latitude: ['', ''],
           },
           id: '',
+          annotate_type: 1,
+          if_annotate_cloth: false,
           hashtags: '',
           occasion: '',
           persons: [1, 5],
@@ -1038,7 +1056,8 @@
           this.catAttrValList[val].forEach((item, index) => {
             let attr = Object.keys(item)[0]
             let json = {
-              cpTag: [attr, '']
+              cpTag: [attr, ''],
+              score:0
             }
             newTags.push(json)
           })
@@ -1113,6 +1132,14 @@
         },
         submit() {
           console.log(this.magnify);
+          let clothes =  this.magnify.clothes;
+          clothes.forEach(el=>{
+            el.tags.forEach(child=>{
+              if(child.cpTag){
+                child.tag = child.cpTag.join(":")
+              }
+            })
+          })
           let json = {
             clothes: this.magnify.clothes,
             action: "modify_cat_attr",

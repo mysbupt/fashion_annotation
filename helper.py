@@ -33,18 +33,20 @@ def create_connection_mysql(conf):
     USERNAME = conf["username"]
     PASSWD = conf["password"] 
     try:
-        conn = MySQLdb.connect(host=HOSTNAME, user=USERNAME, passwd=PASSWD , db=db_name)
+        conn = MySQLdb.connect(host=HOSTNAME, user=USERNAME, passwd=PASSWD , db=db_name, connect_timeout=28800)
         return conn
     except:
         print("connection to mysql error")
         exit()
 
 
-def check_req(req, occasion_tag_mapping):
-    print req
+def check_req(req, occasion_tag_mapping, role, username):
     filters = req['filters']
 
     query = {}
+    if role != "admin":
+        query['assign_annotate'] = "assgin_annotator = '%s'" %(username)
+
     if 'time' in filters.keys() and filters['time'][0] != '' and filters['time'][0] is not None and filters['time'][1] != '' and filters['time'][1] is not None:
         query['publish_time'] = "publish_time BETWEEN '%s' AND '%s'" %(filters['time'][0], filters['time'][1])
 
@@ -153,6 +155,7 @@ def check_req(req, occasion_tag_mapping):
 
     page_info = {"page": page_num, "batch": batch}
     print "query is:", query
+    print "page_num is:", page_num
 
     return query, limit, page_info
 
@@ -160,19 +163,19 @@ def check_req(req, occasion_tag_mapping):
 def get_total_cnt(conn_mysql, q_total_cnt):
     global total_cnt_cache
     print total_cnt_cache
-    if q_total_cnt in total_cnt_cache:
-        return total_cnt_cache[q_total_cnt] 
-    else:
-        mysql_c = conn_mysql.cursor()
-        try:
-            mysql_c.execute(q_total_cnt)
-        except:
-            print q_total_cnt
-            exit()
-        res = mysql_c.fetchall()
-        total_cnt = res[0][0]
-        total_cnt_cache[q_total_cnt] = total_cnt
-        return total_cnt
+    #if q_total_cnt in total_cnt_cache:
+    #    return total_cnt_cache[q_total_cnt] 
+    #else:
+    mysql_c = conn_mysql.cursor()
+    try:
+        mysql_c.execute(q_total_cnt)
+    except:
+        print q_total_cnt
+        exit()
+    res = mysql_c.fetchall()
+    total_cnt = res[0][0]
+    #total_cnt_cache[q_total_cnt] = total_cnt
+    return total_cnt
 
 
 def get_task_list_byfile():
@@ -232,8 +235,10 @@ def get_a_batch_of_data(conn_mysql, query, limit, page_info):
         filter_cnd = ""
 
     q_total_cnt = "SELECT count(*) FROM images " + filter_cnd
+    print "q_total_cnt: ", q_total_cnt
     total_cnt = get_total_cnt(conn_mysql, q_total_cnt)
     page = {'count': total_cnt, "totalPage": total_cnt / page_info['batch'], "limit": page_info['batch'], "page": page_info['page']}
+    print "returned page info: ", page
 
     q_ret = "SELECT * FROM images " + filter_cnd + " " + limit
 
@@ -391,9 +396,28 @@ def annotate_clothes_by_req(conn, req, user_name):
         if "clothes" not in req:
             res["msg"] = "error: no clothes"
             return res
+
         for i, new in enumerate(req["clothes"]):
+            ori_cat = ""
+            for j, ori_tag in enumerate(ori_cloth[i]["tags"]):
+                if "category" in ori_tag["tag"]:
+                    ori_cat = ori_tag["tag"].split(":")[-1]
+                    break
+            new_cat = ""
             for j, new_tag in enumerate(new["tags"]):
-                ori_cloth[i]["tags"][j]["tag"] = ":".join(new_tag["cpTag"])
+                if new_tag["cpTag"][0] == "category":
+                    new_cat = new_tag["cpTag"][1] 
+                    break
+
+            print("ori_cat: %s, new_cat: %s" %(ori_cat, new_cat))
+            if ori_cat != new_cat:
+                new_tags = []
+                for j, new_tag in enumerate(new["tags"]):
+                    new_tags.append({"tag": ":".join(new_tag["cpTag"]), "score": 1.0})
+                ori_cloth[i]["tags"] = new_tags
+            else:
+                for j, new_tag in enumerate(new["tags"]):
+                    ori_cloth[i]["tags"][j]["tag"] = ":".join(new_tag["cpTag"])
         try:
             c.execute("UPDATE images SET clothes = %s, if_annotate_cloth = %s, annotate_cloth_datetime = %s, annotate_cloth_worker = %s WHERE id = %s", [json.dumps(ori_cloth), 1, datetime.datetime.now(), user_name, req["id"]])
         except:
@@ -488,6 +512,6 @@ def authenticate(conn, username, passwd):
     c.execute("SELECT * FROM annotator WHERE username=%s AND passwd=%s", (username, passwd))
     res = c.fetchall()
     if len(res) == 1:
-        return True
+        return True, res[0][2]
     else:
-        return False
+        return False, ""

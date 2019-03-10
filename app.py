@@ -14,6 +14,9 @@ import yaml
 
 
 app = Flask(__name__)
+app.secret_key = 'super secret key'
+app.config['SESSION_TYPE'] = 'filesystem'
+
 conf = yaml.load(open("./config.yaml"))
 conn_mysql = create_connection_mysql(conf["mysql"])
 conn_cassandra = create_connection_cassandra(conf["cassandra"])
@@ -27,10 +30,16 @@ occasion_tag_mapping = yaml.load(open("./data/occasion_tag_rough_map.yaml"))
 @app.route('/')
 @app.route('/explore', methods=['GET'])
 def explore():
-    if 'username' in session:
+    if 'username' in session and 'role' in session:
         username = session['username']
+        role = session['role']
         #return render_template('explore.html', username=username)
-        return send_from_directory("./templates", "explore.html")
+        if role == "admin":
+            return send_from_directory("./templates", "explore.html")
+        elif role == "annotator":
+            return send_from_directory("./templates", "annotate.html")
+        else:
+            return send_from_directory("./templates", "explore.html")
     else:
         return redirect(url_for('login'))
 
@@ -38,13 +47,8 @@ def explore():
 @app.route('/get_items', methods=['POST'])
 def get_items():
     req = request.get_json()
-    query, limit, page_info = check_req(req, occasion_tag_mapping)
-    print query
-    print limit
-    print page_info
+    query, limit, page_info = check_req(req, occasion_tag_mapping, session["role"], session["username"])
     batch_of_data = get_a_batch_of_data(conn_mysql, query, limit, page_info)
-    #output = open('./tmp.txt', 'w')
-    #output.write(json.dumps(batch_of_data))
     return jsonify(batch_of_data)
 
 
@@ -90,6 +94,7 @@ def label_clothes():
     if 'username' in session:
         username = session['username']
         req = request.get_json()
+        print("%s annotate" %(username))
         res = annotate_clothes_by_req(conn_mysql, req, username)
         return jsonify(res)
     else:
@@ -114,10 +119,12 @@ def login():
         passwd = request.form['passwd']
         m.update(passwd)
         passwd = m.hexdigest()
-        if not authenticate(conn_mysql, username, passwd):
+        res, role = authenticate(conn_mysql, username, passwd)
+        if not res: 
             return render_template('login.html')
         else:
             session['username'] = request.form['username']
+            session['role'] = role
             return redirect(url_for('explore')) 
     else:
         return render_template('login.html')
@@ -165,7 +172,4 @@ def stats():
 
 
 if __name__ == "__main__":
-    app.secret_key = 'super secret key'
-    app.config['SESSION_TYPE'] = 'filesystem'
-
-    app.run(host='0.0.0.0', port=2222)
+    app.run(host='0.0.0.0', port=2222, threaded=True)
