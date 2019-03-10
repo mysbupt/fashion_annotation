@@ -29,7 +29,7 @@
       <i-menu-item name="4" class='login'>
         <!-- <span class="navbar-text navbar-right">{{username}}</span> -->
         <!-- <span class="navbar-text navbar-right">admin</span> -->
-        <a class="nav-link navbar-right" href="/logout">Logout</a>
+        <a class="nav-link navbar-right logout" href="/logout">Logout</a>
       </i-menu-item>
     </i-menu>
     <div class='content' v-if='items.length'>
@@ -595,15 +595,25 @@
           let tags = this.magnify.clothes[this.magnifyConfig.selectIndex].tags;
           let newTags = tags.slice(0, 1);
           this.catAttrValList[val].forEach((item, index) => {
-            let attr = Object.keys(item)[0]
-            let json = {
+            console.log(tags);
+            let attr = Object.keys(item)[0];
+            let json = this.getExistAttr(tags, attr) || {
               cpTag: [attr, ''],
-              score:0
-            }
+              score: 0
+            };
             newTags.push(json)
           })
           this.magnify.clothes[this.magnifyConfig.selectIndex].tags = newTags;
           console.log(this.magnify.clothes[this.magnifyConfig.selectIndex])
+        },
+        getExistAttr(tags,attr){
+          let res = null;
+          tags.forEach(el =>{
+            if(el.cpTag[0] === attr){
+              res = el;
+            }
+          })
+          return res;
         },
         formatCptag: function (data) {
           data.clothes.forEach((item) => {
