@@ -662,6 +662,7 @@
         this.getCountryList();
         this.getTaskList();
         this.getCatAttrValList();
+        this.getTranslation();
       },
       data: {
         show: false,
@@ -815,6 +816,12 @@
             let data = response.data.list;
             this.taskList = data;
             this.config.task = data[0]
+          })
+        },
+        getTranslation(){
+          axios.get('/mock/eng_chi_mapping.json').then((response) => {
+            this.translateData = response.data;
+            console.log(this.translateData);
           })
         },
         formatData: function (data) {
