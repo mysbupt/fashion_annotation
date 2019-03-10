@@ -542,6 +542,18 @@
       </Row>
       <Row v-if='config.mode==="Mark"'>
         <i-col span="12" class='left'>
+          <span>Selcet Language</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-select v-model="config.language" style="width:200px">
+            <i-option v-for="item in languages" :value="item" :key='item'>
+              <span>{{item}}</span>
+            </i-option>
+          </i-select>
+        </i-col>
+      </Row>
+      <Row v-if='config.mode==="Mark"'>
+        <i-col span="12" class='left'>
           <span>Selcet Task</span>
         </i-col>
         <i-col span="12" class='right'>
@@ -620,17 +632,17 @@
             <div v-if='magnify.clothes[magnifyConfig.selectIndex]'>
               <i-col span="24" v-for='(config,index) in magnify.clothes[magnifyConfig.selectIndex].tags'
                 class='info-item'>
-                <i-col span="8" class='title'>{{config.cpTag[0]}}</i-col>
+                <i-col span="8" class='title'>{{getText(config.cpTag[0])}}</i-col>
                 <i-col span="2"></i-col>
                 <i-col span="10">
                   <i-select v-if="config.cpTag[0]=='category'" style="width:240px" v-model="config.cpTag[1]"
                     @on-change='changeCate'>
                     <i-option v-for="child in getCategoryValueList(config.cpTag[0],config.cpTag[1])" :value="child"
-                      :key="config.cpTag[0]">{{child}}</i-option>
+                      :key="config.cpTag[0]">{{getText(child)}}</i-option>
                   </i-select>
                   <i-select v-if="config.cpTag[0]!=='category'" style="width:240px" v-model="config.cpTag[1]">
                     <i-option v-for="child in getCategoryValueList(config.cpTag[0],config.cpTag[1])" :value="child"
-                      :key="config.cpTag[0]">{{child}}</i-option>
+                      :key="config.cpTag[0]">{{getText(child)}}</i-option>
                   </i-select>
                 </i-col>
                 <i-col span="2">
@@ -662,6 +674,7 @@
         this.getCountryList();
         this.getTaskList();
         this.getCatAttrValList();
+        this.getTranslate();
       },
       data: {
         show: false,
@@ -702,8 +715,10 @@
           mode: "Mark",
           task: "",
           show_aligned_result: false,
-          which: [1, 30]
+          which: [1, 30],
+          language:"english"
         },
+        languages:['english','chinese'],
         filters: {
           time: ['', ''],
           location: {
@@ -815,6 +830,12 @@
             let data = response.data.list;
             this.taskList = data;
             this.config.task = data[0]
+          })
+        },
+        getTranslate: function () {
+          axios.get('/mock/eng_chi_mapping.json').then((response) => {
+            let data = response.data;
+            this.translateData = data;
           })
         },
         formatData: function (data) {
@@ -1140,6 +1161,13 @@
             .catch(function (error) {
               console.log(error);
             });
+        },
+        getText(value){
+          if(this.config.language === 'english'){
+            return value;
+          }else{
+            return this.translateData[value];
+          }
         },
         submit() {
           console.log(this.magnify);
