@@ -796,21 +796,21 @@
         },
         getCountryList: function () {
           axios.get('/mock/get_country_list.json').then((response) => {
-            //axios.get('/get_country_list').then((response)=> {
+            // axios.get('/get_country_list').then((response)=> {
             let data = response.data.data;
             this.countryList = data;
           })
         },
         getCatAttrValList: function () {
           axios.get('/mock/clothes_category_attribute_value.json').then((response) => {
-            //axios.get('/get_cat_attr_val_list').then((response)=> {
+            // axios.get('/get_cat_attr_val_list').then((response)=> {
             let data = response.data;
             this.catAttrValList = data;// || {};
           })
         },
         getTaskList: function () {
           axios.get('/mock/get_task_list.json').then((response) => {
-            //axios.get('/get_task_list').then((response)=> {
+            // axios.get('/get_task_list').then((response)=> {
             let data = response.data.list;
             this.taskList = data;
             this.config.task = data[0]
@@ -1054,15 +1054,25 @@
           let tags = this.magnify.clothes[this.magnifyConfig.selectIndex].tags;
           let newTags = tags.slice(0, 1);
           this.catAttrValList[val].forEach((item, index) => {
-            let attr = Object.keys(item)[0]
-            let json = {
+            console.log(tags);
+            let attr = Object.keys(item)[0];
+            let json = this.getExistAttr(tags, attr) || {
               cpTag: [attr, ''],
-              score:0
-            }
+              score: 0
+            };
             newTags.push(json)
           })
           this.magnify.clothes[this.magnifyConfig.selectIndex].tags = newTags;
           console.log(this.magnify.clothes[this.magnifyConfig.selectIndex])
+        },
+        getExistAttr(tags,attr){
+          let res = null;
+          tags.forEach(el =>{
+            if(el.cpTag[0] === attr){
+              res = el;
+            }
+          })
+          return res;
         },
         formatCptag: function (data) {
           data.clothes.forEach((item) => {
@@ -1132,10 +1142,10 @@
         },
         submit() {
           console.log(this.magnify);
-          let clothes =  this.magnify.clothes;
-          clothes.forEach(el=>{
-            el.tags.forEach(child=>{
-              if(child.cpTag){
+          let clothes = this.magnify.clothes;
+          clothes.forEach(el => {
+            el.tags.forEach(child => {
+              if (child.cpTag) {
                 child.tag = child.cpTag.join(":")
               }
             })
@@ -1148,7 +1158,7 @@
           console.log(json)
           axios.post('/annotate_clothes', json)
             .then(function (response) {
-              
+
             })
             .catch(function (error) {
               console.log(error);

@@ -771,8 +771,8 @@
           /**
            * mock/index.json  是本地mock数据  真正测试时需要修改为线上服务器路径
            */
-          axios.get('/mock/get_items.json', data).then((response) => {
-            //axios.post('/get_items',data).then((response)=> {
+          //axios.get('/mock/get_items.json', data).then((response) => {
+            axios.post('/get_items',data).then((response)=> {
             let data = response.data.data;
             this.formatData(data)
             this.items = data;
@@ -781,8 +781,8 @@
           })
         },
         getHashTagList: function () {
-          axios.get('/mock/get_hashtag_list.json').then((response) => {
-            //axios.get('/get_hashtag_list').then((response)=> {
+          //axios.get('/mock/get_hashtag_list.json').then((response) => {
+            axios.get('/get_hashtag_list').then((response)=> {
             let data = response.data.data;
             let keys = Object.keys(data);
             keys.forEach((item) => {
@@ -795,22 +795,22 @@
           })
         },
         getCountryList: function () {
-          axios.get('/mock/get_country_list.json').then((response) => {
-            // axios.get('/get_country_list').then((response)=> {
+          //axios.get('/mock/get_country_list.json').then((response) => {
+            axios.get('/get_country_list').then((response)=> {
             let data = response.data.data;
             this.countryList = data;
           })
         },
         getCatAttrValList: function () {
-          axios.get('/mock/clothes_category_attribute_value.json').then((response) => {
-            // axios.get('/get_cat_attr_val_list').then((response)=> {
+          //axios.get('/mock/clothes_category_attribute_value.json').then((response) => {
+            axios.get('/get_cat_attr_val_list').then((response)=> {
             let data = response.data;
             this.catAttrValList = data;// || {};
           })
         },
         getTaskList: function () {
-          axios.get('/mock/get_task_list.json').then((response) => {
-            // axios.get('/get_task_list').then((response)=> {
+          //axios.get('/mock/get_task_list.json').then((response) => {
+            axios.get('/get_task_list').then((response)=> {
             let data = response.data.list;
             this.taskList = data;
             this.config.task = data[0]
