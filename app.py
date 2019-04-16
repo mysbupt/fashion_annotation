@@ -48,8 +48,8 @@ def explore():
 @app.route('/get_items', methods=['POST'])
 def get_items():
     req = request.get_json()
-    query, limit, page_info = check_req(req, occasion_tag_mapping, session["role"], session["username"])
-    batch_of_data = get_a_batch_of_data(conn_mysql, query, limit, page_info)
+    query, order_by, limit, page_info = check_req(req, occasion_tag_mapping, session["role"], session["username"])
+    batch_of_data = get_a_batch_of_data(conn_mysql, order_by, query, limit, page_info)
     return jsonify(batch_of_data)
 
 
@@ -179,4 +179,4 @@ def stats():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=2222, threaded=True)
+    app.run(host='0.0.0.0', port=2223, threaded=True)

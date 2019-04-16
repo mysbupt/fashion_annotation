@@ -29,7 +29,7 @@
       <i-menu-item name="4" class='login'>
         <!-- <span class="navbar-text navbar-right">{{username}}</span> -->
         <!-- <span class="navbar-text navbar-right">admin</span> -->
-        <a class="nav-link navbar-right" href="/logout">Logout</a>
+        <a class="nav-link navbar-right logout" href="/logout">Logout</a>
       </i-menu-item>
     </i-menu>
     <div class='content' v-if='items.length'>
@@ -117,6 +117,18 @@
           <i-switch v-model="config.show_clothes_bouding"></i-switch>
         </i-col>
       </Row>
+      <Row v-if='config.mode==="Mark"'>
+        <i-col span="12" class='left'>
+          <span>Selcet Language</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <i-select v-model="config.language" style="width:200px">
+            <i-option v-for="item in languages" :value="item" :key='item'>
+              <span>{{item}}</span>
+            </i-option>
+          </i-select>
+        </i-col>
+      </Row>
     </Modal>
     <div class='magnify-container' v-if='magnify'>
       <div class='magnify-content'>
@@ -161,17 +173,17 @@
             <div v-if='magnify.clothes[magnifyConfig.selectIndex]'>
               <i-col span="24" v-for='(config,index) in magnify.clothes[magnifyConfig.selectIndex].tags'
                 class='info-item'>
-                <i-col span="8" class='title'>{{config.cpTag[0]}}</i-col>
+                <i-col span="8" class='title'>{{getText(config.cpTag[0])}}</i-col>
                 <i-col span="2"></i-col>
                 <i-col span="10">
                   <i-select v-if="config.cpTag[0]=='category'" style="width:240px" v-model="config.cpTag[1]"
                     @on-change='changeCate'>
                     <i-option v-for="child in getCategoryValueList(config.cpTag[0],config.cpTag[1])" :value="child"
-                      :key="config.cpTag[0]">{{child}}</i-option>
+                      :key="config.cpTag[0]">{{getText(child)}}</i-option>
                   </i-select>
                   <i-select v-if="config.cpTag[0]!=='category'" style="width:240px" v-model="config.cpTag[1]">
                     <i-option v-for="child in getCategoryValueList(config.cpTag[0],config.cpTag[1])" :value="child"
-                      :key="config.cpTag[0]">{{child}}</i-option>
+                      :key="config.cpTag[0]">{{getText(child)}}</i-option>
                   </i-select>
                 </i-col>
                 <i-col span="2">
@@ -202,6 +214,7 @@
         this.getCountryList();
         this.getTaskList();
         this.getCatAttrValList();
+        this.getTranslate();
       },
       data: {
         show: false,
@@ -242,8 +255,10 @@
           mode: "Mark",
           task: "",
           show_aligned_result: false,
-          which: [1, 30]
+          which: [1, 30],
+          language:"english"
         },
+        languages:['english','chinese'],
         filters: {
           time: ['', ''],
           location: {
@@ -312,8 +327,8 @@
           /**
            * mock/index.json  是本地mock数据  真正测试时需要修改为线上服务器路径
            */
-          //axios.get('/mock/get_items.json', data).then((response) => {
-          axios.post('/get_items',data).then((response)=> {
+          axios.get('/mock/get_items.json', data).then((response) => {
+          // axios.post('/get_items',data).then((response)=> {
             let data = response.data.data;
             this.formatData(data)
             this.items = data;
@@ -322,8 +337,8 @@
           })
         },
         getHashTagList: function () {
-          //axios.get('/mock/get_hashtag_list.json').then((response) => {
-          axios.get('/get_hashtag_list').then((response)=> {
+          axios.get('/mock/get_hashtag_list.json').then((response) => {
+          // axios.get('/get_hashtag_list').then((response)=> {
             let data = response.data.data;
             let keys = Object.keys(data);
             keys.forEach((item) => {
@@ -336,25 +351,31 @@
           })
         },
         getCountryList: function () {
-          //axios.get('/mock/get_country_list.json').then((response) => {
-          axios.get('/get_country_list').then((response)=> {
+          axios.get('/mock/get_country_list.json').then((response) => {
+          // axios.get('/get_country_list').then((response)=> {
             let data = response.data.data;
             this.countryList = data;
           })
         },
         getCatAttrValList: function () {
-          //axios.get('/mock/clothes_category_attribute_value.json').then((response) => {
-          axios.get('/get_cat_attr_val_list').then((response)=> {
+          axios.get('/mock/clothes_category_attribute_value.json').then((response) => {
+          // axios.get('/get_cat_attr_val_list').then((response)=> {
             let data = response.data;
             this.catAttrValList = data;// || {};
           })
         },
         getTaskList: function () {
-          //axios.get('/mock/get_task_list.json').then((response) => {
-          axios.get('/get_task_list').then((response)=> {
+          axios.get('/mock/get_task_list.json').then((response) => {
+          // axios.get('/get_task_list').then((response)=> {
             let data = response.data.list;
             this.taskList = data;
             this.config.task = data[0]
+          })
+        },
+        getTranslate: function () {
+          axios.get('/mock/eng_chi_mapping.json').then((response) => {
+            let data = response.data;
+            this.translateData = data;
           })
         },
         formatData: function (data) {
@@ -595,15 +616,25 @@
           let tags = this.magnify.clothes[this.magnifyConfig.selectIndex].tags;
           let newTags = tags.slice(0, 1);
           this.catAttrValList[val].forEach((item, index) => {
-            let attr = Object.keys(item)[0]
-            let json = {
+            console.log(tags);
+            let attr = Object.keys(item)[0];
+            let json = this.getExistAttr(tags, attr) || {
               cpTag: [attr, ''],
-              score:0
-            }
+              score: 0
+            };
             newTags.push(json)
           })
           this.magnify.clothes[this.magnifyConfig.selectIndex].tags = newTags;
           console.log(this.magnify.clothes[this.magnifyConfig.selectIndex])
+        },
+        getExistAttr(tags,attr){
+          let res = null;
+          tags.forEach(el =>{
+            if(el.cpTag[0] === attr){
+              res = el;
+            }
+          })
+          return res;
         },
         formatCptag: function (data) {
           data.clothes.forEach((item) => {
@@ -670,6 +701,13 @@
             .catch(function (error) {
               console.log(error);
             });
+        },
+        getText(value){
+          if(this.config.language === 'english'){
+            return value;
+          }else{
+            return this.translateData[value];
+          }
         },
         submit() {
           console.log(this.magnify);

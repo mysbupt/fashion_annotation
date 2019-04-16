@@ -145,6 +145,11 @@ def check_req(req, occasion_tag_mapping, role, username):
             query["label_y_n_ns"] = label_filter
     #query['label_y_n_ns'] = "label_y_n_ns is NULL OR label_y_n_ns != 0"
 
+    order_by = ""
+    if 'if_annotate_cloth' in filters.keys():
+        if filters['if_annotate_cloth'] == True:
+            order_by = "order by annotate_cloth_datetime desc"
+
     page_num = int(req['page']['page'])
     if page_num < 1:
         page_num = 1
@@ -157,7 +162,7 @@ def check_req(req, occasion_tag_mapping, role, username):
     print "query is:", query
     print "page_num is:", page_num
 
-    return query, limit, page_info
+    return query, order_by, limit, page_info
 
 
 def get_total_cnt(conn_mysql, q_total_cnt):
@@ -226,7 +231,7 @@ def get_hashtag_list_bydb(conn_mysql):
     return {"data": hashtag_stat}
 
 
-def get_a_batch_of_data(conn_mysql, query, limit, page_info):
+def get_a_batch_of_data(conn_mysql, order_by, query, limit, page_info):
     mysql_c = conn_mysql.cursor()
 
     if len(query) != 0:
@@ -240,7 +245,10 @@ def get_a_batch_of_data(conn_mysql, query, limit, page_info):
     page = {'count': total_cnt, "totalPage": total_cnt / page_info['batch'], "limit": page_info['batch'], "page": page_info['page']}
     print "returned page info: ", page
 
-    q_ret = "SELECT * FROM images " + filter_cnd + " " + limit
+    if order_by != "":
+        q_ret = "SELECT * FROM images " + filter_cnd + " " + order_by + " " + limit
+    else:
+        q_ret = "SELECT * FROM images " + filter_cnd + " " + limit
 
     print "final query is:", q_ret
 
