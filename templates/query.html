@@ -1,0 +1,207 @@
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="icon" href="/static/favicon.ico">
+  <title>MMKG in Fashion</title>
+  <link href="../static/css/signin.css" rel="stylesheet">
+  <link href="../static/css/style.css" rel="stylesheet">
+  <link href="../static/css/query_style.css" rel="stylesheet">
+  <link href="../static/css/ivew.css" rel="stylesheet">
+  <link href="../static/css/explore.css" rel="stylesheet">
+  <link href="../static/css/cropper.css" rel="stylesheet">
+  <script src="../static/js/vue.min.js"></script>
+</head>
+
+<body>
+  <div id="query">
+    <div class="welcome_1" v-if="status == 'welcome'">
+      <img class="welcome_img" :width="logo.width" :alt="logo.alt" :src="logo.src">
+      <Row style="margin-top: 50px;">
+        <i-col span="3" class='text'>
+          <span class="welcome_span">Occasion</span>
+        </i-col>
+        <i-col span="3" class='left' style="width:100px; margin-left:2px; margin-right:5px;">
+          <i-select v-model="filters.occasion">
+            <i-option v-for="item in occasionList" :value="item.key" :key="item.key">
+              <span>{{item.key}}</span>
+              <span class='num-tip'>{{item.value}}</span>
+            </i-option>
+          </i-select>
+        </i-col>
+
+        <i-col span="3" class='text'>
+          <span class="welcome_span" style="margin-left:5px; margin-right:2px;">Gender</span>
+        </i-col>
+        <i-col span="3" class='left' style="width:100px; margin-left:2px; margin-right:5px;">
+          <i-select v-model="filters.gender">
+            <i-option v-for="item in genderList" :value="item.key" :key="item.key">
+              <span>{{item.key}}</span>
+              <span class='num-tip'>{{item.value}}</span>
+            </i-option>
+          </i-select>
+        </i-col>
+
+        <i-col span="3" class='text'>
+          <span class="welcome_span" style="margin-left:5px; margin-right:2px;">Clothes</span>
+        </i-col>
+        <i-col span="3" class='left' style="width:140px; margin-left:3px; margin-right:5px;">
+          <Cascader :data="categoryTree" trigger="hover" v-model="filters.category"></Cascader>
+        </i-col>
+
+        <i-col span="1">
+          <i-button shape="circle" icon="ios-search" style="width: 30px; height: 30px; margin-left: 10px"></button>
+        </i-col>
+      </Row>
+
+    </div>
+
+    <Modal v-model="settingModalConfig.show" :mask-closable="settingModalConfig.maskClosable" title="Seeting Modal"
+      class='filter-modal' @on-ok="settingConfirm" @on-cancel="settingCancel">
+      <Row>
+        <i-col span="12" class='left'>
+          <span>Request Batch</span>
+        </i-col>
+        <i-col span="12" class='right'>
+          <input-number v-model='config.batch' :min="1" :precision='0'></input-number>
+        </i-col>
+      </Row>
+    </Modal>
+  </div>
+  <script src="../static/js/axios.min.js"></script>
+  <script src="../static/js/ivew.min.js"></script>
+  <script src="../static/js/cropper.js"></script>
+  <script src="../static/js/lodash.min.js"></script>
+  <script>
+    var query = new Vue({
+      el: '#query',
+      components: {},
+      mounted: function () {
+        this.getHashTagList();
+        this.getCountryList();
+        this.getCatAttrValList();
+        this.getTranslate();
+        this.getOccasionList();
+        this.getGenderList();
+        this.getCategoryTree();
+      },
+      data: {
+        status: 'welcome',
+        logo: {
+          width: "400px",
+          src: "/static/image/FashionKE_logo.png"
+        },
+        filters: {
+          occasion: null,
+          gender: null,
+          category: [],
+        },
+        hashTagList: [],
+        countryList: [],
+        catAttrValList: null,
+        occasionList: [],
+        genderList: [],
+        categoryTree: [],
+      },
+      methods: {
+        getHashTagList: function () {
+            axios.get('/mock/get_hashtag_list.json').then((response) => {
+          //  axios.get('/get_hashtag_list').then((response)=> {
+            let data = response.data.data;
+            let keys = Object.keys(data);
+            keys.forEach((item) => {
+              let json = {
+                key: item,
+                value: data[item]
+              }
+              this.hashTagList.push(json)
+            })
+          })
+        },
+        getOccasionList: function () {
+            axios.get('/mock/get_occasion_list.json').then((response) => {
+          //  axios.get('/get_occasion_list').then((response)=> {
+            let data = response.data.data;
+            let keys = Object.keys(data);
+            keys.forEach((item) => {
+              let json = {
+                key: item,
+                value: data[item]
+              }
+              this.occasionList.push(json)
+            })
+          })
+        },
+        getCategoryTree: function () {
+            axios.get('/mock/get_categoryTree.json').then((response) => {
+          //  axios.get('/get_catetory_tree').then((response)=> {
+            this.categoryTree = response.data;
+            console.log(this.categoryTree);
+            })
+        },
+        getGenderList: function () {
+            axios.get('/mock/get_gender_list.json').then((response) => {
+          //  axios.get('/get_gender_list').then((response)=> {
+            let data = response.data.data;
+            let keys = Object.keys(data);
+            keys.forEach((item) => {
+              let json = {
+                key: item,
+                value: data[item]
+              }
+              this.genderList.push(json)
+            })
+          })
+        },
+        getCountryList: function () {
+            axios.get('/mock/get_country_list.json').then((response) => {
+          //  axios.get('/get_country_list').then((response)=> {
+            let data = response.data.data;
+            this.countryList = data;
+          })
+        },
+        getCatAttrValList: function () {
+            axios.get('/mock/clothes_category_attribute_value.json').then((response) => {
+          //  axios.get('/get_cat_attr_val_list').then((response)=> {
+            let data = response.data;
+            this.catAttrValList = data;// || {};
+          })
+        },
+        getTranslate: function () {
+            axios.get('/mock/eng_chi_mapping.json').then((response) => {
+          //  axios.get('/get_translation').then((response) => {
+            let data = response.data;
+            this.translateData = data;
+          })
+        },
+        submit: function () {
+          let clothes = this.magnify.clothes;
+          clothes.forEach(el => {
+            el.tags.forEach(child => {
+              if (child.cpTag) {
+                child.tag = child.cpTag.join(":")
+              }
+            })
+          })
+          let json = {
+            clothes: this.magnify.clothes,
+            action: "modify_cat_attr",
+            id: this.magnify.id
+          }
+          axios.post('/annotate_clothes', json)
+            .then(function (response) {
+
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+        },
+      }
+    })
+  </script>
+
+</body>
+
+</html>
