@@ -31,3 +31,4 @@
 *.log
 .sass-cache
 *.txt
+.DS_Store

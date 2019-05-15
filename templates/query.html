@@ -60,7 +60,7 @@
             <Row style="margin-top: 15px; margin-bottom: 15px; width: 800px">
               <i-col span="4" style="width: 240px;">
                 <a  href="/templates/query.html">
-                  <img style="height: 30px; margin-left: 20px; margin-right: 10px;" :alt="logo.alt" :src="logo.src">
+                  <img style="height: 30px; margin-left: 20px; margin-right: 10px;" :alt="logo.alt" :src="logo.gray_src">
                 </a>
               </i-col>
 
@@ -142,6 +142,7 @@
         logo: {
           width: "400px",
           src: "/static/image/FashionKE_logo.png",
+          gray_src: "/static/image/FashionKE_logo_gray.png",
         },
         filters: {
           occasion: null,
@@ -195,7 +196,7 @@
             axios.get('/mock/get_categoryTree.json').then((response) => {
           //  axios.get('/get_catetory_tree').then((response)=> {
             this.categoryTree = response.data;
-            console.log(this.categoryTree);
+            //console.log(this.categoryTree);
             })
         },
         getGenderList: function () {
@@ -224,7 +225,7 @@
           //  axios.get('/get_cat_attr_val_list').then((response)=> {
             let data = response.data;
             this.catAttrValList = data;// || {};
-            console.log(this.catAttrValList);
+            //console.log(this.catAttrValList);
           })
         },       
         getTranslate: function () {
@@ -235,19 +236,24 @@
           })
         },
         showAttrFilters: function() {
-          if (this.filters.categoryStr == '') {
-            let categoryStr = this.filters.category.join("__");
-            console.log(categoryStr)
-            this.filters.categoryStr = categoryStr;
-            let attrVals = new Object();
-            for (each in this.catAttrValList[categoryStr]) {
-              attr_name = Object.keys(each)[0];
-              attrVals[attr_name] = null;
-            };
-            this.filters.attributes = attrVals;
+          if (this.filters.category.length == 0) {
+            this.$Message.warning('Please choose a category first !');
           }
-          console.log(this.filters.attributes);
-          this.attrFiltersModalConfig.show = true;
+          else {
+            if (this.filters.categoryStr == '') {
+              let categoryStr = this.filters.category.join("__");
+              //console.log(categoryStr)
+              this.filters.categoryStr = categoryStr;
+              let attrVals = new Object();
+              for (each in this.catAttrValList[categoryStr]) {
+                attr_name = Object.keys(each)[0];
+                attrVals[attr_name] = null;
+              };
+              this.filters.attributes = attrVals;
+            }
+            //console.log(this.filters.attributes);
+            this.attrFiltersModalConfig.show = true;
+          }
         },
         attrFilterConfirm: function () {
           console.log("cancel")
