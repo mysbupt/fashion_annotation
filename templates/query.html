@@ -9,7 +9,7 @@
   <link href="../static/css/signin.css" rel="stylesheet">
   <link href="../static/css/style.css" rel="stylesheet">
   <link href="../static/css/query_style.css" rel="stylesheet">
-  <link href="../static/css/ivew.css" rel="stylesheet">
+  <link href="../static/css/iview.css" rel="stylesheet">
   <link href="../static/css/explore.css" rel="stylesheet">
   <link href="../static/css/cropper.css" rel="stylesheet">
   <script src="../static/js/vue.min.js"></script>
@@ -18,13 +18,12 @@
 <body>
   <div id="query">
     <div class="welcome_1" v-if="status == 'welcome'">
-      <img class="welcome_img" :width="logo.width" :alt="logo.alt" :src="logo.src">
+      <a href="/templates/query.html">
+        <img class="welcome_img" :width="logo.width" :alt="logo.alt" :src="logo.src" href="/query.html">
+      </a>
       <Row style="margin-top: 50px;">
-        <i-col span="3" class='text'>
-          <span class="welcome_span">Occasion</span>
-        </i-col>
-        <i-col span="3" class='left' style="width:100px; margin-left:2px; margin-right:5px;">
-          <i-select v-model="filters.occasion">
+        <i-col span="4" style="width:140px; margin-left:2px; margin-right:5px;">
+          <i-select v-model="filters.occasion" placeholder="occasion">
             <i-option v-for="item in occasionList" :value="item.key" :key="item.key">
               <span>{{item.key}}</span>
               <span class='num-tip'>{{item.value}}</span>
@@ -32,11 +31,8 @@
           </i-select>
         </i-col>
 
-        <i-col span="3" class='text'>
-          <span class="welcome_span" style="margin-left:5px; margin-right:2px;">Gender</span>
-        </i-col>
-        <i-col span="3" class='left' style="width:100px; margin-left:2px; margin-right:5px;">
-          <i-select v-model="filters.gender">
+        <i-col span="4" style="width:100px; margin-left:2px; margin-right:5px;">
+          <i-select v-model="filters.gender" placeholder="gender">
             <i-option v-for="item in genderList" :value="item.key" :key="item.key">
               <span>{{item.key}}</span>
               <span class='num-tip'>{{item.value}}</span>
@@ -44,30 +40,84 @@
           </i-select>
         </i-col>
 
-        <i-col span="3" class='text'>
-          <span class="welcome_span" style="margin-left:5px; margin-right:2px;">Clothes</span>
-        </i-col>
-        <i-col span="3" class='left' style="width:140px; margin-left:3px; margin-right:5px;">
-          <Cascader :data="categoryTree" trigger="hover" v-model="filters.category"></Cascader>
+        <i-col span="4" style="width:160px; margin-left:3px; margin-right:5px;">
+          <Cascader :data="categoryTree" trigger="hover" placeholder="clothes" v-model="filters.category"></Cascader>
         </i-col>
 
-        <i-col span="1">
-          <i-button shape="circle" icon="ios-search" style="width: 30px; height: 30px; margin-left: 10px"></button>
+        <i-col span="2">
+          <i-button shape="circle" icon="ios-options" style="width: 30px; height: 30px; margin-left: 10px" @click="showAttrFilters()"></button>
+        </i-col>
+
+        <i-col span="2">
+          <i-button shape="circle" icon="ios-search" style="width: 30px; height: 30px; margin-left: 50px" @click="search()"></button>
         </i-col>
       </Row>
-
     </div>
 
-    <Modal v-model="settingModalConfig.show" :mask-closable="settingModalConfig.maskClosable" title="Seeting Modal"
-      class='filter-modal' @on-ok="settingConfirm" @on-cancel="settingCancel">
-      <Row>
-        <i-col span="12" class='left'>
-          <span>Request Batch</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <input-number v-model='config.batch' :min="1" :precision='0'></input-number>
-        </i-col>
-      </Row>
+    <div v-if="status == 'detail'">
+      <Layout>
+        <Header>
+            <Row style="margin-top: 15px; margin-bottom: 15px; width: 800px">
+              <i-col span="4" style="width: 240px;">
+                <a  href="/templates/query.html">
+                  <img style="height: 30px; margin-left: 20px; margin-right: 10px;" :alt="logo.alt" :src="logo.src">
+                </a>
+              </i-col>
+
+              <i-col span="4" style="width:140px; margin-left:2px; margin-right:5px;">
+                <i-select v-model="filters.occasion" placeholder="occasion">
+                  <i-option v-for="item in occasionList" :value="item.key" :key="item.key">
+                    <span>{{item.key}}</span>
+                    <span class='num-tip'>{{item.value}}</span>
+                  </i-option>
+                </i-select>
+              </i-col>
+
+              <i-col span="4" style="width:100px; margin-left:2px; margin-right:5px;">
+                <i-select v-model="filters.gender" placeholder="gender">
+                  <i-option v-for="item in genderList" :value="item.key" :key="item.key">
+                    <span>{{item.key}}</span>
+                    <span class='num-tip'>{{item.value}}</span>
+                  </i-option>
+                </i-select>
+              </i-col>
+      
+              <i-col span="4" style="width:160px; margin-left:3px; margin-right:5px;">
+                <Cascader :data="categoryTree" trigger="hover" placeholder="clothes" v-model="filters.category"></Cascader>
+              </i-col>
+      
+              <i-col span="2">
+                <i-button shape="circle" icon="ios-options" style="width: 30px; height: 30px; margin-left: 10px" @click="showAttrFilters()"></button>
+              </i-col>
+      
+              <i-col span="2">
+                <i-button shape="circle" icon="ios-search" style="width: 30px; height: 30px; margin-left: 50px" @click="search()"></button>
+              </i-col>
+            </Row>
+        </Header>
+        <Layout>
+            <Sider hide-trigger>Sider</Sider>
+            <Content>Content</Content>
+        </Layout>
+        <Footer>Footer</Footer>
+      </Layout>
+    </div>
+  
+
+    <Modal v-model="attrFiltersModalConfig.show" :mask-closable="attrFiltersModalConfig.maskClosable" title="Attribute Filter"
+      class='filter-modal' @on-ok="attrFilterConfirm">
+      <div v-if="attrFiltersModalConfig.show">
+        <Row span="12" v-for='(attrVals, index) in catAttrValList[filters.categoryStr]'
+          class='info-item'>
+          <i-col span="6" class='title'>{{Object.keys(attrVals)[0]}}</i-col>
+          <i-col span="6">
+            <i-select style="width:160px" v-model="filters.attributes[Object.keys(attrVals)[0]]" placeholder="please select" clearable>
+              <i-option v-for="val in catAttrValList[filters.categoryStr][index][Object.keys(attrVals)[0]]" :value="val"
+                :key="val">{{val}}</i-option>
+            </i-select>
+          </i-col>
+        </Row>
+      </div>
     </Modal>
   </div>
   <script src="../static/js/axios.min.js"></script>
@@ -77,7 +127,7 @@
   <script>
     var query = new Vue({
       el: '#query',
-      components: {},
+      componet: {},
       mounted: function () {
         this.getHashTagList();
         this.getCountryList();
@@ -91,12 +141,14 @@
         status: 'welcome',
         logo: {
           width: "400px",
-          src: "/static/image/FashionKE_logo.png"
+          src: "/static/image/FashionKE_logo.png",
         },
         filters: {
           occasion: null,
           gender: null,
           category: [],
+          categoryStr: "",
+          attributes: {},
         },
         hashTagList: [],
         countryList: [],
@@ -104,6 +156,11 @@
         occasionList: [],
         genderList: [],
         categoryTree: [],
+        attrFiltersModalConfig: {
+          show: false,
+          maskClosable: true,
+          loading: true,
+        }
       },
       methods: {
         getHashTagList: function () {
@@ -167,8 +224,9 @@
           //  axios.get('/get_cat_attr_val_list').then((response)=> {
             let data = response.data;
             this.catAttrValList = data;// || {};
+            console.log(this.catAttrValList);
           })
-        },
+        },       
         getTranslate: function () {
             axios.get('/mock/eng_chi_mapping.json').then((response) => {
           //  axios.get('/get_translation').then((response) => {
@@ -176,30 +234,49 @@
             this.translateData = data;
           })
         },
-        submit: function () {
-          let clothes = this.magnify.clothes;
-          clothes.forEach(el => {
-            el.tags.forEach(child => {
-              if (child.cpTag) {
-                child.tag = child.cpTag.join(":")
-              }
-            })
-          })
-          let json = {
-            clothes: this.magnify.clothes,
-            action: "modify_cat_attr",
-            id: this.magnify.id
+        showAttrFilters: function() {
+          if (this.filters.categoryStr == '') {
+            let categoryStr = this.filters.category.join("__");
+            console.log(categoryStr)
+            this.filters.categoryStr = categoryStr;
+            let attrVals = new Object();
+            for (each in this.catAttrValList[categoryStr]) {
+              attr_name = Object.keys(each)[0];
+              attrVals[attr_name] = null;
+            };
+            this.filters.attributes = attrVals;
           }
-          axios.post('/annotate_clothes', json)
-            .then(function (response) {
-
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
+          console.log(this.filters.attributes);
+          this.attrFiltersModalConfig.show = true;
         },
-      }
-    })
+        attrFilterConfirm: function () {
+          console.log("cancel")
+        },
+        attrFilterCancel: function () {
+          return;
+        },
+        search: function () {
+          this.status = "detail";
+          /*
+          let data = {
+            occasion: this.filters.occasion,
+            gender: this.filters.gender,
+            category: this.filters.category,
+            attributes: this.filters.attributes,
+          };
+          console.log(data);
+          axios.get('/mock/search.json', data).then((response) => {
+          //axios.post('/search', data).then((response)=> {
+            let data = response.data.data;
+            this.formatData(data)
+            this.items = data;
+            this.pages = response.data.pages;
+            this.filterModalConfig.show = false;
+          })
+          */
+        },
+      },  
+    });
   </script>
 
 </body>
