@@ -23,19 +23,17 @@
       </a>
       <Row style="margin-top: 50px;">
         <i-col span="4" class="left" style="width:140px; margin-left:2px; margin-right:5px;">
-          <i-select v-model="filters.occasion" placeholder="occasion" transfer="true">
+          <i-select v-model="filters.occasion" placeholder="occasion" transfer="true" clearable>
             <i-option v-for="item in occasionList" :value="item.key" :key="item.key">
-              <span>{{item.key}}</span>
-              <span class='num-tip'>{{item.value}}</span>
+              {{item.key}}
             </i-option>
           </i-select>
         </i-col>
 
         <i-col span="4" style="width:100px; margin-left:2px; margin-right:5px;">
-          <i-select v-model="filters.gender" placeholder="gender" transfer="true">
+          <i-select v-model="filters.gender" placeholder="gender" transfer="true" clearable>
             <i-option v-for="item in genderList" :value="item.key" :key="item.key">
-              <span>{{item.key}}</span>
-              <span class='num-tip'>{{item.value}}</span>
+              {{item.key}}
             </i-option>
           </i-select>
         </i-col>
@@ -67,8 +65,7 @@
               <i-col span="4" style="width:140px; margin-left:2px; margin-right:5px;">
                 <i-select v-model="filters.occasion" placeholder="occasion">
                   <i-option v-for="item in occasionList" :value="item.key" :key="item.key">
-                    <span>{{item.key}}</span>
-                    <span class='num-tip'>{{item.value}}</span>
+                    {{item.key}}
                   </i-option>
                 </i-select>
               </i-col>
@@ -76,8 +73,7 @@
               <i-col span="4" style="width:100px; margin-left:2px; margin-right:5px;">
                 <i-select v-model="filters.gender" placeholder="gender">
                   <i-option v-for="item in genderList" :value="item.key" :key="item.key">
-                    <span>{{item.key}}</span>
-                    <span class='num-tip'>{{item.value}}</span>
+                    {{item.key}}
                   </i-option>
                 </i-select>
               </i-col>
