@@ -22,7 +22,7 @@
         <img class="welcome_img" :width="logo.width" :alt="logo.alt" :src="logo.src" href="/query.html">
       </a>
       <Row style="margin-top: 50px;">
-        <i-col span="4" style="width:140px; margin-left:2px; margin-right:5px;">
+        <i-col span="4" class="left" style="width:140px; margin-left:2px; margin-right:5px;">
           <i-select v-model="filters.occasion" placeholder="occasion" transfer="true">
             <i-option v-for="item in occasionList" :value="item.key" :key="item.key">
               <span>{{item.key}}</span>
@@ -54,8 +54,8 @@
       </Row>
     </div>
 
-    <div v-if="status == 'detail'" class="layout">
-      <Layout>
+    <div v-if="status == 'detail'" class="layout" style="height: 100%">
+      <Layout style="height: 100%">
         <Header style="position: fixed; z-index: 1000; margin-top: -1px; background: rgb(246, 247, 249); width: 100%;">
             <Row style="margin-top: 15px; margin-bottom: 15px; width: 100%">
               <i-col span="4" style="width: 240px;">
@@ -105,15 +105,15 @@
         </Header>
         
         <div style="min-height: '100vh'; margin-top: 70px; position: relative;" v-if="items !== null">
-          <Layout>
+          <Layout style="height: 100%"> 
             <Sider collapsible :collapsed-width="78" v-model="sideIsCollapsed">
-              <div style="margin: 2px" v-for="triplet in Object.keys(items)">
+              <div style="margin: 1px; overflow: hidden" v-for="triplet in Object.keys(items)">
                 <i-button v-if="triplet == selectedTriplet" style="color: orangered; width: 100%" disabled>{{triplet}}</i-button>
                 <i-button v-if="triplet !== selectedTriplet" style="color: orangered; width: 100%" type="text" @click="selectTriplet(triplet)">{{triplet}}</i-button>
               </div>
             </Sider>
               
-            <Content style="width: 100%">
+            <Content style="width: 100%; height: 100%">
               <div class='content'>
                 <div class='imgs-box'>
                   <i-col :lg='24/config.layouts' v-for="(item, index) in items[selectedTriplet].data" v-show="!item.hide">
