@@ -22,28 +22,6 @@ body {
     opacity: 0;
 }
 
-.welcome_1 {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-    padding-top: 100px;
-    width: 540px;
-}
-
-.welcome_img {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.welcome_span {
-    font-weight: bold; 
-    font-size: 13px; 
-    height: 32px;
-    display: inline-flex; 
-    align-items: center;
-}
-
 .menu-item span{
     display: inline-block;
     overflow: hidden;
@@ -72,6 +50,29 @@ body {
   
 #query {
     overflow: hidden;
+}
+
+
+#query .welcome_1 {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 100px;
+    width: 540px;
+}
+
+#query .welcome_img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#query .welcome_span {
+    font-weight: bold; 
+    font-size: 13px; 
+    height: 32px;
+    display: inline-flex; 
+    align-items: center;
 }
 
 #query .layout{

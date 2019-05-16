@@ -17,13 +17,13 @@
 
 <body>
   <div id="query">
-    <div class="welcome_1" v-if="status == 'welcome'">
+    <div v-if="status == 'welcome'" class="welcome_1">
       <a href="/templates/query.html">
         <img class="welcome_img" :width="logo.width" :alt="logo.alt" :src="logo.src" href="/query.html">
       </a>
       <Row style="margin-top: 50px;">
         <i-col span="4" style="width:140px; margin-left:2px; margin-right:5px;">
-          <i-select v-model="filters.occasion" placeholder="occasion">
+          <i-select v-model="filters.occasion" placeholder="occasion" transfer="true">
             <i-option v-for="item in occasionList" :value="item.key" :key="item.key">
               <span>{{item.key}}</span>
               <span class='num-tip'>{{item.value}}</span>
@@ -32,7 +32,7 @@
         </i-col>
 
         <i-col span="4" style="width:100px; margin-left:2px; margin-right:5px;">
-          <i-select v-model="filters.gender" placeholder="gender">
+          <i-select v-model="filters.gender" placeholder="gender" transfer="true">
             <i-option v-for="item in genderList" :value="item.key" :key="item.key">
               <span>{{item.key}}</span>
               <span class='num-tip'>{{item.value}}</span>
@@ -41,7 +41,7 @@
         </i-col>
 
         <i-col span="4" style="width:160px; margin-left:3px; margin-right:5px;">
-          <Cascader :data="categoryTree" trigger="hover" placeholder="clothes" v-model="filters.category"></Cascader>
+          <Cascader :data="categoryTree" trigger="hover" placeholder="clothes" v-model="filters.category" transfer="true"></Cascader>
         </i-col>
 
         <i-col span="2">
@@ -104,7 +104,7 @@
             </Row>
         </Header>
         
-        <div style="minHeight: 500px; margin-top: 70px; position: relative;" v-if="items !== null">
+        <div style="min-height: '100vh'; margin-top: 70px; position: relative;" v-if="items !== null">
           <Layout>
               <Sider breakpoint="md" collapsible :collapsed-width="78" v-model="sideIsCollapsed">
                 <div v-for="triplet in Object.keys(items)" style="margin: 2px">
@@ -728,7 +728,9 @@
   <script src="../static/js/ivew.min.js"></script>
   <script src="../static/js/cropper.js"></script>
   <script src="../static/js/lodash.min.js"></script>
+  <script src="../static/dist/en-US.js"></script>
   <script>
+    iview.lang('en-US');
     var query = new Vue({
       el: '#query',
       componet: {},
@@ -811,22 +813,22 @@
         },
         languages:['english','chinese'],
         baseInfoConfig: [{
-          key: "publish_time",
-          value: ["publish_time"]
-        }, {
-          key: "location",
-          value: ["country", "admin1", "admin2", "location_name"]
-        }, {
-          key: "hashtag",
-          value: ["hash_tag"]
-        }, {
-          key: "user",
-          value: ["blogger"],
-          type: "link",
-          url: "blogger_page_url"
-        }, {
-          key: "desc",
-          value: ["text"]
+            key: "publish_time",
+            value: ["publish_time"]
+          }, {
+            key: "location",
+            value: ["country", "admin1", "admin2", "location_name"]
+          }, {
+            key: "hashtag",
+            value: ["hash_tag"]
+          }, {
+            key: "user",
+            value: ["blogger"],
+            type: "link",
+            url: "blogger_page_url"
+          }, {
+            key: "desc",
+            value: ["text"]
         }],
         hashTagList: [],
         countryList: [],
