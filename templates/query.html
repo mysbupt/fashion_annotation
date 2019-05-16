@@ -106,52 +106,55 @@
         
         <div style="min-height: '100vh'; margin-top: 70px; position: relative;" v-if="items !== null">
           <Layout>
-              <Sider breakpoint="md" collapsible :collapsed-width="78" v-model="sideIsCollapsed">
-                <div v-for="triplet in Object.keys(items)" style="margin: 2px">
-                  <i-button type="text" @click="selectTriplet(triplet)">
-                      <span style="color: orangered">{{triplet}}</span>
-                  </i-button>
+            <Sider collapsible :collapsed-width="78" v-model="sideIsCollapsed">
+              <div style="margin: 2px" v-for="triplet in Object.keys(items)">
+                <i-button v-if="triplet == selectedTriplet" style="color: orangered; width: 100%" disabled>{{triplet}}</i-button>
+                <i-button v-if="triplet !== selectedTriplet" style="color: orangered; width: 100%" type="text" @click="selectTriplet(triplet)">{{triplet}}</i-button>
+              </div>
+            </Sider>
+              
+            <Content style="width: 100%">
+              <div class='content'>
+                <div class='imgs-box'>
+                  <i-col :lg='24/config.layouts' v-for="(item, index) in items[selectedTriplet].data" v-show="!item.hide">
+                    <div class="img-container mark-mode" @click='changeMagnify(0,index)'>
+                      <img :width="item.width" :height="item.height" :alt="item.index" :src="item.src">
+                      <span class='bounding-box face-bounding-box'
+                        v-for="(position, index) in (config.show_aligned_result ? item.face_detction_new.boxes : item.face_detction.boxes)"
+                        v-if="config.show_face_bouding && (!config.show_aligned_result || (config.show_aligned_result && index > (config.which[0] - 2) && index < config.which[1]))"
+                        v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
+                      </span>
+                      <span class='bounding-box body-bounding-box'
+                        v-if="config.show_body_bouding && (!config.show_aligned_result || (config.show_aligned_result && index > (config.which[0] - 2) && index < config.which[1]))"
+                        v-for="(position,index) in (config.show_aligned_result ? item.object_detction_new : item.object_detction)"
+                        v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
+                      </span>
+                      <span class='bounding-box close-bounding-box' v-if="config.show_clothes_bouding"
+                        v-for="(position,index) in item.clothes"
+                        v-bind:style="{left: position.box.left,width: position.box.width,top: position.box.top,height: position.box.height}">
+                      </span>
+                      <Row class='lables' v-if='config.mode == "Mark"'>
+                        <i-col :lg='24/config.task.option.length' v-for="option in config.task.option">
+                          <i-button type="ghost" @click='mark(option,item)' @click.stop>{{option}}</i-button>
+                        </i-col>
+                      </Row>
+                    </div>
+                  </i-col>
                 </div>
-              </Sider>
-              <Content style="width: 100%">
-                <div class='content'>
-                  <div class='imgs-box'>
-                    <i-col :lg='24/config.layouts' v-for="(item, index) in items[selectedTriplet].data" v-show="!item.hide">
-                      <div class="img-container mark-mode" @click='changeMagnify(0,index)'>
-                        <img :width="item.width" :height="item.height" :alt="item.index" :src="item.src">
-                        <span class='bounding-box face-bounding-box'
-                          v-for="(position, index) in (config.show_aligned_result ? item.face_detction_new.boxes : item.face_detction.boxes)"
-                          v-if="config.show_face_bouding && (!config.show_aligned_result || (config.show_aligned_result && index > (config.which[0] - 2) && index < config.which[1]))"
-                          v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
-                        </span>
-                        <span class='bounding-box body-bounding-box'
-                          v-if="config.show_body_bouding && (!config.show_aligned_result || (config.show_aligned_result && index > (config.which[0] - 2) && index < config.which[1]))"
-                          v-for="(position,index) in (config.show_aligned_result ? item.object_detction_new : item.object_detction)"
-                          v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
-                        </span>
-                        <span class='bounding-box close-bounding-box' v-if="config.show_clothes_bouding"
-                          v-for="(position,index) in item.clothes"
-                          v-bind:style="{left: position.box.left,width: position.box.width,top: position.box.top,height: position.box.height}">
-                        </span>
-                        <Row class='lables' v-if='config.mode == "Mark"'>
-                          <i-col :lg='24/config.task.option.length' v-for="option in config.task.option">
-                            <i-button type="ghost" @click='mark(option,item)' @click.stop>{{option}}</i-button>
-                          </i-col>
-                        </Row>
-                      </div>
-                    </i-col>
-                  </div>
-                  <div style="text-align: center; margin-left: auto; margin-right: auto; margin-top: 15px">
+                <div style="text-align: center; margin-left: auto; margin-right: auto; margin-top: 15px">
+                  <footer>
+                    <div>
                       <Page :page-size='config.batch' :current="config.page" :total="items[selectedTriplet].pages.count" show-elevator show-total
                         @on-change='pageChange' @on-page-size-change='pageSizeChange'></Page>
-                      <div style="margin-top: 10px; margin-bottom: 10px;">
-                          <span>Copyright © 2019 NExT++</span>
-                      </div>
-                  </div>
-                </div> 
-              </Content>
+                      <span>Copyright © 2018 NExT++</span>
+                    </div>
+                  </footer>
+                </div>
+              </div>
+            </Content>
           </Layout>
         </div>
+      </Layout>
     </div>
 
     <div class='magnify-container' v-if='magnify'>
@@ -725,7 +728,7 @@
 
   </div>
   <script src="../static/js/axios.min.js"></script>
-  <script src="../static/js/ivew.min.js"></script>
+  <script src="../static/js/iview.min.js"></script>
   <script src="../static/js/cropper.js"></script>
   <script src="../static/js/lodash.min.js"></script>
   <script src="../static/dist/en-US.js"></script>
@@ -798,6 +801,7 @@
           binary_score: [0.5, 1.0],
           must_have_location: false
         },
+        defaultSplitRatio: 0.3,
         config: {
           layouts: 6,
           batch: 120,
@@ -969,13 +973,13 @@
           this.metaFilters.time[1] = data;
         },
         settingConfirm: function () {
-          console.log(this.config)
+          //console.log(this.config)
         },
         settingCancel: function () {
           return;
         },
         metaFilterConfirm: function () {
-          console.log("cancel")
+          //console.log("cancel")
         },
         handleSearch: function (value) {
           this.searchCountry = [];
@@ -997,7 +1001,7 @@
           this.metaFilters.location.name = val;
         },
         attrFilterConfirm: function () {
-          console.log("cancel")
+          //console.log("cancel")
         },
         attrFilterCancel: function () {
           return;
@@ -1005,11 +1009,11 @@
         formatTags: function (data) {
           data.clothes.forEach((item) => {
             item.tags.forEach((child) => {
-              console.log(child)
+              //console.log(child)
               child.cpTag = child.tag.split(':')
             })
           })
-          console.log(data.clothes)
+          //console.log(data.clothes)
         },
         selectTriplet: function (triplet) {
           this.selectedTriplet = triplet;
@@ -1162,7 +1166,7 @@
           let tags = this.magnify.clothes[this.magnifyConfig.selectIndex].tags;
           let newTags = tags.slice(0, 1);
           this.catAttrValList[val].forEach((item, index) => {
-            console.log(tags);
+            //console.log(tags);
             let attr = Object.keys(item)[0];
             let json = this.getExistAttr(tags, attr) || {
               cpTag: [attr, ''],
@@ -1171,7 +1175,7 @@
             newTags.push(json)
           })
           this.magnify.clothes[this.magnifyConfig.selectIndex].tags = newTags;
-          console.log(this.magnify.clothes[this.magnifyConfig.selectIndex])
+          //console.log(this.magnify.clothes[this.magnifyConfig.selectIndex])
         },
         getCategoryValueList: function (attr, val) {
           if (attr === 'category') {
