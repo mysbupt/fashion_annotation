@@ -54,8 +54,8 @@
       </Row>
     </div>
 
-    <div v-if="status == 'detail'" class="layout" style="height: 100%">
-      <Layout style="height: 100%">
+    <div v-if="status == 'detail'" class="layout">
+      <Layout>
         <Header style="position: fixed; z-index: 1000; margin-top: -1px; background: rgb(246, 247, 249); width: 100%;">
             <Row style="margin-top: 15px; margin-bottom: 15px; width: 100%">
               <i-col span="4" style="width: 240px;">
@@ -105,15 +105,15 @@
         </Header>
         
         <div style="min-height: '100vh'; margin-top: 70px; position: relative;" v-if="items !== null">
-          <Layout style="height: 100%"> 
+          <Layout> 
             <Sider collapsible :collapsed-width="78" v-model="sideIsCollapsed">
-              <div style="margin: 1px; overflow: hidden" v-for="triplet in Object.keys(items)">
-                <i-button v-if="triplet == selectedTriplet" style="color: orangered; width: 100%" disabled>{{triplet}}</i-button>
-                <i-button v-if="triplet !== selectedTriplet" style="color: orangered; width: 100%" type="text" @click="selectTriplet(triplet)">{{triplet}}</i-button>
+              <div style="margin: 1px; overflow: hidden;" v-for="triplet in Object.keys(items)">
+                <i-button v-if="triplet == selectedTriplet" style="color: orangered; width: 100%; font-weight: bold;" disabled>{{triplet}}</i-button>
+                <i-button v-if="triplet !== selectedTriplet" style="color: orangered; width: 100%; font-weight: bold;" type="text" @click="selectTriplet(triplet)">{{triplet}}</i-button>
               </div>
             </Sider>
               
-            <Content style="width: 100%; height: 100%">
+            <Content style="width: 100%;">
               <div class='content'>
                 <div class='imgs-box'>
                   <i-col :lg='24/config.layouts' v-for="(item, index) in items[selectedTriplet].data" v-show="!item.hide">
@@ -141,12 +141,12 @@
                     </div>
                   </i-col>
                 </div>
-                <div style="text-align: center; margin-left: auto; margin-right: auto; margin-top: 15px">
+                <div>
                   <footer>
                     <div>
                       <Page :page-size='config.batch' :current="config.page" :total="items[selectedTriplet].pages.count" show-elevator show-total
                         @on-change='pageChange' @on-page-size-change='pageSizeChange'></Page>
-                      <span>Copyright © 2018 NExT++</span>
+                        <!--<span>Copyright © 2018 NExT++</span>-->
                     </div>
                   </footer>
                 </div>

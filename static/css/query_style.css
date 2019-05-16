@@ -212,7 +212,7 @@ body {
 #query footer {
     position: fixed;
     bottom: 0;
-    background: white;
+    background: rgb(246, 247, 249);
     height: 60px;
     line-height: 60px;
     width: 100%;
