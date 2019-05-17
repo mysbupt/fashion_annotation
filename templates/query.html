@@ -472,30 +472,6 @@
       </Row>
       <Row>
         <i-col span="12" class='left'>
-          <span>dark_degree</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <input-number v-model='metaFilters.dark_degree' :min="0" :max="1" class='small' :precision='0'></input-number>
-        </i-col>
-      </Row>
-      <Row>
-        <i-col span="12" class='left'>
-          <span>has_url</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-switch v-model="metaFilters.has_url"></i-switch>
-        </i-col>
-      </Row>
-      <Row>
-        <i-col span="12" class='left'>
-          <span>has_watermark</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-switch v-model="metaFilters.has_watermark"></i-switch>
-        </i-col>
-      </Row>
-      <Row>
-        <i-col span="12" class='left'>
           <span>if_annotate_cloth</span>
         </i-col>
         <i-col span="12" class='right'>
@@ -576,70 +552,6 @@
       </Row>
       <Row v-if='metaFilters.is_face_in_body'>
         <i-col span="12" class='left'>
-          <span>face_body_per</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-col span="10">
-            <input-number v-model='metaFilters.face_body_per[0]' :min="0" :max='1' :precision='2'></input-number>
-          </i-col>
-          <i-col span="2" class='text'>
-            to
-          </i-col>
-          <i-col span="10">
-            <input-number v-model='metaFilters.face_body_per[1]' :min="0" :max='1' :precision='2'></input-number>
-          </i-col>
-        </i-col>
-      </Row>
-      <Row v-if='metaFilters.is_face_in_body'>
-        <i-col span="12" class='left'>
-          <span>face_per</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-col span="10">
-            <input-number v-model='metaFilters.face_per[0]' :min="0" :max='1' :precision='2'></input-number>
-          </i-col>
-          <i-col span="2" class='text'>
-            to
-          </i-col>
-          <i-col span="10">
-            <input-number v-model='metaFilters.face_per[1]' :min="0" :max='1' :precision='2'></input-number>
-          </i-col>
-        </i-col>
-      </Row>
-      <Row v-if='metaFilters.is_face_in_body'>
-        <i-col span="12" class='left'>
-          <span>body_per</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-col span="10">
-            <input-number v-model='metaFilters.body_per[0]' :min="0" :max='1' :precision='2'></input-number>
-          </i-col>
-          <i-col span="2" class='text'>
-            to
-          </i-col>
-          <i-col span="10">
-            <input-number v-model='metaFilters.body_per[1]' :min="0" :max='1' :precision='2'></input-number>
-          </i-col>
-        </i-col>
-      </Row>
-      <Row v-if='metaFilters.is_face_in_body'>
-        <i-col span="12" class='left'>
-          <span>face_body_w_per</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-col span="10">
-            <input-number v-model='metaFilters.face_body_w_per[0]' :min="0" :max='1' :precision='2'></input-number>
-          </i-col>
-          <i-col span="2" class='text'>
-            to
-          </i-col>
-          <i-col span="10">
-            <input-number v-model='metaFilters.face_body_w_per[1]' :min="0" :max='1' :precision='2'></input-number>
-          </i-col>
-        </i-col>
-      </Row>
-      <Row v-if='metaFilters.is_face_in_body'>
-        <i-col span="12" class='left'>
           <span>face_body_h_per</span>
         </i-col>
         <i-col span="12" class='right'>
@@ -656,22 +568,6 @@
       </Row>
       <Row v-if='metaFilters.is_face_in_body'>
         <i-col span="12" class='left'>
-          <span>face_w_per</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-col span="10">
-            <input-number v-model='metaFilters.face_w_per[0]' :min="0" :max='1' :precision='2'></input-number>
-          </i-col>
-          <i-col span="2" class='text'>
-            to
-          </i-col>
-          <i-col span="10">
-            <input-number v-model='metaFilters.face_w_per[1]' :min="0" :max='1' :precision='2'></input-number>
-          </i-col>
-        </i-col>
-      </Row>
-      <Row v-if='metaFilters.is_face_in_body'>
-        <i-col span="12" class='left'>
           <span>face_h_per</span>
         </i-col>
         <i-col span="12" class='right'>
@@ -683,22 +579,6 @@
           </i-col>
           <i-col span="10">
             <input-number v-model='metaFilters.face_h_per[1]' :min="0" :max='1' :precision='2'></input-number>
-          </i-col>
-        </i-col>
-      </Row>
-      <Row v-if='metaFilters.is_face_in_body'>
-        <i-col span="12" class='left'>
-          <span>body_w_per</span>
-        </i-col>
-        <i-col span="12" class='right'>
-          <i-col span="10">
-            <input-number v-model='metaFilters.body_w_per[0]' :min="0" :max='1' :precision='2'></input-number>
-          </i-col>
-          <i-col span="2" class='text'>
-            to
-          </i-col>
-          <i-col span="10">
-            <input-number v-model='metaFilters.body_w_per[1]' :min="0" :max='1' :precision='2'></input-number>
           </i-col>
         </i-col>
       </Row>
@@ -747,6 +627,8 @@
         sideIsCollapsed: false,
         selectedTriplet: null,
         items: null,
+        triplets: [],
+        tripletItems: {},
         logo: {
           width: "400px",
           src: "/static/image/FashionKE_logo.png",
@@ -777,18 +659,9 @@
           comments: ['', ''],
           bloggers: '',
           is_face_in_body: true,
-          face_body_per: ["", ""],
-          face_per: ["", ""],
-          body_per: ["", ""],
-          face_body_w_per: ["", ""],
           face_body_h_per: [0.0, 0.25],
-          face_w_per: ["", ""],
           face_h_per: ["", ""],
-          body_w_per: ["", ""],
           body_h_per: [0.5, 1],
-          has_url: false,
-          has_watermark: false,
-          dark_degree: "",
           label_yes: true,
           label_no: false,
           label_not_sure: false,
@@ -797,7 +670,6 @@
           binary_score: [0.5, 1.0],
           must_have_location: false
         },
-        defaultSplitRatio: 0.3,
         config: {
           layouts: 6,
           batch: 120,
