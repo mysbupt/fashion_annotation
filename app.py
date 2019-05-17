@@ -28,7 +28,13 @@ cat_attr_val_list = get_cat_attr_val_list_byfile()
 eng_chi_mapping = json.load(open("./data/eng_chi_mapping.json"))
 occasion_tag_mapping = yaml.load(open("./data/occasion_tag_rough_map.yaml"))
 
+
 @app.route('/')
+@app.route('/query', methods=['GET'])
+def query():
+    return send_from_directory("./templates", "query.html")
+
+
 @app.route('/explore', methods=['GET'])
 def explore():
     if 'username' in session and 'role' in session:

@@ -359,7 +359,7 @@ body {
 }
 
 #query .magnify-container .magnify-content .close-btn:hover {
-    /* background-image: url("../image/close-dark.png"); */
+    background-image: url("../image/close-dark.png");
 }
 
 #query .magnify-container .magnify-content .pre-btn {

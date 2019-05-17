@@ -5,7 +5,7 @@
   <meta name="description" content="">
   <meta name="author" content="">
   <link rel="icon" href="/static/favicon.ico">
-  <title>MMKG in Fashion</title>
+  <title>Fashion Knowledge Extraction</title>
   <link href="../static/css/signin.css" rel="stylesheet">
   <link href="../static/css/style.css" rel="stylesheet">
   <link href="../static/css/query_style.css" rel="stylesheet">
@@ -63,7 +63,7 @@
               </i-col>
 
               <i-col span="4" style="width:140px; margin-left:2px; margin-right:5px;">
-                <i-select v-model="filters.occasion" placeholder="occasion">
+                <i-select v-model="filters.occasion" placeholder="occasion" transfer="true" clearable>
                   <i-option v-for="item in occasionList" :value="item.key" :key="item.key">
                     {{item.key}}
                   </i-option>
@@ -71,7 +71,7 @@
               </i-col>
 
               <i-col span="4" style="width:100px; margin-left:2px; margin-right:5px;">
-                <i-select v-model="filters.gender" placeholder="gender">
+                <i-select v-model="filters.gender" placeholder="gender" transfer="true" clearable>
                   <i-option v-for="item in genderList" :value="item.key" :key="item.key">
                     {{item.key}}
                   </i-option>
@@ -104,7 +104,7 @@
           <Layout> 
             <Sider collapsible :collapsed-width="78" v-model="sideIsCollapsed">
               <div style="margin: 1px; overflow: hidden;" v-for="triplet in Object.keys(items)">
-                <i-button v-if="triplet == selectedTriplet" style="color: orangered; width: 100%; font-weight: bold;" disabled>{{triplet}}</i-button>
+                <i-button v-if="triplet == selectedTriplet" style="color: orangered; width: 100%; font-weight: bold;">{{triplet}}</i-button>
                 <i-button v-if="triplet !== selectedTriplet" style="color: orangered; width: 100%; font-weight: bold;" type="text" @click="selectTriplet(triplet)">{{triplet}}</i-button>
               </div>
             </Sider>
@@ -295,7 +295,6 @@
       </Row>
     </Modal>
 
-    
     <Modal v-model="metaFilterModalConfig.show" :mask-closable="metaFilterModalConfig.maskClosable"
       :title="metaFilterModalConfig.title" class='filter-modal' @on-ok="metaFilterConfirm">
       <div v-if="metaFilterModalConfig.show">
@@ -743,6 +742,7 @@
         this.getCategoryTree();
       },
       data: {
+        online: true,
         status: 'welcome',
         sideIsCollapsed: false,
         selectedTriplet: null,
@@ -869,8 +869,11 @@
       },
       methods: {
         getHashTagList: function () {
-            axios.get('/mock/get_hashtag_list.json').then((response) => {
-          //  axios.get('/get_hashtag_list').then((response)=> {
+          let source = "/mock/get_hashtag_list.json"
+          if (this.online) {
+            source = "/get_hashtag_list";
+          }
+          axios.get(source).then((response) => {
             let data = response.data.data;
             let keys = Object.keys(data);
             keys.forEach((item) => {
@@ -883,8 +886,11 @@
           })
         },
         getOccasionList: function () {
-            axios.get('/mock/get_occasion_list.json').then((response) => {
-          //  axios.get('/get_occasion_list').then((response)=> {
+          let source = "/mock/get_occasion_list.json"
+          if (this.online) {
+            source = "/get_occasion_list";
+          }
+          axios.get(source).then((response) => {
             let data = response.data.data;
             let keys = Object.keys(data);
             keys.forEach((item) => {
@@ -897,15 +903,21 @@
           })
         },
         getCategoryTree: function () {
-            axios.get('/mock/get_categoryTree.json').then((response) => {
-          //  axios.get('/get_catetory_tree').then((response)=> {
+          let source = "/mock/get_categoryTree.json"
+          if (this.online) {
+            source = "/get_catetory_tree";
+          }
+          axios.get(source).then((response) => {
             this.categoryTree = response.data;
             //console.log(this.categoryTree);
             })
         },
         getGenderList: function () {
-            axios.get('/mock/get_gender_list.json').then((response) => {
-          //  axios.get('/get_gender_list').then((response)=> {
+          let source = "/mock/get_gender_list.json"
+          if (this.online) {
+            source = "/get_gender_list";
+          }
+          axios.get(source).then((response) => {
             let data = response.data.data;
             let keys = Object.keys(data);
             keys.forEach((item) => {
@@ -918,30 +930,39 @@
           })
         },
         getCountryList: function () {
-            axios.get('/mock/get_country_list.json').then((response) => {
-          //  axios.get('/get_country_list').then((response)=> {
+          let source = "/mock/get_country_list.json"
+          if (this.online) {
+            source = "/get_country_list";
+          }
+          axios.get(source).then((response) => {
             let data = response.data.data;
             this.countryList = data;
           })
         },
         getCatAttrValList: function () {
-            axios.get('/mock/clothes_category_attribute_value.json').then((response) => {
-          //  axios.get('/get_cat_attr_val_list').then((response)=> {
+          let source = "/mock/clothes_category_attribute_value.json"
+          if (this.online) {
+            source = "/get_cat_attr_val_list";
+          }
+          axios.get(source).then((response) => {
             let data = response.data;
             this.catAttrValList = data;// || {};
             //console.log(this.catAttrValList);
           })
         },       
         getTranslate: function () {
-            axios.get('/mock/eng_chi_mapping.json').then((response) => {
-          //  axios.get('/get_translation').then((response) => {
+          let source = "/mock/eng_chi_mapping.json"
+          if (this.online) {
+            source = "/get_translation";
+          }
+          axios.get(source).then((response) => {
             let data = response.data;
             this.translateData = data;
           })
         },
         showAttrFilters: function() {
           if (this.filters.category.length == 0) {
-            this.$Message.warning('Please choose a category first !');
+            this.$Message.warning('Please choose clothes first !');
           }
           else {
             if (this.filters.categoryStr == '') {
@@ -1217,15 +1238,27 @@
             category: this.filters.category,
             attributes: this.filters.attributes,
           };
-          axios.get('/mock/search.json', data).then((response) => {
-          //axios.post('/search', data).then((response)=> {
-            let data = response.data.data;
-            //console.log(data);
-            this.formatData(data);
-            this.items = data;
-            this.selectedTriplet = Object.keys(this.items)[0];
-            //this.filterModalConfig.show = false;
-          })
+
+          if (this.online) {
+            axios.post("/search").then((response) => {
+              let data = response.data.data;
+              //console.log(data);
+              this.formatData(data);
+              this.items = data;
+              this.selectedTriplet = Object.keys(this.items)[0];
+              //this.filterModalConfig.show = false;
+            })
+          } else {
+            axios.get("/mock/search.json").then((response) => {
+              let data = response.data.data;
+              //console.log(data);
+              this.formatData(data);
+              this.items = data;
+              this.selectedTriplet = Object.keys(this.items)[0];
+              //this.filterModalConfig.show = false;
+            })
+          }
+          
         },
         submit: function() {
           let clothes =  this.magnify.clothes;
