@@ -27,6 +27,9 @@ task_list = get_task_list_byfile()
 cat_attr_val_list = get_cat_attr_val_list_byfile()
 eng_chi_mapping = json.load(open("./data/eng_chi_mapping.json"))
 occasion_tag_mapping = yaml.load(open("./data/occasion_tag_rough_map.yaml"))
+occasion_list = json.load(open("./data/occasion_list.json"))
+category_tree = json.load(open("./data/category_tree.json"))
+gender_list = json.load(open("./data/gender_list.json"))
 
 
 @app.route('/')
@@ -87,6 +90,24 @@ def get_translation():
 def get_hashtag_list():
     global hashtag_list
     return jsonify(hashtag_list)
+
+
+@app.route('/get_occasion_list', methods=['GET'])
+def get_occasion_list():
+    global occasion_list
+    return jsonify(occasion_list)
+
+
+@app.route('/get_category_tree', methods=['GET'])
+def get_category_tree():
+    global category_tree
+    return jsonify(category_tree)
+
+
+@app.route('/get_gender_list', methods=['GET'])
+def get_gender_list():
+    global gender_list
+    return jsonify(gender_list)
 
 
 @app.route('/label', methods=['POST'])

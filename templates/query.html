@@ -18,8 +18,8 @@
 <body>
   <div id="query">
     <div v-if="status == 'welcome'" class="welcome_1">
-      <a href="/templates/query.html">
-        <img class="welcome_img" :width="logo.width" :alt="logo.alt" :src="logo.src" href="/query.html">
+      <a :href="online ? '/query' : '/templates/query.html'">
+        <img class="welcome_img" :width="logo.width" :alt="logo.alt" :src="logo.src">
       </a>
       <Row style="margin-top: 50px;">
         <i-col span="4" class="left" style="width:140px; margin-left:2px; margin-right:5px;">
@@ -57,7 +57,7 @@
         <Header style="position: fixed; z-index: 1000; margin-top: -1px; background: rgb(246, 247, 249); width: 100%;">
             <Row style="margin-top: 15px; margin-bottom: 15px; width: 100%">
               <i-col span="4" style="width: 240px;">
-                <a href="/templates/query.html">
+                <a :href="online ? '/query' : '/templates/query.html'">
                   <img style="height: 30px; margin-left: 20px; margin-right: 10px;" :alt="logo.alt" :src="logo.gray_src">
                 </a>
               </i-col>
@@ -905,7 +905,7 @@
         getCategoryTree: function () {
           let source = "/mock/get_categoryTree.json"
           if (this.online) {
-            source = "/get_catetory_tree";
+            source = "/get_category_tree";
           }
           axios.get(source).then((response) => {
             this.categoryTree = response.data;
@@ -1157,7 +1157,7 @@
               break;
             case 1:
               if (this.index == 0) {
-                this.$Message.warning('当前是第一张图片,不能再向前翻');
+                this.$Message.warning('This is the first page !');
                 return;
               } else {
                 this.index--
@@ -1165,7 +1165,7 @@
               break;
             case 2:
               if (this.index == this.items.length - 1) {
-                this.$Message.warning('当前是最后一张图片，不能再向后翻');
+                this.$Message.warning('This is the last page !');
                 this.index--
               } else {
                 this.index++

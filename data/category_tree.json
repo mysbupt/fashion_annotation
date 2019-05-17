@@ -1,0 +1,110 @@
+[
+    {
+        "children": [
+            {
+                "value": "dress", 
+                "label": "dress"
+            }, 
+            {
+                "value": "jumpsuit", 
+                "label": "jumpsuit"
+            }, 
+            {
+                "value": "playsuit", 
+                "label": "playsuit"
+            }, 
+            {
+                "value": "suit", 
+                "label": "suit"
+            }
+        ], 
+        "value": "full_body_garment", 
+        "label": "fullbody"
+    }, 
+    {
+        "children": [
+            {
+                "value": "blazer", 
+                "label": "blazer"
+            }, 
+            {
+                "value": "cardigan", 
+                "label": "cardigan"
+            }, 
+            {
+                "value": "coat", 
+                "label": "coat"
+            }, 
+            {
+                "value": "jacket", 
+                "label": "jacket"
+            }, 
+            {
+                "value": "vest_waistcoat", 
+                "label": "vest_waistcoat"
+            }
+        ], 
+        "value": "outerwear", 
+        "label": "outerwear"
+    }, 
+    {
+        "children": [
+            {
+                "value": "shirt", 
+                "label": "shirt"
+            }, 
+            {
+                "value": "sweater", 
+                "label": "sweater"
+            }, 
+            {
+                "value": "sweatshirt_hoodies", 
+                "label": "sweatshirt_hoodies"
+            }, 
+            {
+                "value": "t_shirt", 
+                "label": "t_shirt"
+            }, 
+            {
+                "value": "tank_top", 
+                "label": "tank_top"
+            }, 
+            {
+                "value": "top", 
+                "label": "top"
+            }
+        ], 
+        "value": "upper_body_garment", 
+        "label": "upperbody"
+    }, 
+    {
+        "children": [
+            {
+                "value": "athletic_pants", 
+                "label": "athletic_pants"
+            }, 
+            {
+                "value": "jeans", 
+                "label": "jeans"
+            }, 
+            {
+                "value": "leggings", 
+                "label": "leggings"
+            }, 
+            {
+                "value": "pants", 
+                "label": "pants"
+            }, 
+            {
+                "value": "shorts", 
+                "label": "shorts"
+            }, 
+            {
+                "value": "skirt", 
+                "label": "skirt"
+            }
+        ], 
+        "value": "lower_body_garment", 
+        "label": "lowerbody"
+    }
+]
