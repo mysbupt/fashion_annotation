@@ -1,0 +1,9 @@
+{
+  "data":
+  [
+    ["prom::female::dress", 10],
+    ["conference::male::suits", 8],
+    ["sports::female::leggings", 5],
+    ["sports::male::tank_top", 1]
+  ]
+}

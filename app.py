@@ -33,9 +33,22 @@ gender_list = json.load(open("./data/gender_list.json"))
 
 
 @app.route('/')
-@app.route('/query', methods=['GET'])
+@app.route('/query')
 def query():
     return send_from_directory("./templates", "query.html")
+
+
+@app.route('/search', methods=["POST"])
+def search():
+    req = request.get_json()
+    if req["type"] == "triplet":
+        batch_of_data = get_a_batch_of_triplets(conn_mysql, req)
+    elif req["type"] == "image":
+        batch_of_data = get_a_batch_of_images(conn_mysql, req)
+    else:
+        batch_of_data = {}
+
+    return jsonify(batch_of_data)
 
 
 @app.route('/explore', methods=['GET'])

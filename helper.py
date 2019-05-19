@@ -231,6 +231,172 @@ def get_hashtag_list_bydb(conn_mysql):
     return {"data": hashtag_stat}
 
 
+def get_a_batch_of_triplets(conn_mysql, req):
+    mysql_c = conn_mysql.cursor()
+    query = {}
+
+    print(req)
+
+    if req["occasion"] and req["occasion"] != "":
+        query["occasion"] = "occasion = '%s'" %(req["occasion"])
+
+    if req["gender"] and req["gender"] != "":
+        query["gender"] = "gender = '%s'" %(req["gender"])
+
+    attribute = ""
+    value = ""
+    if req["category"] and req["category"] != "":
+        query["category"] = "category = '%s'" %("__".join(req["category"]))
+
+        if req["attributes"] and len(req["attributes"]) >= 0:
+            for attr, val in req["attributes"].items():
+                if val and val != "":
+                    query[attr] = "%s = '%s'" %(attr, val)
+                    attribute = attr
+                    value = val
+                    # currently, we only consider one attribute for each cloth
+                    break
+
+    if len(query) != 0:
+        filter_cnd = "WHERE " + " AND ".join(["(" + i + ")" for i in query.values()])
+    else:
+        filter_cnd = ""
+
+    if attribute != "":
+        q_ret = "SELECT occasion, gender, category, '%s' FROM clothes " %(attribute) + filter_cnd
+    else:
+        q_ret = "SELECT occasion, gender, category FROM clothes " + filter_cnd
+    print("final query SQL is: %s" %(q_ret))
+
+    try: 
+        mysql_c.execute(q_ret)
+    except:
+        print("SQL error: %s" %(q_ret))
+        exit()
+
+    res = mysql_c.fetchall()
+    res_data = {}
+    for i in res:
+        occ = i[0]
+        gen = i[1]
+        cat = i[2]
+        if attribute != "":
+            triplet = "::".join([occ, gen, cat]) + " " + "::".join([attribute, value])
+        else:
+            triplet = "::".join([occ, gen, cat])
+
+        if triplet not in res_data:
+            res_data[triplet] = 1
+        else:
+            res_data[triplet] += 1
+
+    new_res = []
+    for triplet, cnt in sorted(res_data.items(), key=lambda i: i[1], reverse=True):
+        new_res.append([triplet, cnt])
+
+    return new_res
+
+    
+def get_a_batch_of_images(conn_mysql, req):
+    mysql_c = conn_mysql.cursor()
+
+    print("\nQuery of images: ")
+    print(json.dumps(req, indent=2))
+    query = {}
+    
+    triplet = req["triplet"]
+    x = triplet.split(" ")
+    occ_gen_cat, attrs = "", ""
+    if len(x) == 2:
+        occ_gen_cat, attrs = x
+    else:
+        occ_gen_cat = x[0]
+    occasion, gender, category = occ_gen_cat.split("::")
+
+    if occasion and occasion != "":
+        query["occasion"] = "occasion = '%s'" %(occasion)
+
+    if gender and gender != "":
+        query["gender"] = "gender = '%s'" %(gender)
+
+    attribute = ""
+    value = ""
+    if category and category != "":
+        query["category"] = "category = '%s'" %(category)
+
+        if attrs != "":
+            attribute, value = attrs.split("::")
+            query["attribute"] = "%s = '%s'" %(attribute, value)
+
+    # here to record the metadata filter
+    filters = req["meta_filters"]
+    if 'time' in filters.keys() and filters['time'][0] != '' and filters['time'][0] is not None and filters['time'][1] != '' and filters['time'][1] is not None:
+        query['publish_time'] = "publish_time BETWEEN '%s' AND '%s'" %(filters['time'][0], filters['time'][1])
+
+    if 'likes' in filters.keys() and filters['likes'][0] != '' and filters['likes'][0] is not None and filters['likes'][1] != '' and filters['likes'][1] is not None:
+        query['likes'] = "likes BETWEEN %s AND %s" %(filters['likes'][0], filters['likes'][1])
+
+    if 'comments' in filters.keys() and filters['comments'][0] != '' and filters['comments'][0] is not None and filters['comments'][1] != '' and filters['comments'][1] is not None:
+        query['comments'] = "comments BETWEEN %s AND %s" %(filters['comments'][0], filters['comments'][1])
+
+    if 'bloggers' in filters.keys() and filters['bloggers'] != [''] and filters['bloggers'] is not None:
+        tmp_str = ','.join(["'" + i + "'" for i in filters['bloggers']])
+        query['blogger'] = "blogger IN (%s)" %(filters['bloggers'])
+
+    if 'country' in filters.keys() and filters['country'] != [''] and filters['country'] != "" and filters['country'] is not None:
+        query['country'] = "country = '%s'" %(filters["country"])
+
+    page_num = int(req['config']['page'])
+    if page_num < 1:
+        page_num = 1
+    batch = int(req['config']['batch'])
+    if batch > 1000:
+        batch = 1000
+    limit = "LIMIT %s, %s" %((page_num - 1) * batch, batch) 
+
+    if len(query) != 0:
+        filter_cnd = "WHERE " + " AND ".join(["(" + i + ")" for i in query.values()])
+    else:
+        filter_cnd = ""
+
+    # get total count
+    q_total_cnt = "SELECT count(*) FROM clothes " + filter_cnd
+    total_cnt = get_total_cnt(conn_mysql, q_total_cnt)
+    print("\n\n total cnt is %d" %(total_cnt))
+
+    q_ret = "SELECT * FROM clothes " + filter_cnd + " " + limit
+    print "final query is:", q_ret
+    mysql_c.execute(q_ret)
+    
+    res = mysql_c.fetchall()
+    res_data = []
+    for i in res:
+        data = {
+            "cloth_id": i[0],
+            "img_id": i[1],
+            "occasion": i[2],
+            "img_src": '/images/' + i[1] + '.jpg',
+            "ori_page_src": i[4],
+            "text": i[5],
+            "blogger": i[6],
+            "blogger_page_url": "https://www.instagram.com/" + i[6],
+            "likes": i[7],
+            "comments": i[8],
+            "country": i[9],
+            "publish_time": i[10],
+            "object_detction": i[11],
+            "face_detction": i[12],
+            "object_detction_new": i[13],
+            "face_detction_new": i[14],
+            "clothes": i[15]
+        }
+        res_data.append(data)
+
+    result = {"pages": {"count": total_cnt}, "data": res_data}
+
+    return result
+
+
 def get_a_batch_of_data(conn_mysql, order_by, query, limit, page_info):
     mysql_c = conn_mysql.cursor()
 

@@ -1,14 +1,14 @@
 {
   "data": {
-    "dating": 100,
+    "date": 100,
     "party": 100,
     "conference": 100,
-    "sports": 100,
+    "sport": 100,
     "wedding_guest": 100,
     "school": 100,
     "prom": 100,
     "shopping": 100,
     "travel": 100,
-    "daily_work": 100
+    "work": 100
   }
 }
