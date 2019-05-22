@@ -65,8 +65,12 @@ def get_items():
 @app.route('/search', methods=['POST'])
 def search():
     req = request.get_json()
-    query, order_by, limit, page_info = check_req(req, occasion_tag_mapping, session["role"], session["username"])
-    batch_of_data = get_a_batch_of_data(conn_mysql, order_by, query, limit, page_info)
+    if req["type"] == "triplet":
+        batch_of_data = get_a_batch_of_triplets(conn_mysql, req)
+    elif req["type"] == "image":
+        batch_of_data = get_a_batch_of_images(conn_mysql, req)
+    else:
+        batch_of_data = {}
     return jsonify(batch_of_data)
 
 
@@ -118,6 +122,16 @@ def get_gender_list():
     return jsonify(gender_list)
 
 
+@app.route('/images/<image_id>.jpg', methods=['GET'])
+def get_image(image_id):
+    if re.match(r"\w{32}", image_id):
+        image = get_an_image(conn_cassandra, image_id)
+        return send_file(
+            io.BytesIO(image[0]),
+            mimetype='image/jpeg'
+        )
+
+
 """
 @app.route('/label', methods=['POST'])
 def label_specific_task():
@@ -142,16 +156,6 @@ def label_clothes():
         return jsonify(res)
     else:
         return redirect(url_for('login'))
-"""
-
-@app.route('/images/<image_id>.jpg', methods=['GET'])
-def get_image(image_id):
-    if re.match(r"\w{32}", image_id):
-        image = get_an_image(conn_cassandra, image_id)
-        return send_file(
-            io.BytesIO(image[0]),
-            mimetype='image/jpeg'
-        )
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -179,7 +183,6 @@ def logout():
     return redirect(url_for('login'))
 
 
-"""
 @app.route('/accept', methods=['POST'])
 def accept_and_next():
     if 'username' in session:
