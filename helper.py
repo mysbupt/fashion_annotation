@@ -237,15 +237,15 @@ def get_a_batch_of_triplets(conn_mysql, req):
 
     print(req)
 
-    if req["occasion"] and req["occasion"] != "":
+    if "occasion" in req and req["occasion"] and req["occasion"] != "":
         query["occasion"] = "occasion = '%s'" %(req["occasion"])
 
-    if req["gender"] and req["gender"] != "":
+    if "gender" in req and req["gender"] and req["gender"] != "":
         query["gender"] = "gender = '%s'" %(req["gender"])
 
     attribute = ""
     value = ""
-    if req["category"] and req["category"] != "":
+    if "category" in req and req["category"] and req["category"] != "":
         query["category"] = "category = '%s'" %("__".join(req["category"]))
 
         if req["attributes"] and len(req["attributes"]) >= 0:
@@ -300,8 +300,8 @@ def get_a_batch_of_triplets(conn_mysql, req):
 def get_a_batch_of_images(conn_mysql, req):
     mysql_c = conn_mysql.cursor()
 
-    print("\nQuery of images: ")
-    print(json.dumps(req, indent=2))
+    #print("\nQuery of images: ")
+    #print(json.dumps(req, indent=2))
     query = {}
     
     triplet = req["triplet"]

@@ -33,22 +33,9 @@ gender_list = json.load(open("./data/gender_list.json"))
 
 
 @app.route('/')
-@app.route('/query')
+@app.route('/query', methods=['GET'])
 def query():
     return send_from_directory("./templates", "query.html")
-
-
-@app.route('/search', methods=["POST"])
-def search():
-    req = request.get_json()
-    if req["type"] == "triplet":
-        batch_of_data = get_a_batch_of_triplets(conn_mysql, req)
-    elif req["type"] == "image":
-        batch_of_data = get_a_batch_of_images(conn_mysql, req)
-    else:
-        batch_of_data = {}
-
-    return jsonify(batch_of_data)
 
 
 @app.route('/explore', methods=['GET'])
@@ -69,6 +56,14 @@ def explore():
 
 @app.route('/get_items', methods=['POST'])
 def get_items():
+    req = request.get_json()
+    query, order_by, limit, page_info = check_req(req, occasion_tag_mapping, session["role"], session["username"])
+    batch_of_data = get_a_batch_of_data(conn_mysql, order_by, query, limit, page_info)
+    return jsonify(batch_of_data)
+
+
+@app.route('/search', methods=['POST'])
+def search():
     req = request.get_json()
     query, order_by, limit, page_info = check_req(req, occasion_tag_mapping, session["role"], session["username"])
     batch_of_data = get_a_batch_of_data(conn_mysql, order_by, query, limit, page_info)
@@ -123,6 +118,7 @@ def get_gender_list():
     return jsonify(gender_list)
 
 
+"""
 @app.route('/label', methods=['POST'])
 def label_specific_task():
     if 'username' in session:
@@ -146,7 +142,7 @@ def label_clothes():
         return jsonify(res)
     else:
         return redirect(url_for('login'))
-
+"""
 
 @app.route('/images/<image_id>.jpg', methods=['GET'])
 def get_image(image_id):
@@ -183,6 +179,7 @@ def logout():
     return redirect(url_for('login'))
 
 
+"""
 @app.route('/accept', methods=['POST'])
 def accept_and_next():
     if 'username' in session:
@@ -216,7 +213,7 @@ def stats():
         return render_template('show_stats.html', content=get_stats(conn), username=username)
     else:
         return redirect(url_for('login'))
-
+"""
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=2223, threaded=True)
