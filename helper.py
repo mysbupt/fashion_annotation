@@ -263,7 +263,7 @@ def get_a_batch_of_triplets(conn_mysql, req):
         filter_cnd = ""
 
     if attribute != "":
-        q_ret = "SELECT occasion, gender, category, '%s' FROM clothes " %(attribute) + filter_cnd
+        q_ret = "SELECT occasion, gender, category, %s FROM clothes " %(attribute) + filter_cnd
     else:
         q_ret = "SELECT occasion, gender, category FROM clothes " + filter_cnd
     print("final query SQL is: %s" %(q_ret))

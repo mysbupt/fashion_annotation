@@ -3,6 +3,7 @@ body {
     min-height: 100%;
     font-family: Helvetica, sans-serif;
 }
+
 .item {
     position: absolute;
     top: 5px;
@@ -52,6 +53,9 @@ body {
     overflow: hidden;
 }
 
+#query .sidebar button:focus{
+    background: white;
+}
 
 #query .welcome_1 {
     display: block;

@@ -103,9 +103,9 @@
         <div style="min-height: '100vh'; margin-top: 70px; position: relative;" v-if="items !== null">
           <Layout> 
             <Sider collapsible :collapsed-width="78" v-model="sideIsCollapsed" style="width: 200px; min-width:60px; max-width:200px;">
-              <div style="margin: 1px; overflow: hidden;" v-for="triplet in this.triplets">
-                <i-button v-if="triplet == selectedTriplet" :title="triplet[0]" style="color: orangered; width: 100%; font-weight: bold;">{{triplet[1]}}&nbsp;{{triplet[0]}}</i-button>
-                <i-button v-if="triplet !== selectedTriplet" :title="triplet[0]" style="color: orangered; width: 100%; font-weight: bold;" type="text" @click="selectTriplet(triplet)">{{triplet[1]}}&nbsp;{{triplet[0]}}</i-button>
+              <div class="sidebar" style="margin: 1px; overflow: hidden;" v-for="triplet in this.triplets">
+                <i-button v-if="triplet[0] == selectedTriplet" :title="triplet[0]" style="color: orangered; width: 100%; font-weight: bold; background: white;">{{triplet[1]}}&nbsp;{{triplet[0]}}</i-button>
+                <i-button v-if="triplet[0] !== selectedTriplet" :title="triplet[0]" style="color: orangered; width: 100%; font-weight: bold;" type="text" @click="selectTriplet(triplet)">{{triplet[1]}}&nbsp;{{triplet[0]}}</i-button>
               </div>
             </Sider>
               
@@ -136,9 +136,7 @@
                       </Row>
                     </div>
                   </i-col>
-                  <BackTop :bottom="200">
-                    <div>Top</div>
-                  </BackTop>
+                  <BackTop :bottom="500"></BackTop>
                 </div>
                 <div>
                   <footer>
