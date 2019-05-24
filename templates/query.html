@@ -613,8 +613,8 @@
             this.$Message.warning('Please choose clothes first !');
           }
           else {
-            if (this.filters.categoryStr == '') {
-              let categoryStr = this.filters.category.join("__");
+            let categoryStr = this.filters.category.join("__");
+            if (this.filters.categoryStr != categoryStr) {
               //console.log(categoryStr)
               this.filters.categoryStr = categoryStr;
               let attrVals = new Object();
