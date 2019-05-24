@@ -16,7 +16,7 @@
 </head>
 
 <body>
-  <div id="query">
+  <div id="query" style="overflow-y: hidden;">
     <div v-if="status == 'welcome'" class="welcome_1">
       <a :href="online ? '/query' : '/templates/query.html'">
         <img class="welcome_img" :width="logo.width" :alt="logo.alt" :src="logo.src">
@@ -101,17 +101,21 @@
         </Header>
         
         <div style="min-height: '100vh'; margin-top: 70px; position: relative;" v-if="items !== null">
-          <Layout> 
+          <!--<Layout> 
             <Sider collapsible :collapsed-width="78" v-model="sideIsCollapsed" style="width: 200px; min-width:60px; max-width:200px;">
-              <div class="sidebar" style="margin: 1px; overflow: hidden;" v-for="triplet in this.triplets">
+          -->
+          <Split v-model="splitRatio">
+              <div slot="left" style="margin: 1px;" v-for="triplet in this.triplets">
                 <i-button v-if="triplet[0] == selectedTriplet" :title="triplet[0]" style="color: orangered; width: 100%; font-weight: bold; background: white;">{{triplet[1]}}&nbsp;{{triplet[0]}}</i-button>
                 <i-button v-if="triplet[0] !== selectedTriplet" :title="triplet[0]" style="color: orangered; width: 100%; font-weight: bold;" type="text" @click="selectTriplet(triplet)">{{triplet[1]}}&nbsp;{{triplet[0]}}</i-button>
               </div>
-            </Sider>
-              
-            <Content style="width: 100%;">
-              <div class='content'>
-                <div class='imgs-box'>
+          <!--  </Sider>
+          -->              
+
+          <!--  <Content style="width: 100%;">
+          -->
+              <div slot="right" class='content' style="overflow-y: auto;">
+                <div class='imgs-box' style="margin-bottom: 60px">
                   <i-col :lg='24/config.layouts' v-for="(item, index) in items" v-show="!item.hide">
                     <div class="img-container mark-mode" @click='changeMagnify(0,index)'>
                       <img :width="item.width" :height="item.height" :alt="item.index" :src="item.img_src">
@@ -148,8 +152,9 @@
                   </footer>
                 </div>
               </div>
-            </Content>
-          </Layout>
+          <!--  </Content>
+          </Layout> -->
+          </Split>
         </div>
       </Layout>
     </div>
@@ -411,6 +416,7 @@
       },
       data: {
         online: true,
+        splitRatio: "300px",
         status: 'welcome',
         sideIsCollapsed: false,
         selectedTriplet: null,
@@ -504,14 +510,6 @@
           maskClosable: true,
           loading: true,
         },
-      },
-      computed: {
-        menuitemClasses: function () {
-          return [
-            'menu-item',
-            this.isCollapsed ? 'collapsed-menu' : ''
-          ]
-        }
       },
       methods: {
         getHashTagList: function () {
