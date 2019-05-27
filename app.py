@@ -92,6 +92,12 @@ def get_cat_attr_val_list():
     return jsonify(cat_attr_val_list)
 
 
+@app.route("/get_carousel_items", methods=['GET'])
+def get_carousel_items():
+    carousel_items = get_carousel_items_bydb(conn_mysql)
+    return jsonify(carousel_items)
+
+
 @app.route('/get_translation', methods=['GET'])
 def get_translation():
     global eng_chi_mapping 

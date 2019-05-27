@@ -231,6 +231,20 @@ def get_hashtag_list_bydb(conn_mysql):
     return {"data": hashtag_stat}
 
 
+def get_carousel_items_bydb(conn_mysql):
+    data_stat = []
+    mysql_c = conn_mysql.cursor()
+    mysql_c.execute("SELECT COUNT(*) FROM images")
+    res = mysql_c.fetchall()
+    data_stat.append({"name": "images", "cnt": res[0][0]})
+
+    mysql_c.execute("SELECT COUNT(*) FROM clothes")
+    res = mysql_c.fetchall()
+    data_stat.append({"name": "clothes", "cnt": res[0][0]})
+
+    return data_stat
+
+
 def get_a_batch_of_triplets(conn_mysql, req):
     mysql_c = conn_mysql.cursor()
     query = {}

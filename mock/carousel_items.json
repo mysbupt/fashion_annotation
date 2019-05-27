@@ -1,0 +1,14 @@
+[
+    { 
+        "name": "images",
+        "cnt": 30000
+    },
+    {
+        "name": "clothes",
+        "cnt": 50000
+    },
+    {
+        "name": "persons",
+        "cnt": 35000
+    }
+]
