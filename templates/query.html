@@ -10,46 +10,83 @@
   <link href="../static/css/style.css" rel="stylesheet">
   <link href="../static/css/query_style.css" rel="stylesheet">
   <link href="../static/css/iview.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+  <!--link rel="stylesheet" href="//unpkg.com/iview/dist/styles/iview.css"-->
   <link href="../static/css/explore.css" rel="stylesheet">
   <link href="../static/css/cropper.css" rel="stylesheet">
   <script src="../static/js/vue.min.js"></script>
+  <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+  <!--script src="//unpkg.com/iview/dist/iview.min.js"></script-->
 </head>
 
 <body>
   <div id="query" style="overflow-y: hidden;">
-    <div v-if="status == 'welcome'" class="welcome_1">
-      <a :href="online ? '/query' : '/templates/query.html'">
-        <img class="welcome_img" :width="logo.width" :alt="logo.alt" :src="logo.src">
-      </a>
-      <Row style="margin-top: 50px;">
-        <i-col span="4" class="left" style="width:140px; margin-left:2px; margin-right:5px;">
-          <i-select v-model="filters.occasion" placeholder="occasion" transfer="true" clearable>
-            <i-option v-for="item in occasionList" :value="item.key" :key="item.key">
-              {{item.key}}
-            </i-option>
-          </i-select>
-        </i-col>
+    <div v-if="status == 'welcome'">
+      <div v-if="status == 'welcome'" class="welcome_1">
+        <a :href="online ? '/query' : '/templates/query.html'">
+          <img class="welcome_img" :width="logo.width" :alt="logo.alt" :src="logo.src">
+        </a>
+        <Row style="margin-top: 50px;">
+          <i-col span="4" class="left" style="width:140px; margin-left:2px; margin-right:5px;">
+            <i-select v-model="filters.occasion" placeholder="occasion" transfer="true" clearable>
+              <i-option v-for="item in occasionList" :value="item.key" :key="item.key">
+                {{item.key}}
+              </i-option>
+            </i-select>
+          </i-col>
 
-        <i-col span="4" style="width:100px; margin-left:2px; margin-right:5px;">
-          <i-select v-model="filters.gender" placeholder="gender" transfer="true" clearable>
-            <i-option v-for="item in genderList" :value="item.key" :key="item.key">
-              {{item.key}}
-            </i-option>
-          </i-select>
-        </i-col>
+          <i-col span="4" style="width:100px; margin-left:2px; margin-right:5px;">
+            <i-select v-model="filters.gender" placeholder="gender" transfer="true" clearable>
+              <i-option v-for="item in genderList" :value="item.key" :key="item.key">
+                {{item.key}}
+              </i-option>
+            </i-select>
+          </i-col>
 
-        <i-col span="4" style="width:160px; margin-left:3px; margin-right:5px;">
-          <Cascader :data="categoryTree" trigger="hover" placeholder="clothes" v-model="filters.category" transfer="true"></Cascader>
-        </i-col>
+          <i-col span="4" style="width:160px; margin-left:3px; margin-right:5px;">
+            <Cascader :data="categoryTree" trigger="hover" placeholder="clothes" v-model="filters.category" transfer="true"></Cascader>
+          </i-col>
 
-        <i-col span="2">
-          <i-button shape="circle" icon="ios-options" style="width: 30px; height: 30px; margin-left: 10px" @click="showAttrFilters()"></button>
-        </i-col>
+          <i-col span="2">
+            <i-button shape="circle" icon="ios-options" style="width: 30px; height: 30px; margin-left: 10px" @click="showAttrFilters()"></button>
+          </i-col>
 
-        <i-col span="2">
-          <i-button shape="circle" icon="ios-search" style="width: 30px; height: 30px; margin-left: 50px" @click="searchTriplets();"></button>
-        </i-col>
-      </Row>
+          <i-col span="2">
+            <i-button shape="circle" icon="ios-search" style="width: 30px; height: 30px; margin-left: 50px" @click="searchTriplets();"></button>
+          </i-col>
+        </Row>
+      </div>
+      <div style="width: 800px; text-align: center; margin-left: auto; margin-right: auto; margin-top: 100px;">
+        <el-carousel height="200px" loop autoplay>
+          <el-carousel-item key=1>
+            <img src="/images/01795fd11399b85700326507d6cf8a05.jpg">
+          </el-carousel-item>
+          <el-carousel-item key=1>
+            <img src="/images/017b677c6fd850d5808fd56385af0a96.jpg">
+          </el-carousel-item>
+          <el-carousel-item key=1>
+            <img src="/images/024953a92a23a61ee2755e2a84e2a8f0.jpg">
+          </el-carousel-item>
+        </el-carousel>  
+        <!--
+        <Carousel v-model="carouselValue" loop>
+          <CarouselItem>
+            <div class="demo-carousel">
+              1
+            </div>
+          </CarouselItem>
+          <CarouselItem>
+            <div class="demo-carousel">
+              2
+            </div>
+          </CarouselItem>
+          <CarouselItem>
+            <div class="demo-carousel">
+              3
+            </div>
+          </CarouselItem>
+        </Carousel> -->
+      </div>
     </div>
 
     <div v-if="status == 'detail'" class="layout">
@@ -417,6 +454,8 @@
       data: {
         online: true,
         splitRatio: "300px",
+        carouselSwitch: null,
+        carouselValue: 0,
         status: 'welcome',
         sideIsCollapsed: false,
         selectedTriplet: null,

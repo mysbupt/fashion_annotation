@@ -1,6 +1,5 @@
 body {
     margin: 5px;
-    min-height: 100%;
     font-family: Helvetica, sans-serif;
 }
 
@@ -21,10 +20,6 @@ body {
 }
 .wf-enter {
     opacity: 0;
-}
-
-#query {
-    overflow: hidden;
 }
 
 #query .sidebar button:focus{
@@ -53,7 +48,18 @@ body {
     align-items: center;
 }
 
-#query .layout{
+.demo-carousel {
+    display: block;
+    width: 1254px;
+    height: 200px;
+    line-height: 200px;
+    text-align: center;
+    color: #fff;
+    font-size: 20px;
+    background: #506b9e;
+}
+
+#query .layout {
     border: 1px solid #d7dde4;
     position: relative;
     overflow: hidden;
