@@ -65,10 +65,14 @@ def get_items():
 @app.route('/search', methods=['POST'])
 def search():
     req = request.get_json()
+    print(req["type"])
     if req["type"] == "triplet":
         batch_of_data = get_a_batch_of_triplets(conn_mysql, req)
     elif req["type"] == "image":
         batch_of_data = get_a_batch_of_images(conn_mysql, req)
+    elif req["type"] == "curve_data":
+        # actually this will return all the data points
+        batch_of_data = get_curve_data(conn_mysql, req)
     else:
         batch_of_data = {}
     return jsonify(batch_of_data)

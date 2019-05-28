@@ -127,7 +127,7 @@
               </i-button>
             </div>
             <div slot="right" class='content' style="overflow-y: auto;">
-              <el-collapse v-model="curveShow" @change="plotCurve">
+              <el-collapse v-model="curveShow" @change="clickCollapse">
                 <el-collapse-item :title="curveDivText" name="0">
                   <div id="trending" style="height: 300px; width: 800px; margin: auto; text-align: center; vertical-align: middle;"></div>
                 </el-collapse-item>
@@ -431,7 +431,7 @@
       },
       data: {
         online: true,
-        splitRatio: "300px",
+        splitRatio: "250px",
         carouselItems: [],
         curveShow: [],
         curveDivText: "show trending",
@@ -440,6 +440,8 @@
         sideIsCollapsed: false,
         selectedTriplet: null,
         items: null,
+        allData: [],
+        allDate: [],
         triplets: [],
         logo: {
           width: "400px",
@@ -708,6 +710,7 @@
         selectTriplet: function (triplet) {
           this.selectedTriplet = triplet[0];
           this.config.page = 1;
+          this.searchCurveData();
           this.searchImages();
         },
         pageChange: function (page) {
@@ -919,6 +922,7 @@
               //console.log(data);
               this.triplets = data;
               this.selectedTriplet = this.triplets[0][0];
+              this.searchCurveData();
               this.searchImages();
               //console.log(this.selectedTriplet);
               //this.filterModalConfig.show = false;
@@ -928,6 +932,8 @@
               let data = response.data.data;
               this.triplets = data;
               this.selectedTriplet = this.triplets[0][0];
+              this.searchCurveData();
+              this.searchImages();
             })
           }
         },
@@ -960,34 +966,111 @@
             })
           }
         },
-        plotCurve: function (val) {
-          console.log(val);
+        searchCurveData: function () {
+          let request_data = {
+            type: "curve_data",
+            triplet: this.selectedTriplet,
+            meta_filters: this.metaFilters
+          };
+
+          if (this.online) {
+            axios.post("/search", request_data).then((response) => {
+              let data = response.data;
+              this.allDate = data.date;
+              this.allData = data.data;
+              this.plotCurve();
+            })
+          } else {
+            axios.get("/mock/search_curve_data.json").then((response) => {
+              let data = response.data;
+              this.allDate = data.date;
+              this.allData = data.data;
+              this.plotCurve();
+            })
+          }
+        },
+        clickCollapse: function (val) {
           if (val.length !== 0) {
+            this.searchCurveData();
             this.curveDivText = "hide trending";
-            console.log("start initialize echarts");
+          } else {
+            this.curveDivText = "show trending";
+          }
+        },
+        plotCurve: function () {
+          if (this.allData.length !== 0 && this.allDate.length !== 0) {
             this.myChart = echarts.init(document.getElementById('trending'));
+
             var option = {
-              title: {
-                text: 'ECharts entry example'
+              tooltip: {
+                trigger: 'axis',
+                position: function (pt) {
+                  return [pt[0], '10%'];
+                }
               },
-              tooltip: {},
-              legend: {
-                data:['Sales']
+              title: {
+                left: 'center',
+                text: 'monthly trending for: ' + this.selectedTriplet,
+              },
+              toolbox: {
+                feature: {
+                  dataZoom: {
+                    yAxisIndex: 'none'
+                  },
+                  restore: {},
+                  saveAsImage: {}
+                }
               },
               xAxis: {
-                data: ["shirt", "cardign", "chiffon shirt", "pants","heels", "socks"]
+                type: 'category',
+                boundaryGap: false,
+                data: this.allDate
               },
-              yAxis: {},
-              series: [{
-                name: 'Sales',
-                type: 'bar',
-                data: [5, 20, 36, 10, 10, 20]
-              }]
+              yAxis: {
+                type: 'value',
+                boundaryGap: [0, '100%']
+              },
+              dataZoom: [{
+                type: 'inside',
+                start: 0,
+                end: 100
+              }, {
+                start: 0,
+                end: 100,
+                handleIcon: 'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+                handleSize: '80%',
+                handleStyle: {
+                  color: '#fff',
+                  shadowBlur: 3,
+                  shadowColor: 'rgba(0, 0, 0, 0.6)',
+                  shadowOffsetX: 2,
+                  shadowOffsetY: 2
+                }
+              }],
+              series: [
+                {
+                  name:'number of instances',
+                  type:'line',
+                  smooth: true,
+                  symbol: 'none',
+                  sampling: 'average',
+                  itemStyle: {
+                    color: 'rgb(255, 70, 131)'
+                  },
+                  areaStyle: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                      offset: 0,
+                      color: 'rgb(255, 158, 68)'
+                    }, {
+                      offset: 1,
+                      color: 'rgb(255, 70, 131)'
+                    }])
+                  },
+                  data: this.allData
+                }
+              ]
             };
             this.myChart.setOption(option);
-          }
-          if (val.length == 0) {
-            this.curveDivText = "show trending";
           }
         },
         submit: function() {

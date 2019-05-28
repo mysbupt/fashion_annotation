@@ -166,17 +166,20 @@ def check_req(req, occasion_tag_mapping, role, username):
 
 
 def get_total_cnt(conn_mysql, q_total_cnt):
-    global total_cnt_cache
-    print total_cnt_cache
+    #global total_cnt_cache
+    #print total_cnt_cache
     #if q_total_cnt in total_cnt_cache:
     #    return total_cnt_cache[q_total_cnt] 
     #else:
     mysql_c = conn_mysql.cursor()
-    try:
-        mysql_c.execute(q_total_cnt)
-    except:
-        print q_total_cnt
-        exit()
+    #try:
+    print(q_total_cnt)
+    print("before ok")
+    mysql_c.execute(q_total_cnt)
+    print("ok")
+    #except:
+    #    print q_total_cnt
+    #    exit()
     res = mysql_c.fetchall()
     total_cnt = res[0][0]
     #total_cnt_cache[q_total_cnt] = total_cnt
@@ -310,10 +313,8 @@ def get_a_batch_of_triplets(conn_mysql, req):
 
     return new_res
 
-    
-def get_a_batch_of_images(conn_mysql, req):
-    mysql_c = conn_mysql.cursor()
 
+def check_instance_query(req):
     #print("\nQuery of images: ")
     #print(json.dumps(req, indent=2))
     query = {}
@@ -360,6 +361,45 @@ def get_a_batch_of_images(conn_mysql, req):
     if 'country' in filters.keys() and filters['country'] != [''] and filters['country'] != "" and filters['country'] is not None:
         query['country'] = "country = '%s'" %(filters["country"])
 
+    if len(query) != 0:
+        filter_cnd = "WHERE " + " AND ".join(["(" + i + ")" for i in query.values()])
+    else:
+        filter_cnd = ""
+
+    return filter_cnd
+
+
+def get_curve_data(conn_mysql, req):
+    mysql_c = conn_mysql.cursor()
+    filter_cnd = check_instance_query(req)
+
+    q_ret = "SELECT img_id, publish_time FROM clothes " + filter_cnd + " ORDER BY publish_time;"
+    print "final query is:", q_ret
+    mysql_c.execute(q_ret)
+    
+    res = mysql_c.fetchall()
+    print("query curve data: ", len(res))
+    res_data = []
+    res_date = []
+    for i in res:
+        d = "/".join([str(i[1].year), str(i[1].month)])
+        if len(res_data) == 0 and len(res_date) == 0:
+            res_data.append(1)
+            res_date.append(d)
+        else:
+            if d == res_date[-1]:
+                res_data[-1] += 1
+            else:
+                res_data.append(1)
+                res_date.append(d)
+
+    return {"data": res_data, "date": res_date}
+
+    
+def get_a_batch_of_images(conn_mysql, req):
+    mysql_c = conn_mysql.cursor()
+    filter_cnd = check_instance_query(req)
+
     page_num = int(req['config']['page'])
     if page_num < 1:
         page_num = 1
@@ -368,13 +408,9 @@ def get_a_batch_of_images(conn_mysql, req):
         batch = 1000
     limit = "LIMIT %s, %s" %((page_num - 1) * batch, batch) 
 
-    if len(query) != 0:
-        filter_cnd = "WHERE " + " AND ".join(["(" + i + ")" for i in query.values()])
-    else:
-        filter_cnd = ""
-
     # get total count
-    q_total_cnt = "SELECT count(*) FROM clothes " + filter_cnd
+    q_total_cnt = "SELECT count(*) FROM clothes " + filter_cnd + ";"
+    print("\n\n", q_total_cnt)
     total_cnt = get_total_cnt(conn_mysql, q_total_cnt)
     print("\n\n total cnt is %d" %(total_cnt))
 
