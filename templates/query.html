@@ -11,12 +11,11 @@
   <link href="../static/css/query_style.css" rel="stylesheet">
   <link href="../static/css/iview.css" rel="stylesheet">
   <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
-  <!--link rel="stylesheet" href="//unpkg.com/iview/dist/styles/iview.css"-->
   <link href="../static/css/explore.css" rel="stylesheet">
   <link href="../static/css/cropper.css" rel="stylesheet">
   <script src="../static/js/vue.min.js"></script>
+  <script src="../static/js/echarts.min.js"></script>
   <script src="https://unpkg.com/element-ui/lib/index.js"></script>
-  <!--script src="//unpkg.com/iview/dist/iview.min.js"></script-->
 </head>
 
 <body>
@@ -118,136 +117,134 @@
         </Header>
         
         <div style="min-height: '100vh'; margin-top: 70px; position: relative;" v-if="items !== null">
-          <!--<Layout> 
-            <Sider collapsible :collapsed-width="78" v-model="sideIsCollapsed" style="width: 200px; min-width:60px; max-width:200px;">
-          -->
           <Split v-model="splitRatio">
-              <div slot="left" style="margin: 1px; background: #e5e3dc;" v-for="triplet in this.triplets">
-                <i-button v-if="triplet[0] == selectedTriplet" :title="triplet[0]" style="color: orangered; width: 100%; font-weight: bold; background: white;">{{triplet[1]}}&nbsp;{{triplet[0]}}</i-button>
-                <i-button v-if="triplet[0] !== selectedTriplet" :title="triplet[0]" style="color: orangered; width: 100%; font-weight: bold;" type="text" @click="selectTriplet(triplet)">{{triplet[1]}}&nbsp;{{triplet[0]}}</i-button>
+            <div slot="left" style="margin: 1px; background: #e5e3dc;" v-for="triplet in this.triplets">
+              <i-button v-if="triplet[0] == selectedTriplet" :title="triplet[0]" style="color: orangered; width: 100%; font-weight: bold; background: white;">
+                {{triplet[1]}}&nbsp;{{triplet[0]}}
+              </i-button>
+              <i-button v-if="triplet[0] !== selectedTriplet" :title="triplet[0]" style="color: orangered; width: 100%; font-weight: bold;" type="text" @click="selectTriplet(triplet)">
+                {{triplet[1]}}&nbsp;{{triplet[0]}}
+              </i-button>
+            </div>
+            <div slot="right" class='content' style="overflow-y: auto;">
+              <el-collapse v-model="curveShow" @change="plotCurve">
+                <el-collapse-item :title="curveDivText" name="0">
+                  <div id="trending" style="height: 300px; width: 800px; margin: auto; text-align: center; vertical-align: middle;"></div>
+                </el-collapse-item>
+              </el-collapse>
+              <div class='imgs-box' style="margin-bottom: 60px">
+                <i-col :lg='24/config.layouts' v-for="(item, index) in items" v-show="!item.hide">
+                  <div class="img-container mark-mode" @click='changeMagnify(0,index)'>
+                    <img :width="item.width" :height="item.height" :alt="item.index" :src="item.img_src">
+                    <span class='bounding-box face-bounding-box'
+                      v-for="(position, index) in item.face_detction_new.boxes"
+                      v-if="config.show_face_bouding && (index > (config.which[0] - 2) && index < config.which[1])"
+                      v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
+                    </span>
+                    <span class='bounding-box body-bounding-box'
+                      v-if="config.show_body_bouding && (index > (config.which[0] - 2) && index < config.which[1])"
+                      v-for="(position,index) in item.object_detction_new"
+                      v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
+                    </span>
+                    <span class='bounding-box close-bounding-box' v-if="config.show_clothes_bouding"
+                      v-for="(position,index) in item.clothes"
+                      v-bind:style="{left: position.box.left,width: position.box.width,top: position.box.top,height: position.box.height}">
+                    </span>
+                    <Row class='lables' v-if='config.mode == "Mark"'>
+                      <i-col :lg='24/config.task.option.length' v-for="option in config.task.option">
+                        <i-button type="ghost" @click='mark(option,item)' @click.stop>{{option}}</i-button>
+                      </i-col>
+                    </Row>
+                  </div>
+                </i-col>
+                <BackTop :bottom="500"></BackTop>
               </div>
-          <!--  </Sider>
-          -->              
-
-          <!--  <Content style="width: 100%;">
-          -->
-              <div slot="right" class='content' style="overflow-y: auto;">
-                <div class='imgs-box' style="margin-bottom: 60px">
-                  <i-col :lg='24/config.layouts' v-for="(item, index) in items" v-show="!item.hide">
-                    <div class="img-container mark-mode" @click='changeMagnify(0,index)'>
-                      <img :width="item.width" :height="item.height" :alt="item.index" :src="item.img_src">
-                      <span class='bounding-box face-bounding-box'
-                        v-for="(position, index) in item.face_detction_new.boxes"
-                        v-if="config.show_face_bouding && (index > (config.which[0] - 2) && index < config.which[1])"
-                        v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
-                      </span>
-                      <span class='bounding-box body-bounding-box'
-                        v-if="config.show_body_bouding && (index > (config.which[0] - 2) && index < config.which[1])"
-                        v-for="(position,index) in item.object_detction_new"
-                        v-bind:style="{left: position.left,width: position.width,top: position.top,height: position.height}">
-                      </span>
-                      <span class='bounding-box close-bounding-box' v-if="config.show_clothes_bouding"
-                        v-for="(position,index) in item.clothes"
-                        v-bind:style="{left: position.box.left,width: position.box.width,top: position.box.top,height: position.box.height}">
-                      </span>
-                      <Row class='lables' v-if='config.mode == "Mark"'>
-                        <i-col :lg='24/config.task.option.length' v-for="option in config.task.option">
-                          <i-button type="ghost" @click='mark(option,item)' @click.stop>{{option}}</i-button>
-                        </i-col>
-                      </Row>
-                    </div>
-                  </i-col>
-                  <BackTop :bottom="500"></BackTop>
-                </div>
-                <div>
-                  <footer>
-                    <div>
-                      <Page :page-size='config.batch' :current="config.page" :total="config.count" show-elevator show-total
-                        @on-change='pageChange' @on-page-size-change='pageSizeChange'></Page>
-                        <!--<span>Copyright © 2018 NExT++</span>-->
-                    </div>
-                  </footer>
-                </div>
+              <div>
+                <footer>
+                  <div>
+                    <Page :page-size='config.batch' :current="config.page" :total="config.count" show-elevator show-total
+                      @on-change='pageChange' @on-page-size-change='pageSizeChange'></Page>
+                  </div>
+                </footer>
               </div>
-          <!--  </Content>
-          </Layout> -->
+            </div>
           </Split>
         </div>
       </Layout>
     </div>
 
     <div v-if='magnify' class='magnify-container'>
-        <div class='magnify-content'>
-          <div class="img-box">
-            <div class='pre-btn button' @click='changeMagnify(1)'></div>
-            <div class="img-container mark-mode">
-              <img :alt="magnify.index" :src="magnify.img_src" id='cropper'>
-              <span class='bounding-box close-bounding-box' v-for="(position,index) in magnify.clothes"
-                v-if="magnifyConfig.selectIndex==index"
-                v-bind:style="{left: position.box.left,width: position.box.width,top: position.box.top,height: position.box.height}">
-                <span class='cloth' @click='deleteBox(magnify,index)'></span>
-              </span>
-            </div>
-            <div class='next-btn button' @click='changeMagnify(2)'></div>
+      <div class='magnify-content'>
+        <div class="img-box">
+          <div class='pre-btn button' @click='changeMagnify(1)'></div>
+          <div class="img-container mark-mode">
+            <img :alt="magnify.index" :src="magnify.img_src" id='cropper'>
+            <span class='bounding-box close-bounding-box' v-for="(position,index) in magnify.clothes"
+              v-if="magnifyConfig.selectIndex==index"
+              v-bind:style="{left: position.box.left,width: position.box.width,top: position.box.top,height: position.box.height}">
+              <span class='cloth' @click='deleteBox(magnify,index)'></span>
+            </span>
           </div>
-          <div class="info-box">
-            <div class="header">
-              <span class='title'>choose</span>
-              <radio-group v-model="magnifyConfig.selectIndex">
-                <Radio label='-1'>base info</Radio>
-                <Radio v-for='(position,index) in magnify.clothes' :label=index>cloth bbox {{index+1}}</Radio>
-              </radio-group>
-            </div>
-            <div class="content">
-              <!--
-              <div class='footer'>
-                <i-button type="primary" @click='submit(); changeMagnify(2);'>submit</i-button>
-              </div>
-              -->
-              <div v-if='magnifyConfig.selectIndex == -1'>
-                <i-col span="24" v-for='(config,index) in baseInfoConfig' class='info-item'>
-                  <i-col span="8" class='title'>{{config.key}}</i-col>
-                  <i-col span="2"></i-col>
-                  <i-col span="12">
-                    <a v-if="config.type=='link'" v-for='grand in config.value' :href="magnify[config.url]">
-                      {{magnify[grand]}}
-                    </a>
-                    <em v-if="config.type !=='link'" v-for='(grand, index) in config.value'>
-                      {{magnify[grand]}}
-                    </em>
-                  </i-col>
-                </i-col>
-              </div>
-              <div v-if='magnify.clothes[magnifyConfig.selectIndex]'>
-                <i-col span="24" v-for='(config,index) in magnify.clothes[magnifyConfig.selectIndex].tags'
-                  class='info-item'>
-                  <i-col span="8" class='title'>{{getText(config.cpTag[0])}}</i-col>
-                  <i-col span="2"></i-col>
-                  <i-col span="10">
-                    <i-select v-if="config.cpTag[0]=='category'" style="width:240px" v-model="config.cpTag[1]"
-                      @on-change='changeCate'>
-                      <i-option v-for="child in getCategoryValueList(config.cpTag[0],config.cpTag[1])" :value="child"
-                        :key="config.cpTag[0]">{{getText(child)}}</i-option>
-                    </i-select>
-                    <i-select v-if="config.cpTag[0]!=='category'" style="width:240px" v-model="config.cpTag[1]">
-                      <i-option v-for="child in getCategoryValueList(config.cpTag[0],config.cpTag[1])" :value="child"
-                        :key="config.cpTag[0]">{{getText(child)}}</i-option>
-                    </i-select>
-                  </i-col>
-                  <i-col span="2">
-                    {{config.score.toFixed(2)}}
-                  </i-col>
-                  <!--
-                  <i-col span="2">
-                    <span class='close' @click='deleteAttr(magnify,index)'></span>
-                  </i-col> -->
-                </i-col>
-              </div>
-            </div>
-          </div>
-          <div class='close-btn button' @click='magnify=null'></div>
+          <div class='next-btn button' @click='changeMagnify(2)'></div>
         </div>
+        <div class="info-box">
+          <div class="header">
+            <span class='title'>choose</span>
+            <radio-group v-model="magnifyConfig.selectIndex">
+              <Radio label='-1'>base info</Radio>
+              <Radio v-for='(position,index) in magnify.clothes' :label=index>cloth bbox {{index+1}}</Radio>
+            </radio-group>
+          </div>
+          <div class="content">
+            <!--
+            <div class='footer'>
+              <i-button type="primary" @click='submit(); changeMagnify(2);'>submit</i-button>
+            </div>
+            -->
+            <div v-if='magnifyConfig.selectIndex == -1'>
+              <i-col span="24" v-for='(config,index) in baseInfoConfig' class='info-item'>
+                <i-col span="8" class='title'>{{config.key}}</i-col>
+                <i-col span="2"></i-col>
+                <i-col span="12">
+                  <a v-if="config.type=='link'" v-for='grand in config.value' :href="magnify[config.url]">
+                    {{magnify[grand]}}
+                  </a>
+                  <em v-if="config.type !=='link'" v-for='(grand, index) in config.value'>
+                    {{magnify[grand]}}
+                  </em>
+                </i-col>
+              </i-col>
+            </div>
+            <div v-if='magnify.clothes[magnifyConfig.selectIndex]'>
+              <i-col span="24" v-for='(config,index) in magnify.clothes[magnifyConfig.selectIndex].tags'
+                class='info-item'>
+                <i-col span="8" class='title'>{{getText(config.cpTag[0])}}</i-col>
+                <i-col span="2"></i-col>
+                <i-col span="10">
+                  <i-select v-if="config.cpTag[0]=='category'" style="width:240px" v-model="config.cpTag[1]"
+                    @on-change='changeCate'>
+                    <i-option v-for="child in getCategoryValueList(config.cpTag[0],config.cpTag[1])" :value="child"
+                      :key="config.cpTag[0]">{{getText(child)}}</i-option>
+                  </i-select>
+                  <i-select v-if="config.cpTag[0]!=='category'" style="width:240px" v-model="config.cpTag[1]">
+                    <i-option v-for="child in getCategoryValueList(config.cpTag[0],config.cpTag[1])" :value="child"
+                      :key="config.cpTag[0]">{{getText(child)}}</i-option>
+                  </i-select>
+                </i-col>
+                <i-col span="2">
+                  {{config.score.toFixed(2)}}
+                </i-col>
+                <!--
+                <i-col span="2">
+                  <span class='close' @click='deleteAttr(magnify,index)'></span>
+                </i-col> -->
+              </i-col>
+            </div>
+          </div>
+        </div>
+        <div class='close-btn button' @click='magnify=null'></div>
       </div>
+    </div>
 
     <Modal v-model="attrFiltersModalConfig.show" :mask-closable="attrFiltersModalConfig.maskClosable" title="Attribute Filter"
       class='filter-modal' @on-ok="attrFilterConfirm">
@@ -436,6 +433,9 @@
         online: true,
         splitRatio: "300px",
         carouselItems: [],
+        curveShow: [],
+        curveDivText: "show trending",
+        myChart: null,
         status: 'welcome',
         sideIsCollapsed: false,
         selectedTriplet: null,
@@ -916,11 +916,11 @@
           if (this.online) {
             axios.post("/search", request_data).then((response) => {
               let data = response.data;
-              console.log(data);
+              //console.log(data);
               this.triplets = data;
               this.selectedTriplet = this.triplets[0][0];
               this.searchImages();
-              console.log(this.selectedTriplet);
+              //console.log(this.selectedTriplet);
               //this.filterModalConfig.show = false;
             })
           } else {
@@ -958,6 +958,36 @@
               this.items = data;
               //console.log(data);
             })
+          }
+        },
+        plotCurve: function (val) {
+          console.log(val);
+          if (val.length !== 0) {
+            this.curveDivText = "hide trending";
+            console.log("start initialize echarts");
+            this.myChart = echarts.init(document.getElementById('trending'));
+            var option = {
+              title: {
+                text: 'ECharts entry example'
+              },
+              tooltip: {},
+              legend: {
+                data:['Sales']
+              },
+              xAxis: {
+                data: ["shirt", "cardign", "chiffon shirt", "pants","heels", "socks"]
+              },
+              yAxis: {},
+              series: [{
+                name: 'Sales',
+                type: 'bar',
+                data: [5, 20, 36, 10, 10, 20]
+              }]
+            };
+            this.myChart.setOption(option);
+          }
+          if (val.length == 0) {
+            this.curveDivText = "show trending";
           }
         },
         submit: function() {
