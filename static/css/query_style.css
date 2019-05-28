@@ -1,5 +1,10 @@
+[v-cloak] {  
+    display: none; 
+} 
+
 body {
     margin: 5px;
+    overflow: hidden;
     font-family: Helvetica, sans-serif;
 }
 

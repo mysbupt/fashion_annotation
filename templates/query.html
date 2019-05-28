@@ -20,7 +20,7 @@
 </head>
 
 <body>
-  <div id="query" style="overflow-y: hidden;">
+  <div id="query" style="overflow-y: hidden;" v-cloak>
     <div v-if="status == 'welcome'">
       <div v-if="status == 'welcome'" class="welcome_1">
         <a :href="online ? '/query' : '/templates/query.html'">
@@ -176,7 +176,7 @@
       </Layout>
     </div>
 
-    <div class='magnify-container' v-if='magnify'>
+    <div v-if='magnify' class='magnify-container'>
         <div class='magnify-content'>
           <div class="img-box">
             <div class='pre-btn button' @click='changeMagnify(1)'></div>
