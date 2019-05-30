@@ -116,7 +116,7 @@
             </Row>
         </Header>
         
-        <div style="min-height: '100vh'; margin-top: 70px; position: relative;" v-if="items !== null">
+        <div style="height: 100vh; margin-top: 70px; position: relative;" v-if="items !== null">
           <Split v-model="splitRatio">
             <div slot="left" style="margin: 1px; background: #e5e3dc;" v-for="triplet in this.triplets">
               <i-button v-if="triplet[0] == selectedTriplet" :title="triplet[0]" style="color: orangered; width: 100%; font-weight: bold; background: white;">
@@ -1010,7 +1010,7 @@
               },
               title: {
                 left: 'center',
-                text: 'monthly trending for: ' + this.selectedTriplet,
+                text: this.selectedTriplet,
               },
               toolbox: {
                 feature: {
