@@ -998,8 +998,9 @@
           }
         },
         plotCurve: function () {
-          if (this.allData.length !== 0 && this.allDate.length !== 0) {
-            this.myChart = echarts.init(document.getElementById('trending'));
+          var plot_area = document.getElementById('trending')
+          if (this.allData.length !== 0 && this.allDate.length !== 0 && plot_area !== null) {
+            this.myChart = echarts.init(plot_area);
 
             var option = {
               tooltip: {
