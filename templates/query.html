@@ -116,7 +116,7 @@
             </Row>
         </Header>
         
-        <div style="height: 100vh; margin-top: 70px; position: relative;" v-if="items !== null">
+        <div style="height: 100vh; margin-top: 60px; position: relative;" v-if="items !== null">
           <Split v-model="splitRatio">
             <div slot="left" style="margin: 1px; background: #e5e3dc;" v-for="triplet in this.triplets">
               <i-button v-if="triplet[0] == selectedTriplet" :title="triplet[0]" style="color: orangered; width: 100%; font-weight: bold; background: white;">
@@ -132,7 +132,7 @@
                   <div id="trending" style="height: 300px; width: 800px; margin: auto; text-align: center; vertical-align: middle;"></div>
                 </el-collapse-item>
               </el-collapse>
-              <div class='imgs-box' style="margin-bottom: 60px">
+              <div class='imgs-box' style="margin-bottom: 120px">
                 <i-col :lg='24/config.layouts' v-for="(item, index) in items" v-show="!item.hide">
                   <div class="img-container mark-mode" @click='changeMagnify(0,index)'>
                     <img :width="item.width" :height="item.height" :alt="item.index" :src="item.img_src">
