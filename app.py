@@ -141,8 +141,6 @@ def get_image(image_id):
             mimetype='image/jpeg'
         )
 
-
-"""
 @app.route('/label', methods=['POST'])
 def label_specific_task():
     if 'username' in session:
@@ -226,7 +224,7 @@ def stats():
         return render_template('show_stats.html', content=get_stats(conn), username=username)
     else:
         return redirect(url_for('login'))
-"""
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=2223, threaded=True)

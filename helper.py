@@ -33,7 +33,7 @@ def create_connection_mysql(conf):
     USERNAME = conf["username"]
     PASSWD = conf["password"] 
     try:
-        conn = MySQLdb.connect(host=HOSTNAME, user=USERNAME, passwd=PASSWD , db=db_name, connect_timeout=28800)
+        conn = MySQLdb.connect(host=HOSTNAME, user=USERNAME, passwd=PASSWD , db=db_name, connect_timeout=864000) # the timeout is 10 days
         return conn
     except:
         print("connection to mysql error")
