@@ -140,7 +140,23 @@ def tag_one_image(up_file, conf):
     )
     clothes_res = resp.json()["result"][0]["objects"]
 
-    clothes_bboxes = [each["box"] for each in clothes_res]
+    clothes_bboxes = []
+    print(json.dumps(clothes_res, indent=4))
+    for each in clothes_res:
+        box = each["box"]
+        flag = True
+        stop_list = ["_bag", "backpack", "clutch_wallet", "shoes", "sandals", "boots"]
+        for tag_score in each["tags"]:
+            tag = tag_score["tag"]
+            for stopcat in stop_list:
+                if stopcat in tag:
+                    flag = False
+                    break
+            if not flag:
+                break
+        if flag:
+            clothes_bboxes.append(box)
+
     body_bboxes = result["result"]["body_detection"]["boxes"]
 
     new_body_bboxes, new_clothes_bboxes = [], []
