@@ -141,7 +141,7 @@ def tag_one_image(up_file, conf):
     clothes_res = resp.json()["result"][0]["objects"]
 
     clothes_bboxes = []
-    print(json.dumps(clothes_res, indent=4))
+    #print(json.dumps(clothes_res, indent=4))
     for each in clothes_res:
         box = each["box"]
         flag = True

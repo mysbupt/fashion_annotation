@@ -267,9 +267,11 @@
                 v-bind:style="{left: position.box.left, width: position.box.width, top: position.box.top, height: position.box.height}">
               </span>
               <span class='bounding-box face-bounding-box' v-for="(position, index) in tagMagnify.face_detection.boxes"
+                v-if="tagMagnifyConfig.selectPersonIndex==index"
                 v-bind:style="{left: position.left, width: position.width, top: position.top, height: position.height}">
               </span>
               <span class='bounding-box body-bounding-box' v-for="(position, index) in tagMagnify.body_detection.boxes"
+                v-if="tagMagnifyConfig.selectPersonIndex==index"
                 v-bind:style="{left: position.left, width: position.width, top: position.top, height: position.height}">
               </span>
             </div>
