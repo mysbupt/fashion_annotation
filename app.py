@@ -62,6 +62,15 @@ def get_items():
     return jsonify(batch_of_data)
 
 
+@app.route('/tag_image', methods=['POST'])
+def tag_image():
+    if "image" not in request.files:
+        return jsonify({"msg": "Pls upload one image with the key of 'image"})
+    up_file = request.files['image']
+    tag_data = tag_one_image(up_file, conf)
+    return jsonify(tag_data)
+
+
 @app.route('/search', methods=['POST'])
 def search():
     req = request.get_json()
@@ -227,4 +236,4 @@ def stats():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=2223, threaded=True)
+    app.run(host='0.0.0.0', port=2224, threaded=True)

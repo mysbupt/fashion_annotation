@@ -7,6 +7,11 @@ import datetime
 import MySQLdb
 import simplejson as json
 from StringIO import StringIO
+import hashlib
+import cv2
+import numpy as np
+import requests
+from align_body_face_bbox import align_body_face, cal_overlap
 
 from cassandra.cluster import Cluster
 from cassandra.auth import PlainTextAuthProvider
@@ -38,6 +43,126 @@ def create_connection_mysql(conf):
     except:
         print("connection to mysql error")
         exit()
+
+
+def upload_image(img_url_md5, img_data, IMAGE_SAVE_URL):
+    files = {'image': (img_url_md5, img_data)}
+    r = requests.post(IMAGE_SAVE_URL, files=files, data={'database': 'instagram_scene'})
+    res = r.json()
+    if res['msg'] != 'success':
+        print(res)
+        exit()
+    else:
+        print("upload image success")
+
+
+def tag_one_image(up_file, conf):
+    IMAGE_SAVE_URL = conf["API"]["IMAGE_SAVE_URL"]
+    PERSON_DETECT_API = conf["API"]["PERSON_DETECT_API"]
+    FACE_DETECT_API = conf["API"]["FACE_DETECT_API"]
+    FACE_AGE_GENDER_REC_API = conf["API"]["FACE_AGE_GENDER_REC_API"]
+    FASHION_DET_API = conf["API"]["FASHION_DET_API"]
+    FASHION_DET_TOKEN = conf["API"]["FASHION_DET_TOKEN"]
+    FASHION_DET_KEY = conf["API"]["FASHION_DET_KEY"]
+    FASHION_KE_API = conf["API"]["FASHION_KE_API"]
+
+    result = {
+        'msg': 'success',
+        'result': {},
+        'T_F': True
+    }
+
+    image = up_file.stream.read()
+    m = hashlib.md5()
+    m.update(image)
+    img_url_md5 = m.hexdigest()
+    # upload the image to cassandra
+    upload_image(img_url_md5, image, IMAGE_SAVE_URL)
+    print("upload image: %s" %(img_url_md5))
+    result["result"]["img_src"] = "/images/%s.jpg" %(img_url_md5)
+
+    # detect person
+    print("call person detection API")
+    person_result = requests.post(PERSON_DETECT_API, files={'image': (img_url_md5, image)}).json()
+    #result["person_result"] = person_result
+    person_boxes = []
+    if person_result["T_F"] is not True:
+        result["result"]["num_of_person"] = 0 
+    else:
+        for each in person_result['result']:
+            if each[0] == 'person' and each[1] >= 0.98:
+                tmp_bbox = list(each[2])
+                tmp_bbox.append(each[1])
+                person_boxes.append(tmp_bbox)
+        result["result"]["num_of_person"] = len(person_boxes)
+
+    # here call the face detection API                                           
+    print("call face/age/gender detection API")
+    face_age_gender_result = requests.post(FACE_AGE_GENDER_REC_API, files={'image': image}).json()
+    #print(json.dumps(face_age_gender_result, indent=4))
+    face_boxes = []
+    if face_age_gender_result["T_F"] is not True:
+        result["result"]["num_of_face"] = 0
+    else:
+        for box, age, gender in zip(face_age_gender_result['result']['bbox'], face_age_gender_result['result']['age'], face_age_gender_result['result']['gender']):
+            face_boxes.append(box + [age, gender])
+        result["result"]["num_of_face"] = len(face_boxes)
+
+    # here get the height and widht of image
+    nparr = np.fromstring(image, np.uint8)
+    real_img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)                  
+    height, width, channels = real_img.shape
+    result["result"]["height"] = height
+    result["result"]["width"] = width
+
+    # here to align the bounding box of face and body                            
+    face_body_align = align_body_face(person_boxes, face_boxes, width, height)
+    face_body_pair = face_body_align["face_body_pair"]
+    if len(face_body_pair) == 0:
+        result["msg"] = "no valid face_body_pair"
+        return result
+    else:
+        face_detection, body_detection, ages, genders = {"boxes": []}, {"boxes": []}, [], []
+        for each in face_body_pair:
+            face_detection['boxes'].append(each["face"][0:4])
+            ages.append(each["face"][4])
+            genders.append(each["face"][5])
+            body_detection["boxes"].append(each["body"])
+        result["result"]["face_detection"] = face_detection
+        result["result"]["body_detection"] = body_detection
+        result["result"]["ages"] = ages
+        result["result"]["genders"] = genders
+
+    files = (("tag_group", "fashion_attributes"), ("file", image))
+    resp = requests.post(FASHION_DET_API,
+        files=files, 
+        auth=(FASHION_DET_TOKEN, FASHION_DET_KEY)
+    )
+    clothes_res = resp.json()["result"][0]["objects"]
+
+    clothes_bboxes = [each["box"] for each in clothes_res]
+    body_bboxes = result["result"]["body_detection"]["boxes"]
+
+    new_body_bboxes, new_clothes_bboxes = [], []
+    for each_cloth in clothes_bboxes:
+        best_body_bbox, best_ratio = None, 0
+        for each_body in body_bboxes:
+            ratio, overlap_size = cal_overlap(each_body, each_cloth)
+            if ratio > best_ratio:
+                best_ratio = ratio
+                best_body_bbox = each_body
+        new_body_bboxes.append(each_body)
+        new_clothes_bboxes.append(each_cloth)
+    ## here call the fashionKE API to recognize clothes, occasion
+    metadata = {"body_bboxes": json.dumps(new_body_bboxes), "cloth_bboxes": json.dumps(new_clothes_bboxes), "text": "I like wedding"}
+    files = {"image": image}
+    resp = requests.post(FASHION_KE_API, files=files, data=metadata).json()
+    #print(json.dumps(resp, indent=4))
+    result["result"]["occasion"] = resp["result"]["occasion"]
+    result["result"]["clothes"] = resp["result"]["clothes"]
+    #print(json.dumps(result, indent=4))
+
+    return result
 
 
 def check_req(req, occasion_tag_mapping, role, username):

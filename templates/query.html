@@ -26,7 +26,7 @@
           <img class="welcome_img" :width="logo.width" :alt="logo.alt" :src="logo.src">
         </a>
         <Row style="margin-top: 50px;">
-          <i-col span="4" class="left" style="width:140px; margin-left:2px; margin-right:5px;">
+          <i-col span="3" class="left" style="width:120px; margin-left:2px; margin-right:5px;">
             <i-select v-model="filters.occasion" placeholder="occasion" transfer="true" clearable>
               <i-option v-for="item in occasionList" :value="item.key" :key="item.key">
                 {{item.key}}
@@ -42,7 +42,7 @@
             </i-select>
           </i-col>
 
-          <i-col span="4" style="width:160px; margin-left:3px; margin-right:5px;">
+          <i-col span="3" style="width:160px; margin-left:3px; margin-right:5px;">
             <Cascader :data="categoryTree" trigger="hover" placeholder="clothes" v-model="filters.category" transfer="true"></Cascader>
           </i-col>
 
@@ -51,10 +51,17 @@
           </i-col>
 
           <i-col span="2">
-            <i-button shape="circle" icon="ios-search" style="width: 30px; height: 30px; margin-left: 50px" @click="searchTriplets();"></button>
+            <i-button shape="circle" icon="ios-search" style="width: 30px; height: 30px; margin-left: 10px" @click="searchTriplets();"></button>
+          </i-col>
+
+          <i-col span="2">
+            <Upload :format="['jpg', 'png', 'jpeg']" name="image" action="/tag_image" :on-success="tagImage" :max-size="2048">
+                <i-button shape="circle"  style="width: 30px; height: 30px; margin-left: 10px" icon="ios-camera"></button>
+            </Upload>
           </i-col>
         </Row>
       </div>
+      <!--
       <div style="width: 800px; text-align: center; margin-left: auto; margin-right: auto; margin-top: 100px;">
         <el-carousel height="200px" loop autoplay>
           <el-carousel-item v-for="(item, index) in carouselItems" :key="index">
@@ -66,6 +73,7 @@
           </el-carousel-item>
         </el-carousel>  
       </div>
+      -->
     </div>
 
     <div v-if="status == 'detail'" class="layout">
@@ -223,14 +231,13 @@
               <i-col span="24" v-for='(config,index) in magnify.clothes[magnifyConfig.selectIndex].tags'
                 class='info-item'>
                 <i-col span="8" class='title'>{{getText(config.cpTag[0])}}</i-col>
-                <i-col span="2"></i-col>
                 <i-col span="10">
-                  <i-select v-if="config.cpTag[0]=='category'" style="width:240px" v-model="config.cpTag[1]"
+                  <i-select v-if="config.cpTag[0]=='category'" style="width:200px" v-model="config.cpTag[1]"
                     @on-change='changeCate'>
                     <i-option v-for="child in getCategoryValueList(config.cpTag[0],config.cpTag[1])" :value="child"
                       :key="config.cpTag[0]">{{getText(child)}}</i-option>
                   </i-select>
-                  <i-select v-if="config.cpTag[0]!=='category'" style="width:240px" v-model="config.cpTag[1]">
+                  <i-select v-if="config.cpTag[0]!=='category'" style="width:200px" v-model="config.cpTag[1]">
                     <i-option v-for="child in getCategoryValueList(config.cpTag[0],config.cpTag[1])" :value="child"
                       :key="config.cpTag[0]">{{getText(child)}}</i-option>
                   </i-select>
@@ -249,6 +256,80 @@
         <div class='close-btn button' @click='magnify=null'></div>
       </div>
     </div>
+
+    <div v-if='tagMagnify' class='magnify-container'>
+        <div class='magnify-content'>
+          <div class="img-box">
+            <div class="img-container mark-mode">
+              <img :src="tagMagnify.img_src" id='cropper'>
+              <span class='bounding-box close-bounding-box' v-for="(position, index) in tagMagnify.clothes"
+                v-if="tagMagnifyConfig.selectClothesIndex==index"
+                v-bind:style="{left: position.box.left, width: position.box.width, top: position.box.top, height: position.box.height}">
+              </span>
+              <span class='bounding-box face-bounding-box' v-for="(position, index) in tagMagnify.face_detection.boxes"
+                v-bind:style="{left: position.left, width: position.width, top: position.top, height: position.height}">
+              </span>
+              <span class='bounding-box body-bounding-box' v-for="(position, index) in tagMagnify.body_detection.boxes"
+                v-bind:style="{left: position.left, width: position.width, top: position.top, height: position.height}">
+              </span>
+            </div>
+          </div>
+          <div class="info-box">
+            <div class="header">
+              <div class="header">
+                <span class='title'>Person</span>
+                <radio-group v-model="tagMagnifyConfig.selectPersonIndex">
+                  <Radio v-for='(position, index) in tagMagnify.face_detection.boxes' :label=index>person {{index+1}}</Radio>
+                </radio-group>
+              </div>
+              <div class="header">
+                <span class='title'>Cloth</span>
+                <radio-group v-model="tagMagnifyConfig.selectClothesIndex">
+                  <Radio label='-1'>base info</Radio>
+                  <Radio v-for='(position, index) in tagMagnify.clothes' :label=index>cloth {{index+1}}</Radio>
+                </radio-group>
+              </div>
+            </div> 
+            <div class="content">
+              <div v-if='tagMagnifyConfig.selectClothesIndex == -1'>
+                <i-col span="24" class='info-item'>
+                  <i-col span="4" class='title'>Occasion</i-col>
+                  <i-col span="4">{{tagMagnify.occasion.split(':')[0]}}</i-col>
+                  <i-col span="4">{{tagMagnify.occasion.split(':')[1]}}</i-col>
+                </i-col>
+                <i-col span="24" class='info-item'>
+                  <i-col span="4" class='title'>Age</i-col>
+                  <i-col span="4">{{tagMagnify.ages[tagMagnifyConfig.selectPersonIndex]}}</i-col>
+                </i-col>
+                <i-col span="24" class='info-item'>
+                  <i-col span="4" class='title'>Gender</i-col>
+                  <i-col span="4">{{idGenderMap[tagMagnify.genders[tagMagnifyConfig.selectPersonIndex]]}}</i-col>
+                </i-col>
+              </div>
+              <div v-if='tagMagnify.clothes[tagMagnifyConfig.selectClothesIndex]'>
+                <i-col span="24" v-for='(config, index) in tagMagnify.clothes[tagMagnifyConfig.selectClothesIndex].tags'
+                  class='info-item'>
+                  <i-col span="5" class='title'>{{getText(config.cpTag[0])}}</i-col>
+                  <i-col span="17">
+                    <i-select v-if="config.cpTag[0]=='category'" style="width:200px" v-model="config.cpTag[1]">
+                      <i-option v-for="child in getCategoryValueList(config.cpTag[0],config.cpTag[1])" :value="child"
+                        :key="config.cpTag[0]">{{getText(child)}}</i-option>
+                    </i-select>
+                    <i-select v-if="config.cpTag[0]!=='category'" style="width:200px" v-model="config.cpTag[1]">
+                      <i-option v-for="child in getCategoryValueList(config.cpTag[0],config.cpTag[1])" :value="child"
+                        :key="config.cpTag[0]">{{getText(child)}}</i-option>
+                    </i-select>
+                  </i-col>
+                  <i-col span="2">
+                    {{config.score.toFixed(2)}}
+                  </i-col>
+                </i-col>
+              </div>
+            </div>
+          </div>
+          <div class='close-btn button' @click='tagMagnify=null'></div>
+        </div>
+      </div>
 
     <Modal v-model="attrFiltersModalConfig.show" :mask-closable="attrFiltersModalConfig.maskClosable" title="Attribute Filter"
       class='filter-modal' @on-ok="attrFilterConfirm">
@@ -518,6 +599,15 @@
         magnifyConfig: {
           selectIndex: '-1'
         },
+        tagMagnifyConfig: {
+          selectClothesIndex: '-1',
+          selectPersonIndex: 0
+        },
+        tagMagnify: null,
+        idGenderMap: {
+          0: "Female",
+          1: "Male"
+        },
         settingModalConfig: {
           title: 'Setting Modal',
           show: false,
@@ -537,6 +627,12 @@
         },
       },
       methods: {
+        tagImage: function (response, file, fileList) {
+          let data = response;
+          console.log(data);
+          this.tagMagnify = this.formatTagResData(data);
+          console.log(this.tagMagnify);
+        },
         getHashTagList: function () {
           let source = "/mock/get_hashtag_list.json"
           if (this.online) {
@@ -732,6 +828,55 @@
           this.config.page = 1;
           this.searchImages();
         },
+        formatTagResData: function (data) {
+          data = data.result;
+          let width = data.width || '640'
+          let height = data.height || '640'
+          data.face_detection.boxes.forEach((box, index) => {
+            /**
+            * box表示身体bouding-box
+            * box[0] 左上角x坐标
+            * box[1] 左上角y坐标
+            * box[2] width
+            * box[3] height
+            */
+            let temp = {
+              left: box[0] / width * 100 + '%',
+              top: box[1] / height * 100 + '%',
+              width: (box[2] - box[0]) / width * 100 + '%',
+              height: (box[3] - box[1]) / height * 100 + '%',
+            }
+            data.face_detection.boxes[index] = temp;
+          })
+          data.body_detection.boxes.forEach((box, index) => {
+            /**
+            * box表示身体bouding-box
+            * box[0] 左上角x坐标
+            * box[1] 左上角y坐标
+            * box[2] width
+            * box[3] height
+            */
+            let temp = {
+              left: (box[0] - box[2] / 2) / width * 100 + '%',
+              top: (box[1] - box[3] / 2) / height * 100 + '%',
+              width: Math.abs(box[2]) / width * 100 + '%',
+              height: Math.abs(box[3]) / height * 100 + '%',
+            }
+            data.body_detection.boxes[index] = temp;
+          })
+          data.clothes.forEach((item, index) => {
+            let box = item.box
+            let obj = {
+              left: box[0] / width * 100 + '%',
+              top: box[1] / height * 100 + '%',
+              width: (box[2] - box[0]) / width * 100 + '%',
+              height: (box[3] - box[1]) / height * 100 + '%',
+            }
+            data.clothes[index].box = obj;
+          })
+          this.formatTags(data);
+          return data
+        },
         formatData: function (data) {
           data.forEach((item, index) => {
             item.hide = false;
@@ -878,7 +1023,12 @@
           if (attr === 'category') {
             return Object.keys(this.catAttrValList)
           } else {
-            let cate = this.magnify.clothes[this.magnifyConfig.selectIndex].tags[0].cpTag[1]
+            let cate = null;
+            if (this.tagMagnify) {
+              cate = this.tagMagnify.clothes[this.tagMagnifyConfig.selectClothesIndex].tags[0].cpTag[1]
+            } else {
+              cate = this.magnify.clothes[this.magnifyConfig.selectIndex].tags[0].cpTag[1]
+            } 
             let list = this.catAttrValList[cate];
             let res = [];
             list.forEach((item) => {
