@@ -54,11 +54,17 @@
             <i-button shape="circle" icon="ios-search" style="width: 30px; height: 30px; margin-left: 10px" @click="searchTriplets();"></button>
           </i-col>
 
+          <!-- 
           <i-col span="2">
             <Upload :format="['jpg', 'png', 'jpeg']" name="image" action="/tag_image" :on-success="tagImage" :max-size="2048">
                 <i-button shape="circle"  style="width: 30px; height: 30px; margin-left: 10px" icon="ios-camera"></button>
             </Upload>
           </i-col>
+          -->
+          <i-col span="2">
+            <i-button shape="circle" icon="ios-camera" style="width: 30px; height: 30px; margin-left: 10px" @click="showUploadModal();"></button>
+          </i-col>
+          
         </Row>
       </div>
       <!--
@@ -349,6 +355,33 @@
       </div>
     </Modal>
 
+    <Modal v-model="uploadImageModal.show" :mask-closable="uploadImageModal.maskClosable" title="Upload an Image"
+      class='filter-modal' @on-ok="tagImageText">
+      <div v-if="uploadImageModal.show">
+        <Row>
+          <i-col span="8" class='left'>
+            <span>Upload</span>
+          </i-col>
+          <i-col span="8">
+            <Upload :format="['jpg', 'png', 'jpeg']" :before-upload="handleUpload" :show-upload-list="true" :max-size="2048">
+              <i-button icon="ios-cloud-upload-outline">upload</button> 
+            </Upload>
+          </i-col>
+          <i-col v-if="this.tagUploadCont.image !== null" span='8'>
+            <span>Upload file: {{this.tagUploadCont.image.name.substr(this.tagUploadCont.image.name.length - 10) }}</span>
+          </i-col>
+        </Row>
+        <Row>
+          <i-col span="8" class='left'>
+            <span>Text</span>
+          </i-col>
+          <i-col span="8" class='right'>
+            <i-input placeholder='optional: input some text' v-model='tagUploadCont.text'></i-input>
+          </i-col>
+        </Row>
+      </div>
+    </Modal>
+
     <Modal v-model="settingModalConfig.show" :mask-closable="settingModalConfig.maskClosable" title="Setting Modal"
       class='filter-modal' @on-ok="settingConfirm" @on-cancel="settingCancel">
       <Row>
@@ -606,6 +639,10 @@
           selectPersonIndex: 0
         },
         tagMagnify: null,
+        tagUploadCont: {
+          text: '',
+          image: null
+        },
         idGenderMap: {
           0: "Female",
           1: "Male"
@@ -627,6 +664,12 @@
           maskClosable: true,
           loading: true,
         },
+        uploadImageModal: {
+          title: 'Upload an Image',
+          show: false,
+          maskClosable: true,
+          loading: true
+        },
       },
       methods: {
         tagImage: function (response, file, fileList) {
@@ -634,6 +677,33 @@
           console.log(data);
           this.tagMagnify = this.formatTagResData(data);
           console.log(this.tagMagnify);
+        },
+        handleUpload: function (file) {
+          this.tagUploadCont.image = file;
+          return false;
+        },
+        tagImageText: function () {
+          if (this.tagUploadCont.image == null) {
+            this.$Message.warning('Please upload an image first !');
+          } else {
+            var formData = new FormData();
+            formData.append("image", this.tagUploadCont.image);
+            formData.append("text", this.tagUploadCont.text)
+            axios.post("/tag_image", formData, 
+            {
+              headers: {
+                'Content-Type': 'multipart/form-data'
+              }
+            }).then((response) => {
+              let data = response.data;
+              this.uploadImageModal.show = false;
+              //console.log(data);
+              this.tagMagnify = this.formatTagResData(data);
+              //console.log(this.tagMagnify);
+              this.tagUploadCont.text = '';
+              this.tagUploadCont.image = null;
+            })
+          }  
         },
         getHashTagList: function () {
           let source = "/mock/get_hashtag_list.json"
@@ -759,6 +829,9 @@
         },
         showMetaFilters: function() {
           this.metaFilterModalConfig.show = true;
+        },
+        showUploadModal: function() {
+          this.uploadImageModal.show = true;
         },
         startTimeChange: function (data) {
           this.metaFilters.time[0] = data;

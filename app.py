@@ -64,10 +64,13 @@ def get_items():
 
 @app.route('/tag_image', methods=['POST'])
 def tag_image():
+    text = ''
     if "image" not in request.files:
         return jsonify({"msg": "Pls upload one image with the key of 'image"})
+    if "text" in request.form:
+        text = request.form["text"]
     up_file = request.files['image']
-    tag_data = tag_one_image(up_file, conf)
+    tag_data = tag_one_image(up_file, text, conf)
     return jsonify(tag_data)
 
 

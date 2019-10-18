@@ -56,7 +56,7 @@ def upload_image(img_url_md5, img_data, IMAGE_SAVE_URL):
         print("upload image success")
 
 
-def tag_one_image(up_file, conf):
+def tag_one_image(up_file, text, conf):
     IMAGE_SAVE_URL = conf["API"]["IMAGE_SAVE_URL"]
     PERSON_DETECT_API = conf["API"]["PERSON_DETECT_API"]
     FACE_DETECT_API = conf["API"]["FACE_DETECT_API"]
@@ -170,7 +170,7 @@ def tag_one_image(up_file, conf):
         new_body_bboxes.append(each_body)
         new_clothes_bboxes.append(each_cloth)
     ## here call the fashionKE API to recognize clothes, occasion
-    metadata = {"body_bboxes": json.dumps(new_body_bboxes), "cloth_bboxes": json.dumps(new_clothes_bboxes), "text": "I like wedding"}
+    metadata = {"body_bboxes": json.dumps(new_body_bboxes), "cloth_bboxes": json.dumps(new_clothes_bboxes), "text": text}
     files = {"image": image}
     resp = requests.post(FASHION_KE_API, files=files, data=metadata).json()
     #print(json.dumps(resp, indent=4))
