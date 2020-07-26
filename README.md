@@ -4,9 +4,13 @@ This is a platform for browsing, annotating, query on the large scale fashion im
 /query for query the fashion knowledge (triplets of "occasion, person, clothes") and associate images, we can also show the trending curve of each triplet.
 
 ## Requirements
-uwsgi
-python2.7
-flask
+uwsgi  
+python2.7  
+flask  
+vue.js  
+iview.js  
+MySQL  
+Cassandra  
 
 
 ## Brief Introduction of Implementation
