@@ -12,6 +12,8 @@ from helper import *
 
 import yaml
 
+#import resource
+#resource.setrlimit(resource.RLIMIT_NOFILE, (65536, 65536))
 
 app = Flask(__name__)
 app.secret_key = 'super secret key'
@@ -239,4 +241,4 @@ def stats():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=2224, threaded=True)
+    app.run(host='0.0.0.0', port=2223, threaded=True)
